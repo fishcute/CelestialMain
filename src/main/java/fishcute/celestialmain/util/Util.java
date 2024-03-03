@@ -3,9 +3,9 @@ package fishcute.celestialmain.util;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import fishcute.celestial.version.dependent.VMath;
-import fishcute.celestial.version.dependent.VMinecraftInstance;
-import fishcute.celestial.version.dependent.Vector;
+import fishcute.celestialmain.version.dependent.VMath;
+import fishcute.celestialmain.version.dependent.Instances.minecraft;
+import fishcute.celestialmain.version.dependent.Vector;
 import fishcute.celestialmain.sky.CelestialSky;
 import net.minecraft.util.Mth;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -54,12 +54,12 @@ public class Util {
     }
 
     static double print(double i) {
-        VMinecraftInstance.sendMessage("Value: " + i, true);
+        Instances.minecraft.sendMessage("Value: " + i, true);
         return i;
     }
 
     public static void log(Object i) {
-        if (!VMinecraftInstance.isGamePaused())
+        if (!Instances.minecraft.isGamePaused())
             System.out.println("[Celestial] " + i.toString());
     }
     public static int errorCount;
@@ -67,20 +67,20 @@ public class Util {
 
     public static void sendCompilationError(String i, String location) {
         errorCount++;
-        if (!VMinecraftInstance.doesPlayerExist())
+        if (!Instances.minecraft.doesPlayerExist())
             return;
-        VMinecraftInstance.sendFormattedErrorMessage(i, "Compilation Error", location);
+        Instances.minecraft.sendFormattedErrorMessage(i, "Compilation Error", location);
     }
 
     public static void sendError(String i, String location) {
-        if (!VMinecraftInstance.doesPlayerExist() || errorCount > 25 || errors.contains(i))
+        if (!Instances.minecraft.doesPlayerExist() || errorCount > 25 || errors.contains(i))
             return;
         errorCount++;
         errors.add(i);
-        VMinecraftInstance.sendFormattedErrorMessage(i, "Error", location);
+        Instances.minecraft.sendFormattedErrorMessage(i, "Error", location);
 
         if (errorCount >= 25)
-            VMinecraftInstance.sendErrorMessage("Passing 25 error messages. Muting error messages.");
+            Instances.minecraft.sendErrorMessage("Passing 25 error messages. Muting error messages.");
     }
 
     public static boolean getOptionalBoolean(JsonObject o, String toGet, boolean ifNull, String location) {
@@ -116,7 +116,7 @@ public class Util {
     public static String getOptionalTexture(JsonObject o, String toGet, String ifNull, String location) {
         String texture = getOptionalString(o, toGet, ifNull, location);
         try {
-            ImageIO.read(VMinecraftInstance.getResource(texture));
+            ImageIO.read(Instances.minecraft.getResource(texture));
         }
         catch (Exception e) {
             Util.sendCompilationError("Invalid texture path \"" + texture + "\".", location + "." + toGet);
@@ -339,30 +339,30 @@ public class Util {
     }
 
     public static boolean isUsing(String... item) {
-        return VMinecraftInstance.isRightClicking() && isHolding(item);
+        return Instances.minecraft.isRightClicking() && isHolding(item);
     }
 
     public static boolean isMiningWith(String... item) {
-        return VMinecraftInstance.isLeftClicking() && isHolding(item);
+        return Instances.minecraft.isLeftClicking() && isHolding(item);
     }
 
     public static boolean isHolding(String... items) {
         for (String item : items) {
             if (item.contains(":")) {
                 String[] str = item.split(":");
-                return (VMinecraftInstance.getMainHandItemNamespace().equals(str[0])) &&
-                        (VMinecraftInstance.getMainHandItemPath().equals(str[1]));
+                return (Instances.minecraft.getMainHandItemNamespace().equals(str[0])) &&
+                        (Instances.minecraft.getMainHandItemPath().equals(str[1]));
             } else {
-                return (VMinecraftInstance.getMainHandItemPath().equals(item));
+                return (Instances.minecraft.getMainHandItemPath().equals(item));
             }
         }
         return false;
     }
 
     public static boolean isInArea(double x1, double y1, double z1, double x2, double y2, double z2) {
-        return (Math.min(x1, x2) <= VMinecraftInstance.getPlayerX() && VMinecraftInstance.getPlayerX() <= Math.max(x1, x2)) &&
-                    (Math.min(y1, y2) <= VMinecraftInstance.getPlayerY() && VMinecraftInstance.getPlayerY() <= Math.max(y1, y2)) &&
-                    (Math.min(z1, z2) <= VMinecraftInstance.getPlayerZ() && VMinecraftInstance.getPlayerZ() <= Math.max(z1, z2));
+        return (Math.min(x1, x2) <= Instances.minecraft.getPlayerX() && Instances.minecraft.getPlayerX() <= Math.max(x1, x2)) &&
+                    (Math.min(y1, y2) <= Instances.minecraft.getPlayerY() && Instances.minecraft.getPlayerY() <= Math.max(y1, y2)) &&
+                    (Math.min(z1, z2) <= Instances.minecraft.getPlayerZ() && Instances.minecraft.getPlayerZ() <= Math.max(z1, z2));
 
     }
 
@@ -424,9 +424,9 @@ public class Util {
             return getBiomeBlend((float) Double.parseDouble(args[0]), (float) Double.parseDouble(args[1]), args);
         }
         else if (NumberUtils.isCreatable(args[0])) {
-            return getBiomeBlend((float) Double.parseDouble(args[0]), (float) VMinecraftInstance.getPlayerY(), args);
+            return getBiomeBlend((float) Double.parseDouble(args[0]), (float) Instances.minecraft.getPlayerY(), args);
         }
-        return getBiomeBlend(6.0F, (float) VMinecraftInstance.getPlayerY(), args);
+        return getBiomeBlend(6.0F, (float) Instances.minecraft.getPlayerY(), args);
     }
 
     public static double getBiomeBlend(float searchDistance, float y, String... biomeName) {
@@ -439,17 +439,17 @@ public class Util {
         for (float i = -searchDistance; i <= searchDistance; i++) {
             for (float j = (y == -9999 ? -searchDistance : 0); (y == -9999 ? j <= searchDistance : j == 0); j++) {
                 for (float k = -searchDistance; k <= searchDistance; k++) {
-                    pos.set(i + VMinecraftInstance.getPlayerX(),
-                            y == -9999 ? j + VMinecraftInstance.getPlayerY() : y,
-                            k + VMinecraftInstance.getPlayerZ());
+                    pos.set(i + Instances.minecraft.getPlayerX(),
+                            y == -9999 ? j + Instances.minecraft.getPlayerY() : y,
+                            k + Instances.minecraft.getPlayerZ());
 
-                    if (VMinecraftInstance.equalToBiome(pos, biomeName)) {
+                    if (Instances.minecraft.equalToBiome(pos, biomeName)) {
                         dist = distanceTo(pos.x, pos.y, pos.z,
-                                VMinecraftInstance.getPlayerX(),
-                                y == -9999 ? VMinecraftInstance.getPlayerY() : y,
-                                VMinecraftInstance.getPlayerZ());
+                                Instances.minecraft.getPlayerX(),
+                                y == -9999 ? Instances.minecraft.getPlayerY() : y,
+                                Instances.minecraft.getPlayerZ());
                         if ((!foundSpot || dist < closestDist)) {
-                            closestDist = distanceToArea(VMinecraftInstance.getPlayerX(), y == -9999 ? VMinecraftInstance.getPlayerY() : y, VMinecraftInstance.getPlayerZ(),
+                            closestDist = distanceToArea(Instances.minecraft.getPlayerX(), y == -9999 ? Instances.minecraft.getPlayerY() : y, Instances.minecraft.getPlayerZ(),
                                     pos.x - 0.5, pos.y - 0.5, pos.z + 0.5, pos.x + 0.5, pos.y + 0.5, pos.z + 0.5);
                             foundSpot = true;
                         }
@@ -479,12 +479,12 @@ public class Util {
         Vector pos = new Vector(0, 0, 0);
         for (int i = -searchDistance; i <= searchDistance; i++) {
             for (int k = -searchDistance; k <= searchDistance; k++) {
-                pos.set(i + VMinecraftInstance.getPlayerX(), yLevel, k + VMinecraftInstance.getPlayerZ());
+                pos.set(i + Instances.minecraft.getPlayerX(), yLevel, k + Instances.minecraft.getPlayerZ());
                 dist = distanceTo(pos.x, yLevel, pos.z,
-                        VMinecraftInstance.getPlayerX(),
+                        Instances.minecraft.getPlayerX(),
                         yLevel,
-                        VMinecraftInstance.getPlayerZ());
-                if (VMinecraftInstance.equalToBiome(pos, biomeName) && (!foundSpot || dist < closestDist)) {
+                        Instances.minecraft.getPlayerZ());
+                if (Instances.minecraft.equalToBiome(pos, biomeName) && (!foundSpot || dist < closestDist)) {
                     closestDist = dist;
                     foundSpot = true;
                 }
@@ -503,19 +503,19 @@ public class Util {
     }
 
     public static boolean isInBiome(String... biome) {
-        return VMinecraftInstance.equalToBiome(null, biome);
+        return Instances.minecraft.equalToBiome(null, biome);
     }
 
     public static boolean getRealSkyColor = false;
     public static boolean getRealFogColor = false;
 
     public static Color getSkyColor() {
-        double[] i = VMinecraftInstance.getBiomeSkyColor();
+        double[] i = Instances.minecraft.getBiomeSkyColor();
         return new Color((int) (i[0] * 255), (int) (i[1] * 255), (int) (i[2] * 255));
     }
 
     public static Color getFogColor() {
-        double[] i = VMinecraftInstance.getBiomeFogColor();
+        double[] i = Instances.minecraft.getBiomeFogColor();
         return new Color((int) (i[0] * 255), (int) (i[1] * 255), (int) (i[2] * 255));
     }
     public static double getTwilightAlpha(double timeOfDay) {
@@ -533,7 +533,7 @@ public class Util {
     }
     public static double getTwilightFogEffect(double timeOfDay) {
         float h = VMath.sin((float) timeOfDay / 360.0F) > 0.0F ? -1.0F : 1.0F;
-        float s = VMinecraftInstance.getCameraLookVectorTwilight(h);
+        float s = Instances.minecraft.getCameraLookVectorTwilight(h);
         if (s < 0) {
             s = 0;
         }

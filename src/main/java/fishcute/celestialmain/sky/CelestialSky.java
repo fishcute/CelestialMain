@@ -7,12 +7,12 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import fishcute.celestial.version.dependent.VMinecraftInstance;
 import fishcute.celestialmain.sky.objects.ICelestialObject;
 import fishcute.celestialmain.util.CelestialExpression;
 import fishcute.celestialmain.util.ClientTick;
 import fishcute.celestialmain.util.ColorEntry;
 import fishcute.celestialmain.util.Util;
+import fishcute.celestialmain.version.independent.Instances;
 import kotlin.jvm.functions.Function0;
 
 import java.awt.*;
@@ -36,7 +36,7 @@ public class CelestialSky {
 
     public static CelestialRenderInfo getDimensionRenderInfo() {
         try {
-            return dimensionSkyMap.get(VMinecraftInstance.getLevelPath());
+            return dimensionSkyMap.get(Instances.minecraft.getLevelPath());
         }
         catch (Exception e) {
             return null;
@@ -89,8 +89,8 @@ public class CelestialSky {
         }
 
         Util.log("Finished loading skies for " + dimensionCount + " dimension(s). Loaded " + objectCount + " celestial object(s) with " + Util.errorCount + " error(s).");
-        if (VMinecraftInstance.doesPlayerExist() && sendMessage)
-            VMinecraftInstance.sendInfoMessage("Reloaded with " + Util.errorCount + " error(s).");
+        if (Instances.minecraft.doesPlayerExist() && sendMessage)
+            Instances.minecraft.sendInfoMessage("Reloaded with " + Util.errorCount + " error(s).");
         Util.errorCount = 0;
     }
 
@@ -205,7 +205,7 @@ public class CelestialSky {
 
     public static JsonObject getFile(String path) {
         try {
-            InputStream inputStream = VMinecraftInstance.getResource(path);
+            InputStream inputStream = Instances.minecraft.getResource(path);
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
             JsonElement jsonElement = reader.fromJson(bufferedReader, JsonElement.class);
             return jsonElement.getAsJsonObject();

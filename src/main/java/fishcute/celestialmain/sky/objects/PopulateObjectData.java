@@ -1,9 +1,9 @@
 package fishcute.celestialmain.sky.objects;
 
 import celestialexpressions.Expression;
-import fishcute.celestial.version.dependent.util.BufferBuilderWrapper;
-import fishcute.celestial.version.dependent.util.Matrix4fWrapper;
-import fishcute.celestial.version.dependent.util.PoseStackWrapper;
+import fishcute.celestialmain.api.minecraft.wrappers.IBufferBuilderWrapper;
+import fishcute.celestialmain.api.minecraft.wrappers.IMatrix4fWrapper;
+import fishcute.celestialmain.api.minecraft.wrappers.IPoseStackWrapper;
 import fishcute.celestialmain.util.MultiCelestialExpression;
 import fishcute.celestialmain.util.Util;
 import kotlin.jvm.functions.Function0;
@@ -99,7 +99,7 @@ public class PopulateObjectData implements MultiCelestialExpression.MultiDataMod
         objects[id] = new PopulateObject(degreesX, degreesY, degreesZ, posX, posY, posZ, scale, distance);
     }
 
-    public void renderPopulateObjects(IBaseCelestialObject object, BufferBuilderWrapper bufferBuilder, PoseStackWrapper matrices, Matrix4fWrapper matrix4f2) {
+    public void renderPopulateObjects(IBaseCelestialObject object, IBufferBuilderWrapper bufferBuilder, IPoseStackWrapper matrices, IMatrix4fWrapper matrix4f2) {
         this.index = 0;
 
         float degreesX = object.degreesX.invoke();

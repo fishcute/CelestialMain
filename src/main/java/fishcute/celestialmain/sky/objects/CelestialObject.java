@@ -1,25 +1,22 @@
 package fishcute.celestialmain.sky.objects;
 
 import com.google.gson.JsonObject;
-import fishcute.celestial.version.dependent.VRenderSystem;
-import fishcute.celestial.version.dependent.util.BufferBuilderWrapper;
-import fishcute.celestial.version.dependent.util.Matrix4fWrapper;
-import fishcute.celestial.version.dependent.util.PoseStackWrapper;
-import fishcute.celestial.version.dependent.util.ResourceLocationWrapper;
+import fishcute.celestialmain.api.minecraft.wrappers.*;
 import fishcute.celestialmain.sky.CelestialObjectProperties;
 import fishcute.celestialmain.util.MultiCelestialExpression;
 import fishcute.celestialmain.util.Util;
+import fishcute.celestialmain.version.independent.Instances;
 
 import java.util.ArrayList;
 
 public class CelestialObject extends IBaseCelestialObject {
     public CelestialObject() {}
-    public ResourceLocationWrapper texture;
+    public IResourceLocationWrapper texture;
 
     public CelestialObject(String texturePath, String scale, String posX, String posY, String posZ, String distance, String degreesX, String degreesY, String degreesZ, String baseDegreesX, String baseDegreesY, String baseDegreesZ, CelestialObjectProperties properties, String parent, String dimension, String name, ArrayList<Util.VertexPoint> vertexList, MultiCelestialExpression.MultiDataModule multiDataModule) {
         super(scale, posX, posY, posZ, distance, degreesX, degreesY, degreesZ, baseDegreesX, baseDegreesY, baseDegreesZ, properties, parent, dimension, name, vertexList, multiDataModule);
         if (texturePath != null)
-            this.texture = new ResourceLocationWrapper(texturePath);
+            this.texture = Instances.resourceLocationFactory.build(texturePath);
     }
 
     @Override
@@ -35,21 +32,21 @@ public class CelestialObject extends IBaseCelestialObject {
     }
 
     @Override
-    public void renderObject(BufferBuilderWrapper bufferBuilder, PoseStackWrapper matrices, Matrix4fWrapper matrix4f2, float scale, float distance) {
+    public void renderObject(IBufferBuilderWrapper bufferBuilder, IPoseStackWrapper matrices, IMatrix4fWrapper matrix4f2, float scale, float distance) {
         int moonPhase = this.properties.moonPhase.invokeInt();
 
-        VRenderSystem.setShaderPositionTex();
+        Instances.renderSystem.setShaderPositionTex();
 
         // Set texture
         if (this.texture != null)
-            VRenderSystem.setShaderTexture(0, this.texture);
+            Instances.renderSystem.setShaderTexture(0, this.texture);
 
         float red = this.properties.getRed();
         float green = this.properties.getGreen();
         float blue = this.properties.getBlue();
         float alpha = this.properties.alpha.invoke();
 
-        VRenderSystem.setShaderColor(red, green, blue, alpha);
+        Instances.renderSystem.setShaderColor(red, green, blue, alpha);
 
         if (this.properties.hasMoonPhases) {
             int l = (moonPhase % 4);
@@ -66,7 +63,7 @@ public class CelestialObject extends IBaseCelestialObject {
                     f13, f14, red, green, blue, alpha);
             bufferBuilder.vertexUv(matrix4f2, -scale, distance, (distance < 0 ? -scale : scale),
                     f15, f14, red, green, blue, alpha);
-        } else if (this.vertexList != null && this.vertexList.size() > 0) {
+        } else if (this.vertexList != null && !this.vertexList.isEmpty()) {
             Util.VertexPointValue v;
             for (Util.VertexPoint vertexPoint : this.vertexList) {
                 v = new Util.VertexPointValue(vertexPoint);
@@ -112,12 +109,12 @@ public class CelestialObject extends IBaseCelestialObject {
     }
 
     @Override
-    public void begin(BufferBuilderWrapper bufferBuilder) {
+    public void begin(IBufferBuilderWrapper bufferBuilder) {
         bufferBuilder.beginObject();
     }
 
     @Override
-    public void end(BufferBuilderWrapper bufferBuilder) {
+    public void end(IBufferBuilderWrapper bufferBuilder) {
         bufferBuilder.upload();
     }
 }

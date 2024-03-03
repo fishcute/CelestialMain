@@ -1,9 +1,9 @@
 package fishcute.celestialmain.sky.objects;
 
 import com.google.gson.JsonObject;
-import fishcute.celestial.version.dependent.util.BufferBuilderWrapper;
-import fishcute.celestial.version.dependent.util.Matrix4fWrapper;
-import fishcute.celestial.version.dependent.util.PoseStackWrapper;
+import fishcute.celestialmain.api.minecraft.wrappers.IBufferBuilderWrapper;
+import fishcute.celestialmain.api.minecraft.wrappers.IMatrix4fWrapper;
+import fishcute.celestialmain.api.minecraft.wrappers.IPoseStackWrapper;
 import fishcute.celestialmain.util.Util;
 
 public abstract class ICelestialObject {
@@ -11,7 +11,7 @@ public abstract class ICelestialObject {
 
     }
     public abstract CelestialObjectType getType();
-    public abstract void render(BufferBuilderWrapper bufferBuilder, PoseStackWrapper matrices, Matrix4fWrapper matrix4f2);
+    public abstract void render(IBufferBuilderWrapper bufferBuilder, IPoseStackWrapper matrices, IMatrix4fWrapper matrix4f2);
     public abstract ICelestialObject createFromJson(JsonObject o, String name, String dimension);
     public abstract void tick();
     public enum CelestialObjectType {
@@ -71,10 +71,10 @@ public abstract class ICelestialObject {
         }
     }
 
-    public void pushPose(PoseStackWrapper matrices) {
+    public void pushPose(IPoseStackWrapper matrices) {
         matrices.pushPose();
     }
-    public void popPose(PoseStackWrapper matrices) {
+    public void popPose(IPoseStackWrapper matrices) {
         matrices.popPose();
     }
 }

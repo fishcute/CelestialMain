@@ -1,43 +1,43 @@
 package fishcute.celestialmain.version.independent;
 
 
-import fishcute.celestial.sky.*;
-import fishcute.celestial.version.dependent.*;
-import fishcute.celestial.version.dependent.util.*;
+import fishcute.celestialmain.api.minecraft.IMcVector;
+import fishcute.celestialmain.util.FMath;
+import fishcute.celestialmain.api.minecraft.wrappers.*;
 import fishcute.celestialmain.sky.CelestialRenderInfo;
 import fishcute.celestialmain.sky.CelestialSky;
 import fishcute.celestialmain.sky.objects.ICelestialObject;
 
 public class VersionLevelRenderer {
 
-    public static void renderTwilight(ShaderInstanceWrapper shader, BufferBuilderWrapper bufferBuilder, float tickDelta, Matrix4fWrapper projectionMatrix, PoseStackWrapper matrices, VertexBufferWrapper skyBuffer, LevelWrapper level) {
-        VRenderSystem.unbindVertexBuffer();
-        VRenderSystem.toggleBlend(true);
-        VRenderSystem.defaultBlendFunction();
+    public static void renderTwilight(IShaderInstanceWrapper shader, IBufferBuilderWrapper bufferBuilder, float tickDelta, IMatrix4fWrapper projectionMatrix, IPoseStackWrapper matrices, IVertexBufferWrapper skyBuffer, ILevelWrapper level) {
+        Instances.renderSystem.unbindVertexBuffer();
+        Instances.renderSystem.toggleBlend(true);
+        Instances.renderSystem.defaultBlendFunction();
 
         skyBuffer.bind();
         skyBuffer.drawWithShader(matrices.lastPose(), projectionMatrix, shader);
         float[] fs = level.getSunriseColor(tickDelta);
         if (fs != null) {
-            VRenderSystem.setShaderPositionColor();
-            VRenderSystem.toggleTexture(false);
-            VRenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+            Instances.renderSystem.setShaderPositionColor();
+            Instances.renderSystem.toggleTexture(false);
+            Instances.renderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
             matrices.pushPose();
-            matrices.mulPose(PoseStackWrapper.Axis.X, 90.0F);
+            matrices.mulPose(IPoseStackWrapper.Axis.X, 90.0F);
             float f3 = Math.sin(level.getSunAngle(tickDelta)) < 0.0F ? 180.0F : 0.0F;
-            matrices.mulPose(PoseStackWrapper.Axis.Z, f3);
-            matrices.mulPose(PoseStackWrapper.Axis.Z, 90.0F);
+            matrices.mulPose(IPoseStackWrapper.Axis.Z, f3);
+            matrices.mulPose(IPoseStackWrapper.Axis.Z, 90.0F);
             float j = fs[0];
             float k = fs[1];
             float l = fs[2];
-            Matrix4fWrapper matrix4f = matrices.lastPose();
+            IMatrix4fWrapper matrix4f = matrices.lastPose();
             bufferBuilder.beginTriangleFan();
             bufferBuilder.vertex(matrix4f, 0.0F, 100.0F, 0.0F, j, k, l, fs[3]);
 
             for (int n = 0; n <= 16; ++n) {
                 float o = (float) n * 6.2831855F / 16.0F;
-                float p = VMath.sin(o);
-                float q = VMath.cos(o);
+                float p = FMath.sin(o);
+                float q = FMath.cos(o);
                 bufferBuilder.vertex(matrix4f, p * 120.0F, q * 120.0F, -q * 40.0F * fs[3], fs[0], fs[1], fs[2], 0.0F);
             }
 
@@ -46,61 +46,61 @@ public class VersionLevelRenderer {
         }
     }
 
-    public static void renderLevel(Matrix4fWrapper projectionMatrix, PoseStackWrapper matrices, VertexBufferWrapper skyBuffer, VertexBufferWrapper darkBuffer, CameraWrapper camera, LevelWrapper level, float tickDelta) {
+    public static void renderLevel(IMatrix4fWrapper projectionMatrix, IPoseStackWrapper matrices, IVertexBufferWrapper skyBuffer, IVertexBufferWrapper darkBuffer, ICameraWrapper camera, ILevelWrapper level, float tickDelta) {
         if (camera.doesFogBlockSky() && !(camera.doesMobEffectBlockSky())) {
-            VRenderSystem.toggleTexture(false);
-            Vector Vector3d = level.getSkyColor(tickDelta);
-            float f = (float) Vector3d.x;
-            float g = (float) Vector3d.y;
-            float h = (float) Vector3d.z;
-            VRenderSystem.levelFogColor();
-            BufferBuilderWrapper bufferBuilder = new BufferBuilderWrapper();
-            VRenderSystem.depthMask(false);
-            VRenderSystem.setShaderColor(f, g, h, 1.0F);
+            Instances.renderSystem.toggleTexture(false);
+            IMcVector Vector3d = level.getSkyColor(tickDelta);
+            float f = (float) Vector3d.x();
+            float g = (float) Vector3d.y();
+            float h = (float) Vector3d.z();
+            Instances.renderSystem.levelFogColor();
+            IBufferBuilderWrapper bufferBuilder = Instances.bufferBuilderFactory.build();
+            Instances.renderSystem.depthMask(false);
+            Instances.renderSystem.setShaderColor(f, g, h, 1.0F);
 
-            ShaderInstanceWrapper shader = new ShaderInstanceWrapper();
+            IShaderInstanceWrapper shader = Instances.shaderInstanceFactory.build();
 
             renderTwilight(shader, bufferBuilder, tickDelta, projectionMatrix, matrices, skyBuffer, level);
 
             CelestialRenderInfo renderInfo = CelestialSky.getDimensionRenderInfo();
 
-            VRenderSystem.toggleTexture(true);
-            VRenderSystem.toggleBlend(true);
+            Instances.renderSystem.toggleTexture(true);
+            Instances.renderSystem.toggleBlend(true);
 
-            VRenderSystem.blendFuncSeparate();
+            Instances.renderSystem.blendFuncSeparate();
 
             renderSkyObjects(matrices, bufferBuilder, renderInfo);
 
-            VRenderSystem.levelFogColor();
+            Instances.renderSystem.levelFogColor();
 
-            VRenderSystem.toggleBlend(false);
-            VRenderSystem.toggleTexture(false);
-            VRenderSystem.setShaderColor(0.0F, 0.0F, 0.0F, 1.0F);
+            Instances.renderSystem.toggleBlend(false);
+            Instances.renderSystem.toggleTexture(false);
+            Instances.renderSystem.setShaderColor(0.0F, 0.0F, 0.0F, 1.0F);
 
-            double d = VMinecraftInstance.getPlayerEyePosition().y - level.getHorizonHeight();
+            double d = Instances.minecraft.getPlayerEyePosition().y() - level.getHorizonHeight();
             if (d < 0.0) {
                 matrices.pushPose();
                 matrices.translate(0.0, 12.0 + renderInfo.environment.voidCullingLevel.invoke(), 0.0);
                 darkBuffer.bind();
                 darkBuffer.drawWithShader(matrices.lastPose(), projectionMatrix, shader);
-                VRenderSystem.unbindVertexBuffer();
+                Instances.renderSystem.unbindVertexBuffer();
                 matrices.popPose();
             }
 
             if (level.hasGround()) {
-                VRenderSystem.setShaderColor(f * 0.2F + 0.04F, g * 0.2F + 0.04F, h * 0.6F + 0.1F, 1.0F);
+                Instances.renderSystem.setShaderColor(f * 0.2F + 0.04F, g * 0.2F + 0.04F, h * 0.6F + 0.1F, 1.0F);
             } else {
-                VRenderSystem.setShaderColor(f, g, h, 1.0F);
+                Instances.renderSystem.setShaderColor(f, g, h, 1.0F);
             }
 
-            VRenderSystem.toggleTexture(true);
-            VRenderSystem.depthMask(true);
+            Instances.renderSystem.toggleTexture(true);
+            Instances.renderSystem.depthMask(true);
 
-            VRenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+            Instances.renderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         }
     }
 
-    private static void renderSkyObjects(PoseStackWrapper matrices, BufferBuilderWrapper bufferBuilder, CelestialRenderInfo renderInfo) {
+    private static void renderSkyObjects(IPoseStackWrapper matrices, IBufferBuilderWrapper bufferBuilder, CelestialRenderInfo renderInfo) {
         for (ICelestialObject c : renderInfo.skyObjects) {
             // Different push/pop functions so that pushing and popping can be handled differently for skybox objects
             c.pushPose(matrices);
@@ -172,31 +172,31 @@ public class VersionLevelRenderer {
         return dataArray;
     }
 
-    private static void renderSkyObject(BufferBuilderWrapper bufferBuilder, PoseStackWrapper matrices, Matrix4fWrapper matrix4f2, CelestialObject c, Vector color, Vector colorsSolid, float alpha, float distancePre, float scalePre, int moonPhase, ArrayList<Util.VertexPointValue> vertexList, HashMap<String, Util.DynamicValue> objectReplaceMap) {
-        VRenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+    private static void renderSkyObject(IBufferBuilderWrapper bufferBuilder, IPoseStackWrapper matrices, IMatrix4fWrapper matrix4f2, CelestialObject c, IMcVector color, IMcVector colorsSolid, float alpha, float distancePre, float scalePre, int moonPhase, ArrayList<Util.VertexPointValue> vertexList, HashMap<String, Util.DynamicValue> objectReplaceMap) {
+        Instances.renderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 
         float distance = (float) (distancePre + c.populateDistanceAdd);
 
         float scale = (float) (scalePre + c.populateScaleAdd);
 
-        VRenderSystem.toggleBlend(true);
+        Instances.renderSystem.toggleBlend(true);
 
         // Set texture
         if (c.texture != null)
-            VRenderSystem.setShaderTexture(0, c.texture);
+            Instances.renderSystem.setShaderTexture(0, c.texture);
 
         if (c.celestialObjectProperties.ignoreFog)
-            VRenderSystem.setupNoFog();
+            Instances.renderSystem.setupNoFog();
 
         else
-            VRenderSystem.levelFogColor();
+            Instances.renderSystem.levelFogColor();
 
         if (c.celestialObjectProperties.isSolid)
-            VRenderSystem.defaultBlendFunc();
+            Instances.renderSystem.defaultBlendFunc();
 
         if (c.type.equals(CelestialObject.CelestialObjectType.DEFAULT)) {
-            VRenderSystem.setShaderPositionTex();
-            VRenderSystem.setShaderColor((float) color.x, (float) color.y, (float) color.z, alpha);
+            Instances.renderSystem.setShaderPositionTex();
+            Instances.renderSystem.setShaderColor((float) color.x, (float) color.y, (float) color.z, alpha);
 
             if (c.celestialObjectProperties.hasMoonPhases) {
                 int l = (moonPhase % 4);
@@ -234,9 +234,9 @@ public class VersionLevelRenderer {
 
             bufferBuilder.upload();
         } else if (c.type.equals(CelestialObject.CelestialObjectType.COLOR)) {
-            VRenderSystem.setShaderPositionColor();
-            VRenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, alpha);
-            VRenderSystem.toggleTexture(false);
+            Instances.renderSystem.setShaderPositionColor();
+            Instances.renderSystem.setShaderColor(1.0F, 1.0F, 1.0F, alpha);
+            Instances.renderSystem.toggleTexture(false);
 
             if (vertexList.size() > 0) {
                 bufferBuilder.beginColorObject();
@@ -259,7 +259,7 @@ public class VersionLevelRenderer {
 
             bufferBuilder.upload();
 
-            VRenderSystem.toggleTexture(true);
+            Instances.renderSystem.toggleTexture(true);
         } else if (c.type.equals(CelestialObject.CelestialObjectType.SKYBOX)) {
             matrices.popPose();
 
@@ -281,44 +281,44 @@ public class VersionLevelRenderer {
                 matrices.pushPose();
                 side = c.skyBoxProperties.sides.get(l);
                 if (c.solidColor == null) {
-                    VRenderSystem.setShaderTexture(0, side.texture);
-                    VRenderSystem.setShaderPositionTex();
+                    Instances.renderSystem.setShaderTexture(0, side.texture);
+                    Instances.renderSystem.setShaderPositionTex();
                 } else {
-                    VRenderSystem.setShaderPositionColor();
+                    Instances.renderSystem.setShaderPositionColor();
                 }
                 if (l == 0) {
-                    matrices.mulPose(PoseStackWrapper.Axis.Y, 180);
+                    matrices.mulPose(IPoseStackWrapper.Axis.Y, 180);
                 }
                 if (l == 1) {
-                    matrices.mulPose(PoseStackWrapper.Axis.X, 90);
+                    matrices.mulPose(IPoseStackWrapper.Axis.X, 90);
                 }
 
                 if (l == 2) {
-                    matrices.mulPose(PoseStackWrapper.Axis.X, -90);
-                    matrices.mulPose(PoseStackWrapper.Axis.Y, 180);
+                    matrices.mulPose(IPoseStackWrapper.Axis.X, -90);
+                    matrices.mulPose(IPoseStackWrapper.Axis.Y, 180);
                 }
 
                 if (l == 3) {
-                    matrices.mulPose(PoseStackWrapper.Axis.X, 180);
-                    matrices.mulPose(PoseStackWrapper.Axis.Y, 180);
+                    matrices.mulPose(IPoseStackWrapper.Axis.X, 180);
+                    matrices.mulPose(IPoseStackWrapper.Axis.Y, 180);
                 }
 
                 if (l == 4) {
-                    matrices.mulPose(PoseStackWrapper.Axis.Y, 90);
-                    matrices.mulPose(PoseStackWrapper.Axis.Z, -90);
+                    matrices.mulPose(IPoseStackWrapper.Axis.Y, 90);
+                    matrices.mulPose(IPoseStackWrapper.Axis.Z, -90);
                 }
 
                 if (l == 5) {
-                    matrices.mulPose(PoseStackWrapper.Axis.Y, -90);
-                    matrices.mulPose(PoseStackWrapper.Axis.Z, 90);
+                    matrices.mulPose(IPoseStackWrapper.Axis.Y, -90);
+                    matrices.mulPose(IPoseStackWrapper.Axis.Z, 90);
                 }
 
                 size = c.skyBoxProperties.skyBoxSize.invoke().floatValue();
 
-                Matrix4fWrapper matrix4f3 = matrices.lastPose();
+                IMatrix4fWrapper matrix4f3 = matrices.lastPose();
 
                 if (c.solidColor != null) {
-                    VRenderSystem.toggleTexture(false);
+                    Instances.renderSystem.toggleTexture(false);
                     bufferBuilder.beginColorObject();
 
                     bufferBuilder.vertex(matrix4f3, -size, size, (size < 0 ? size : -size), (float) (colorsSolid.x / 255.0F), (float) (colorsSolid.y / 255.0F), (float) (colorsSolid.z / 255.0F), alpha);
@@ -327,7 +327,7 @@ public class VersionLevelRenderer {
                     bufferBuilder.vertex(matrix4f3, -size, size, (size < 0 ? -size : size), (float) (colorsSolid.x / 255.0F), (float) (colorsSolid.y / 255.0F), (float) (colorsSolid.z / 255.0F), alpha);
                     bufferBuilder.upload();
 
-                    VRenderSystem.toggleTexture(true);
+                    Instances.renderSystem.toggleTexture(true);
                 } else {
                     uvX = side.uvX.invoke().floatValue();
                     uvY = side.uvY.invoke().floatValue();
@@ -354,7 +354,7 @@ public class VersionLevelRenderer {
         }
 
         if (c.celestialObjectProperties.isSolid)
-            VRenderSystem.blendFuncSeparate();
+            Instances.renderSystem.blendFuncSeparate();
 
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
     }*/

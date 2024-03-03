@@ -1,14 +1,14 @@
 package fishcute.celestialmain.sky.objects;
 
 import com.google.gson.JsonObject;
-import fishcute.celestial.version.dependent.VRenderSystem;
-import fishcute.celestial.version.dependent.util.BufferBuilderWrapper;
-import fishcute.celestial.version.dependent.util.Matrix4fWrapper;
-import fishcute.celestial.version.dependent.util.PoseStackWrapper;
+import fishcute.celestialmain.api.minecraft.wrappers.IBufferBuilderWrapper;
+import fishcute.celestialmain.api.minecraft.wrappers.IMatrix4fWrapper;
+import fishcute.celestialmain.api.minecraft.wrappers.IPoseStackWrapper;
 import fishcute.celestialmain.sky.CelestialObjectProperties;
 import fishcute.celestialmain.util.ColorEntry;
 import fishcute.celestialmain.util.MultiCelestialExpression;
 import fishcute.celestialmain.util.Util;
+import fishcute.celestialmain.version.independent.Instances;
 
 import java.util.ArrayList;
 
@@ -36,15 +36,15 @@ public class ColorCelestialObject extends IBaseCelestialObject {
     }
 
     @Override
-    public void renderObject(BufferBuilderWrapper bufferBuilder, PoseStackWrapper matrices, Matrix4fWrapper matrix4f2, float scale, float distance) {
-        VRenderSystem.setShaderPositionColor();
+    public void renderObject(IBufferBuilderWrapper bufferBuilder, IPoseStackWrapper matrices, IMatrix4fWrapper matrix4f2, float scale, float distance) {
+        Instances.renderSystem.setShaderPositionColor();
 
         float red = this.properties.getRed() * this.solidColor.getStoredRed();
         float green = this.properties.getGreen() * this.solidColor.getStoredGreen();
         float blue = this.properties.getBlue() * this.solidColor.getStoredBlue();
         float alpha = this.properties.alpha.invoke();
 
-        VRenderSystem.setShaderColor(red, green, blue, alpha);
+        Instances.renderSystem.setShaderColor(red, green, blue, alpha);
 
         if (this.vertexList != null && this.vertexList.size() > 0) {
             Util.VertexPointValue v;
@@ -94,12 +94,12 @@ public class ColorCelestialObject extends IBaseCelestialObject {
 
 
     @Override
-    public void begin(BufferBuilderWrapper bufferBuilder) {
+    public void begin(IBufferBuilderWrapper bufferBuilder) {
         bufferBuilder.beginColorObject();
     }
 
     @Override
-    public void end(BufferBuilderWrapper bufferBuilder) {
+    public void end(IBufferBuilderWrapper bufferBuilder) {
         bufferBuilder.upload();
     }
 }

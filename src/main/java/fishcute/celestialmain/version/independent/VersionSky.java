@@ -1,10 +1,8 @@
 package fishcute.celestialmain.version.independent;
 
-import fishcute.celestial.version.dependent.VMinecraftInstance;
-import fishcute.celestial.version.dependent.VRenderSystem;
 import fishcute.celestialmain.sky.CelestialSky;
+import fishcute.celestialmain.util.FMath;
 import fishcute.celestialmain.util.Util;
-import net.minecraft.util.Mth;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.awt.*;
@@ -20,12 +18,12 @@ public class VersionSky {
             Util.fogEnd = viewDistance;
         }
         else {
-            Util.fogStart = viewDistance - Mth.clamp(viewDistance / 10.0F, 4.0F, 64.0F);
+            Util.fogStart = viewDistance - FMath.clamp(viewDistance / 10.0F, 4.0F, 64.0F);
             Util.fogEnd = viewDistance;
         }
     }
     public static int getFogColor(int defaultBiomeColor, int biomeColor) {
-        if (CelestialSky.doesDimensionHaveCustomSky() && !VMinecraftInstance.disableFogChanges()) {
+        if (CelestialSky.doesDimensionHaveCustomSky() && !Instances.minecraft.disableFogChanges()) {
             if (Util.getRealFogColor) {
                 return biomeColor;
             }
@@ -36,7 +34,7 @@ public class VersionSky {
         return defaultBiomeColor;
     }
     public static int getSkyColor(int defaultSkyColor) {
-        if (CelestialSky.doesDimensionHaveCustomSky() && !VMinecraftInstance.disableFogChanges()) {
+        if (CelestialSky.doesDimensionHaveCustomSky() && !Instances.minecraft.disableFogChanges()) {
             if (Util.getRealSkyColor) {
                 return defaultSkyColor;
             }
@@ -86,7 +84,7 @@ public class VersionSky {
     }
 
     public static void getCloudHeight(CallbackInfoReturnable<Float> info) {
-        if (VMinecraftInstance.doesLevelExist() &&
+        if (Instances.minecraft.doesLevelExist() &&
                 CelestialSky.doesDimensionHaveCustomSky())
             info.setReturnValue(CelestialSky.getDimensionRenderInfo().environment.cloudHeight.invoke());
     }
@@ -118,27 +116,27 @@ public class VersionSky {
     }
 
     public static boolean checkThickFog(boolean thickFog) {
-        if (CelestialSky.doesDimensionHaveCustomSky() && CelestialSky.getDimensionRenderInfo().environment.useSimpleFog() && !VMinecraftInstance.disableFogChanges())
+        if (CelestialSky.doesDimensionHaveCustomSky() && CelestialSky.getDimensionRenderInfo().environment.useSimpleFog() && !Instances.minecraft.disableFogChanges())
             return CelestialSky.getDimensionRenderInfo().environment.hasThickFog;
         return thickFog;
     }
 
     public static void setupFog(float tickDelta) {
-        if (CelestialSky.doesDimensionHaveCustomSky() && !CelestialSky.getDimensionRenderInfo().environment.useSimpleFog() && !VMinecraftInstance.disableFogChanges()) {
-            if (VMinecraftInstance.hasDarkness()) {
-                float darkness = VMinecraftInstance.getDarknessFogEffect(CelestialSky.getDimensionRenderInfo().environment.fogStart.invoke(), tickDelta);
-                VRenderSystem.setShaderFogStart(darkness * 0.75F);
-                VRenderSystem.setShaderFogEnd(darkness);
+        if (CelestialSky.doesDimensionHaveCustomSky() && !CelestialSky.getDimensionRenderInfo().environment.useSimpleFog() && !Instances.minecraft.disableFogChanges()) {
+            if (Instances.minecraft.hasDarkness()) {
+                float darkness = Instances.minecraft.getDarknessFogEffect(CelestialSky.getDimensionRenderInfo().environment.fogStart.invoke(), tickDelta);
+                Instances.renderSystem.setShaderFogStart(darkness * 0.75F);
+                Instances.renderSystem.setShaderFogEnd(darkness);
             }
             else {
-                VRenderSystem.setShaderFogStart(CelestialSky.getDimensionRenderInfo().environment.fogStart.invoke());
-                VRenderSystem.setShaderFogEnd(CelestialSky.getDimensionRenderInfo().environment.fogEnd.invoke());
+                Instances.renderSystem.setShaderFogStart(CelestialSky.getDimensionRenderInfo().environment.fogStart.invoke());
+                Instances.renderSystem.setShaderFogEnd(CelestialSky.getDimensionRenderInfo().environment.fogEnd.invoke());
             }
         }
     }
 
     public static boolean canModifyFogColor() {
-        return CelestialSky.getDimensionRenderInfo().environment.fogColor.ignoreSkyEffects && !VMinecraftInstance.disableFogChanges();
+        return CelestialSky.getDimensionRenderInfo().environment.fogColor.ignoreSkyEffects && !Instances.minecraft.disableFogChanges();
 
     }
     public static float[] getFogColorApplyModifications(float tickDelta) {
@@ -146,15 +144,15 @@ public class VersionSky {
 
         if (color != null && color[0] != 0.0F && color[1] != 0.0F && color[2] != 0.0F) {
             float w = Math.min(1.0F / color[0], Math.min(1.0F / color[1], 1.0F / color[2]));
-            float v = (float) VMinecraftInstance.getNightVisionModifier(tickDelta);
+            float v = (float) Instances.minecraft.getNightVisionModifier(tickDelta);
             color[0] = color[0] * (1.0F - v) + color[0] * w * v;
             color[1] = color[1] * (1.0F - v) + color[1] * w * v;
             color[2] = color[2] * (1.0F - v) + color[2] * w * v;
         }
 
-        if (VMinecraftInstance.hasDarkness()) {
+        if (Instances.minecraft.hasDarkness()) {
             // Probably not the exact calculations minecraft makes, but results in the same effect
-            float darkness = 1 - (VMinecraftInstance.getDarknessFogEffect(0, tickDelta) / 15);
+            float darkness = 1 - (Instances.minecraft.getDarknessFogEffect(0, tickDelta) / 15);
             color[0] = color[0] * darkness;
             color[1] = color[1] * darkness;
             color[2] = color[2] * darkness;
@@ -181,7 +179,7 @@ public class VersionSky {
             return null;
         float[] color = CelestialSky.getDimensionRenderInfo().environment.fogColor.ignoreSkyEffects ? getFogColorApplyModifications(tickDelta) : getFogColor();
         if (color != null) {
-            VRenderSystem.clearColor(color[0], color[1], color[2], 0);
+            Instances.renderSystem.clearColor(color[0], color[1], color[2], 0);
         }
         return color;
     }

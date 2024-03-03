@@ -2,14 +2,12 @@ package fishcute.celestialmain.sky.objects;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import fishcute.celestial.version.dependent.VRenderSystem;
-import fishcute.celestial.version.dependent.util.BufferBuilderWrapper;
-import fishcute.celestial.version.dependent.util.Matrix4fWrapper;
-import fishcute.celestial.version.dependent.util.PoseStackWrapper;
+import fishcute.celestialmain.api.minecraft.wrappers.*;
 import fishcute.celestialmain.sky.CelestialObjectProperties;
 import fishcute.celestialmain.util.CelestialExpression;
 import fishcute.celestialmain.util.MultiCelestialExpression;
 import fishcute.celestialmain.util.Util;
+import fishcute.celestialmain.version.independent.Instances;
 import net.minecraft.client.renderer.FogRenderer;
 
 import java.util.ArrayList;
@@ -142,20 +140,20 @@ public abstract class IBaseCelestialObject extends ICelestialObject {
     }
 
     @Override
-    public void render(BufferBuilderWrapper bufferBuilder, PoseStackWrapper matrices, Matrix4fWrapper matrix4f2) {
-        VRenderSystem.toggleBlend(this.properties.blend);
+    public void render(IBufferBuilderWrapper bufferBuilder, IPoseStackWrapper matrices, IMatrix4fWrapper matrix4f2) {
+        Instances.renderSystem.toggleBlend(this.properties.blend);
 
-        FogRenderer.levelFogColor();
+        FogRenderer.levelFogColor(); //TODO: Figure out what this is
 
         if (this.properties.isSolid)
-            VRenderSystem.defaultBlendFunc();
+            Instances.renderSystem.defaultBlendFunc();
 
-        VRenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+        Instances.renderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         this.begin(bufferBuilder);
 
-        matrices.mulPose(PoseStackWrapper.Axis.Z, this.baseDegreesX.invoke());
-        matrices.mulPose(PoseStackWrapper.Axis.X, this.baseDegreesY.invoke());
-        matrices.mulPose(PoseStackWrapper.Axis.Y, this.baseDegreesZ.invoke());
+        matrices.mulPose(IPoseStackWrapper.Axis.Z, this.baseDegreesX.invoke());
+        matrices.mulPose(IPoseStackWrapper.Axis.X, this.baseDegreesY.invoke());
+        matrices.mulPose(IPoseStackWrapper.Axis.Y, this.baseDegreesZ.invoke());
 
         if (this.populateData != null) {
             this.populateData.renderPopulateObjects(this, bufferBuilder, matrices, matrix4f2);
@@ -169,14 +167,14 @@ public abstract class IBaseCelestialObject extends ICelestialObject {
 
         this.end(bufferBuilder);
 
-        VRenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+        Instances.renderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 
         if (this.properties.isSolid)
-            VRenderSystem.blendFuncSeparate();
+            Instances.renderSystem.blendFuncSeparate();
     }
-    public abstract void begin(BufferBuilderWrapper bufferBuilder);
-    public abstract void end(BufferBuilderWrapper bufferBuilder);
-    public void renderPre(BufferBuilderWrapper bufferBuilder, PoseStackWrapper matrices, Matrix4fWrapper matrix4f2, float degreesX, float degreesY, float degreesZ, float posX, float posY, float posZ, float scale, float distance) {
+    public abstract void begin(IBufferBuilderWrapper bufferBuilder);
+    public abstract void end(IBufferBuilderWrapper bufferBuilder);
+    public void renderPre(IBufferBuilderWrapper bufferBuilder, IPoseStackWrapper matrices, IMatrix4fWrapper matrix4f2, float degreesX, float degreesY, float degreesZ, float posX, float posY, float posZ, float scale, float distance) {
         renderObject(bufferBuilder, matrices, matrices.rotateThenTranslate(
                 degreesX,
                 degreesY,
@@ -189,5 +187,5 @@ public abstract class IBaseCelestialObject extends ICelestialObject {
         // Should change this in the future
         matrices.translateThenRotate(-degreesX, -degreesY, -degreesZ, -posX, -posY, -posZ);
     }
-    public abstract void renderObject(BufferBuilderWrapper bufferBuilder, PoseStackWrapper matrices, Matrix4fWrapper matrix4f2, float scale, float distance);
+    public abstract void renderObject(IBufferBuilderWrapper bufferBuilder, IPoseStackWrapper matrices, IMatrix4fWrapper matrix4f2, float scale, float distance);
 }

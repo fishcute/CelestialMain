@@ -1,10 +1,10 @@
 package fishcute.celestialmain.sky;
 
 import com.google.gson.JsonObject;
-import fishcute.celestial.version.dependent.VMinecraftInstance;
-import fishcute.celestial.version.dependent.util.ResourceLocationWrapper;
+import fishcute.celestialmain.api.minecraft.wrappers.IResourceLocationWrapper;
 import fishcute.celestialmain.util.CelestialExpression;
 import fishcute.celestialmain.util.Util;
+import fishcute.celestialmain.version.independent.Instances;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -32,7 +32,7 @@ public class SkyBoxObjectProperties {
         int textureWidth = 0;
         int textureHeight = 0;
         try {
-            BufferedImage b = ImageIO.read(VMinecraftInstance.getResource(texture));
+            BufferedImage b = ImageIO.read(Instances.minecraft.getResource(texture));
             textureWidth = b.getWidth();
             textureHeight = b.getHeight();
         }
@@ -41,7 +41,7 @@ public class SkyBoxObjectProperties {
         if (!o.has("skybox")) {
             // Returns if there is no skybox entry
             return new SkyBoxObjectProperties(createDefaultSkybox(
-                    new ResourceLocationWrapper(texture), (textureHeight / 2) + "",
+                    Instances.resourceLocationFactory.build(texture), (textureHeight / 2) + "",
                     Util.locationFormat(dimension, "objects/" + object, "")
             ),
                     dimension, object,
@@ -59,7 +59,7 @@ public class SkyBoxObjectProperties {
                     String location = Util.locationFormat(dimension, "objects/" + object, "sides.all");
                     return new SkyBoxObjectProperties(
                             createSingleTextureSkybox(
-                                    new ResourceLocationWrapper(Util.getOptionalString(skybox.get("sides").getAsJsonObject().getAsJsonObject("all"), "texture", texture, location)),
+                                    Instances.resourceLocationFactory.build(Util.getOptionalString(skybox.get("sides").getAsJsonObject().getAsJsonObject("all"), "texture", texture, location)),
                                     Util.getOptionalString(skybox.get("sides").getAsJsonObject().getAsJsonObject("all"), "uv_x", "0", location),
                                     Util.getOptionalString(skybox.get("sides").getAsJsonObject().getAsJsonObject("all"), "uv_y", "0", location),
                                     Util.getOptionalString(skybox.get("sides").getAsJsonObject().getAsJsonObject("all"), "uv_width", "0", location),
@@ -73,14 +73,14 @@ public class SkyBoxObjectProperties {
                 }
                 else if (!skybox.get("sides").getAsJsonObject().has(String.valueOf(i))) {
                     textures.add(new SkyBoxSideTexture(
-                            new ResourceLocationWrapper(texture), "-1", "-1", "-1", "-1",
+                            Instances.resourceLocationFactory.build(texture), "-1", "-1", "-1", "-1",
                             Util.locationFormat(dimension, "objects/" + object, "")
                     ));
                 }
                 else {
                     JsonObject entry = skybox.get("sides").getAsJsonObject().getAsJsonObject(String.valueOf(i));
                     textures.add(new SkyBoxSideTexture(
-                            new ResourceLocationWrapper(Util.getOptionalString(entry, "texture", texture, Util.locationFormat(dimension, object, "skybox.sides." + i))),
+                            Instances.resourceLocationFactory.build(Util.getOptionalString(entry, "texture", texture, Util.locationFormat(dimension, object, "skybox.sides." + i))),
                             Util.getOptionalString(entry, "uv_x", "0", Util.locationFormat(dimension, object, "skybox.sides." + i)),
                             Util.getOptionalString(entry, "uv_y", "0", Util.locationFormat(dimension, object, "skybox.sides." + i)),
                             Util.getOptionalString(entry, "uv_width", "0", Util.locationFormat(dimension, object, "skybox.sides." + i)),
@@ -102,7 +102,7 @@ public class SkyBoxObjectProperties {
             // Returns default format skybox
             return new SkyBoxObjectProperties(
                     createDefaultSkybox(
-                            new ResourceLocationWrapper(texture), Util.getOptionalString(skybox, "uv_size", (textureHeight / 2) + "", Util.locationFormat(dimension, object, "skybox")),
+                            Instances.resourceLocationFactory.build(texture), Util.getOptionalString(skybox, "uv_size", (textureHeight / 2) + "", Util.locationFormat(dimension, object, "skybox")),
                             Util.locationFormat(dimension, "objects/" + object, "")
                     ),
                     dimension, object,
@@ -113,7 +113,7 @@ public class SkyBoxObjectProperties {
         }
     }
 
-    public static ArrayList<SkyBoxSideTexture> createDefaultSkybox(ResourceLocationWrapper texture, String textureSize, String location) {
+    public static ArrayList<SkyBoxSideTexture> createDefaultSkybox(IResourceLocationWrapper texture, String textureSize, String location) {
         ArrayList<SkyBoxSideTexture> textures = new ArrayList<>();
 
         // Bottom
@@ -144,7 +144,7 @@ public class SkyBoxObjectProperties {
         return textures;
     }
 
-    public static ArrayList<SkyBoxSideTexture> createSingleTextureSkybox(ResourceLocationWrapper texture, String uvX, String uvY, String uvSizeX, String uvSizeY, String location) {
+    public static ArrayList<SkyBoxSideTexture> createSingleTextureSkybox(IResourceLocationWrapper texture, String uvX, String uvY, String uvSizeX, String uvSizeY, String location) {
         ArrayList<SkyBoxSideTexture> textures = new ArrayList<>();
         for (int i = 0; i < 6; i++) {
             textures.add(new SkyBoxSideTexture(texture, uvX, uvY, uvSizeX, uvSizeY, location));
@@ -154,13 +154,13 @@ public class SkyBoxObjectProperties {
     }
 
     public static class SkyBoxSideTexture {
-        public ResourceLocationWrapper texture;
+        public IResourceLocationWrapper texture;
         public CelestialExpression uvX;
         public CelestialExpression uvY;
         public CelestialExpression uvSizeX;
         public CelestialExpression uvSizeY;
 
-        public SkyBoxSideTexture(ResourceLocationWrapper texture, String uvX, String uvY, String uvSizeX, String uvSizeY, String location) {
+        public SkyBoxSideTexture(IResourceLocationWrapper texture, String uvX, String uvY, String uvSizeX, String uvSizeY, String location) {
             this.texture = texture;
             this.uvX = Util.compileExpression(uvX, location + ".uv_x");
             this.uvY = Util.compileExpression(uvY, location + ".uv_y");

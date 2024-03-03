@@ -1,16 +1,10 @@
 package fishcute.celestialmain.sky.objects;
 
 import com.google.gson.JsonObject;
-import fishcute.celestial.version.dependent.VMath;
-import fishcute.celestial.version.dependent.VRenderSystem;
-import fishcute.celestial.version.dependent.util.BufferBuilderWrapper;
-import fishcute.celestial.version.dependent.util.Matrix4fWrapper;
-import fishcute.celestial.version.dependent.util.PoseStackWrapper;
+import fishcute.celestialmain.api.minecraft.wrappers.*;
 import fishcute.celestialmain.sky.CelestialObjectProperties;
-import fishcute.celestialmain.util.CelestialExpression;
-import fishcute.celestialmain.util.ColorEntry;
-import fishcute.celestialmain.util.MultiCelestialExpression;
-import fishcute.celestialmain.util.Util;
+import fishcute.celestialmain.util.*;
+import fishcute.celestialmain.version.independent.Instances;
 import kotlin.jvm.functions.Function0;
 import org.jetbrains.annotations.NotNull;
 
@@ -59,7 +53,7 @@ public class TriangleFanObject extends IBaseCelestialObject {
     }
 
     @Override
-    public ICelestialObject createObjectFromJson(JsonObject o, String name, String dimension, PopulateObjectData.Module module) {
+    public fishcute.celestialmain.sky.objects.ICelestialObject createObjectFromJson(JsonObject o, String name, String dimension, fishcute.celestialmain.sky.objects.PopulateObjectData.Module module) {
         JsonObject display = o.getAsJsonObject("display");
         JsonObject rotation = o.getAsJsonObject("rotation");
         var modules = new ArrayList<MultiCelestialExpression.MultiDataModule>(2);
@@ -94,12 +88,12 @@ public class TriangleFanObject extends IBaseCelestialObject {
     }
 
     @Override
-    public void begin(BufferBuilderWrapper bufferBuilder) {
+    public void begin(IBufferBuilderWrapper bufferBuilder) {
         bufferBuilder.beginTriangleFan();
     }
 
     @Override
-    public void end(BufferBuilderWrapper bufferBuilder) {
+    public void end(IBufferBuilderWrapper bufferBuilder) {
         bufferBuilder.upload();
     }
     @Override
@@ -112,10 +106,10 @@ public class TriangleFanObject extends IBaseCelestialObject {
         }
     }
     @Override
-    public void renderObject(BufferBuilderWrapper bufferBuilder, PoseStackWrapper matrices, Matrix4fWrapper matrix4f2, float scale, float distance) {
-        VRenderSystem.toggleTexture(false);
+    public void renderObject(IBufferBuilderWrapper bufferBuilder, IPoseStackWrapper matrices, IMatrix4fWrapper matrix4f2, float scale, float distance) {
+        Instances.renderSystem.toggleTexture(false);
 
-        VRenderSystem.setShaderPositionColor();
+        Instances.renderSystem.setShaderPositionColor();
 
         int complexity = this.complexity.invokeInt();
 
@@ -138,15 +132,15 @@ public class TriangleFanObject extends IBaseCelestialObject {
         for (int n = 0; n <= complexity; ++n) {
             this.data.index = n + 1;
             float o = (float) n * 6.2831855F / complexity;
-            float p = VMath.sin(o);
-            float q = VMath.cos(o);
+            float p = FMath.sin(o);
+            float q = FMath.cos(o);
             this.data.sideX = p;
             this.data.sideY = q;
             this.data.sideZ = -q;
 
             alpha = this.properties.alpha.invoke();
 
-            //VRenderSystem.setShaderColor(red, green, blue, alpha);
+            //Instances.renderSystem.setShaderColor(red, green, blue, alpha);
 
             bufferBuilder.vertex(matrix4f2, this.sideX.invoke(), this.sideY.invoke(), this.sideZ.invoke(), red, green, blue, alpha);
         }

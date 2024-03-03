@@ -1,7 +1,7 @@
 package fishcute.celestialmain.util
 
 import celestialexpressions.*
-import fishcute.celestial.version.dependent.VMinecraftInstance
+import fishcute.celestialmain.version.independent.Instances
 import celestialexpressions.toDouble as _toDouble
 
 
@@ -10,76 +10,76 @@ fun Any.toDouble() = this._toDouble()
 val module = Module("fishcute/celestial",
     VariableList(hashMapOf(
         "xPos" to {
-            VMinecraftInstance.getPlayerX()
+            Instances.minecraft.getPlayerX()
         },
         "yPos" to {
-            VMinecraftInstance.getPlayerY()
+            Instances.minecraft.getPlayerY()
         },
         "zPos" to {
-            VMinecraftInstance.getPlayerZ()
+            Instances.minecraft.getPlayerZ()
         },
         "headYaw" to {
-            VMinecraftInstance.getViewXRot().toDouble()
+            Instances.minecraft.getViewXRot().toDouble()
         },
         "headPitch" to {
-            VMinecraftInstance.getViewYRot().toDouble()
+            Instances.minecraft.getViewYRot().toDouble()
         },
         "leftClicking" to {
-            if (VMinecraftInstance.isLeftClicking()) 1.0 else 0.0
+            if (Instances.minecraft.isLeftClicking()) 1.0 else 0.0
         },
         "rightClicking" to {
-            if (VMinecraftInstance.isRightClicking()) 1.0 else 0.0
+            if (Instances.minecraft.isRightClicking()) 1.0 else 0.0
         },
         "submerged" to {
-            if (VMinecraftInstance.isCameraInWater()) 1.0 else 0.0
+            if (Instances.minecraft.isCameraInWater()) 1.0 else 0.0
         },
         "rainAlpha" to {
-            VMinecraftInstance.getRainLevel()
+            Instances.minecraft.getRainLevel()
         },
         "gameTime" to {
-            VMinecraftInstance.getGameTime().toDouble()
+            Instances.minecraft.getGameTime().toDouble()
         },
         "worldTime" to {
-            VMinecraftInstance.getWorldTime().toDouble()
+            Instances.minecraft.getWorldTime().toDouble()
         },
         "dayTime" to {
-            Util.repeat(VMinecraftInstance.getWorldTime().toFloat(), 0.0F, 24000.0F)
+            Util.repeat(Instances.minecraft.getWorldTime().toFloat(), 0.0F, 24000.0F)
         },
         "skyAngle" to {
-            (VMinecraftInstance.getTimeOfDay() * 360.0f).toDouble()
+            (Instances.minecraft.getTimeOfDay() * 360.0f).toDouble()
         },
         "viewDistance" to {
-            VMinecraftInstance.getRenderDistance().toDouble()
+            Instances.minecraft.getRenderDistance().toDouble()
         },
         "moonPhase" to {
-            VMinecraftInstance.getMoonPhase().toDouble()
+            Instances.minecraft.getMoonPhase().toDouble()
         },
         "skyDarken" to {
-            VMinecraftInstance.getSkyDarken().toDouble()
+            Instances.minecraft.getSkyDarken().toDouble()
         },
         "bossSkyDarken" to {
-            VMinecraftInstance.getBossSkyDarken().toDouble()
+            Instances.minecraft.getBossSkyDarken().toDouble()
         },
         "lightningFlashTime" to {
-            VMinecraftInstance.getSkyFlashTime().toDouble()
+            Instances.minecraft.getSkyFlashTime().toDouble()
         },
         "thunderAlpha" to {
-            VMinecraftInstance.getThunderLevel().toDouble()
+            Instances.minecraft.getThunderLevel().toDouble()
         },
         "skyLightLevel" to {
-            VMinecraftInstance.getSkyLight().toDouble()
+            Instances.minecraft.getSkyLight().toDouble()
         },
         "blockLightLevel" to {
-            VMinecraftInstance.getBlockLight().toDouble()
+            Instances.minecraft.getBlockLight().toDouble()
         },
         "biomeTemperature" to {
-            VMinecraftInstance.getBiomeTemperature().toDouble()
+            Instances.minecraft.getBiomeTemperature().toDouble()
         },
         "biomeDownfall" to {
-            VMinecraftInstance.getBiomeDownfall().toDouble()
+            Instances.minecraft.getBiomeDownfall().toDouble()
         },
         "biomeHasSnow" to {
-            if (VMinecraftInstance.getBiomeSnow()) 1.0 else 0.0
+            if (Instances.minecraft.getBiomeSnow()) 1.0 else 0.0
         },
         "fogStart" to {
             Util.fogStart.toDouble()
@@ -88,7 +88,7 @@ val module = Module("fishcute/celestial",
             Util.fogEnd.toDouble()
         },
         "sneaking" to {
-            if (VMinecraftInstance.isSneaking()) 1.0 else 0.0;
+            if (Instances.minecraft.isSneaking()) 1.0 else 0.0;
         }
     )),
     FunctionList(hashMapOf(
@@ -121,9 +121,9 @@ val module = Module("fishcute/celestial",
         }, 1),
         "distanceTo" to Function({arr ->
             Util.distanceTo(
-                VMinecraftInstance.getPlayerX(),
-                VMinecraftInstance.getPlayerY(),
-                VMinecraftInstance.getPlayerZ(),
+                Instances.minecraft.getPlayerX(),
+                Instances.minecraft.getPlayerY(),
+                Instances.minecraft.getPlayerZ(),
                 arr[0].toDouble(),
                 arr[1].toDouble(),
                 arr[2].toDouble()
@@ -144,9 +144,9 @@ val module = Module("fishcute/celestial",
         }, 6),
         "distanceToArea" to Function({arr ->
             Util.distanceToArea(
-                VMinecraftInstance.getPlayerX(),
-                VMinecraftInstance.getPlayerY(),
-                VMinecraftInstance.getPlayerZ(),
+                Instances.minecraft.getPlayerX(),
+                Instances.minecraft.getPlayerY(),
+                Instances.minecraft.getPlayerZ(),
                 arr[0].toDouble(),
                 arr[1].toDouble(),
                 arr[2].toDouble(),

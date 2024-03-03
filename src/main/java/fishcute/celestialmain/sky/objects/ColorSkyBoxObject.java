@@ -1,15 +1,15 @@
 package fishcute.celestialmain.sky.objects;
 
 import com.google.gson.JsonObject;
-import fishcute.celestial.version.dependent.VRenderSystem;
-import fishcute.celestial.version.dependent.util.BufferBuilderWrapper;
-import fishcute.celestial.version.dependent.util.Matrix4fWrapper;
-import fishcute.celestial.version.dependent.util.PoseStackWrapper;
+import fishcute.celestialmain.api.minecraft.wrappers.IBufferBuilderWrapper;
+import fishcute.celestialmain.api.minecraft.wrappers.IPoseStackWrapper;
+import fishcute.celestialmain.api.minecraft.wrappers.IMatrix4fWrapper;
 import fishcute.celestialmain.sky.CelestialObjectProperties;
 import fishcute.celestialmain.sky.SkyBoxObjectProperties;
 import fishcute.celestialmain.util.ColorEntry;
 import fishcute.celestialmain.util.MultiCelestialExpression;
 import fishcute.celestialmain.util.Util;
+import fishcute.celestialmain.version.independent.Instances;
 
 import java.util.ArrayList;
 
@@ -40,10 +40,10 @@ public class ColorSkyBoxObject extends IBaseCelestialObject {
     }
 
     @Override
-    public void renderObject(BufferBuilderWrapper bufferBuilder, PoseStackWrapper matrices, Matrix4fWrapper matrix4f2, float scale, float distance) {
-        VRenderSystem.setShaderPositionColor();
+    public void renderObject(IBufferBuilderWrapper bufferBuilder, IPoseStackWrapper matrices, IMatrix4fWrapper matrix4f2, float scale, float distance) {
+        Instances.renderSystem.setShaderPositionColor();
 
-        VRenderSystem.setShaderColor(this.properties.getRed() * this.solidColor.getStoredRed(), this.properties.getGreen() * this.solidColor.getStoredGreen(), this.properties.getBlue() * this.solidColor.getStoredBlue(), this.properties.alpha.invoke());
+        Instances.renderSystem.setShaderColor(this.properties.getRed() * this.solidColor.getStoredRed(), this.properties.getGreen() * this.solidColor.getStoredGreen(), this.properties.getBlue() * this.solidColor.getStoredBlue(), this.properties.alpha.invoke());
 
         float size;
 
@@ -53,7 +53,7 @@ public class ColorSkyBoxObject extends IBaseCelestialObject {
             bufferBuilder.beginColorObject();
 
             this.rotate(matrices, l);
-            Matrix4fWrapper matrix4f3 = matrices.lastPose();
+            IMatrix4fWrapper matrix4f3 = matrices.lastPose();
 
             bufferBuilder.vertex(matrix4f3, -size, -size, -size, 1.0F, 1.0F, 1.0F, 1.0F);
             bufferBuilder.vertex(matrix4f3, -size, -size, size,1.0F, 1.0F, 1.0F, 1.0F);
@@ -66,61 +66,61 @@ public class ColorSkyBoxObject extends IBaseCelestialObject {
         }
     }
 
-    private void rotate(PoseStackWrapper matrices, int l) {
+    private void rotate(IPoseStackWrapper matrices, int l) {
         if (l == 0) {
-            matrices.mulPose(PoseStackWrapper.Axis.Y, 180);
+            matrices.mulPose(IPoseStackWrapper.Axis.Y, 180);
         }
         if (l == 1) {
-            matrices.mulPose(PoseStackWrapper.Axis.X, 90);
+            matrices.mulPose(IPoseStackWrapper.Axis.X, 90);
         }
 
         if (l == 2) {
-            matrices.mulPose(PoseStackWrapper.Axis.X, -90);
-            matrices.mulPose(PoseStackWrapper.Axis.Y, 180);
+            matrices.mulPose(IPoseStackWrapper.Axis.X, -90);
+            matrices.mulPose(IPoseStackWrapper.Axis.Y, 180);
         }
 
         if (l == 3) {
-            matrices.mulPose(PoseStackWrapper.Axis.X, 180);
-            matrices.mulPose(PoseStackWrapper.Axis.Y, 180);
+            matrices.mulPose(IPoseStackWrapper.Axis.X, 180);
+            matrices.mulPose(IPoseStackWrapper.Axis.Y, 180);
         }
 
         if (l == 4) {
-            matrices.mulPose(PoseStackWrapper.Axis.Z, 90);
-            matrices.mulPose(PoseStackWrapper.Axis.Y, -90);
+            matrices.mulPose(IPoseStackWrapper.Axis.Z, 90);
+            matrices.mulPose(IPoseStackWrapper.Axis.Y, -90);
         }
 
         if (l == 5) {
-            matrices.mulPose(PoseStackWrapper.Axis.Z, -90);
-            matrices.mulPose(PoseStackWrapper.Axis.Y, 90);
+            matrices.mulPose(IPoseStackWrapper.Axis.Z, -90);
+            matrices.mulPose(IPoseStackWrapper.Axis.Y, 90);
         }
     }
 
-    private void undoRotate(PoseStackWrapper matrices, int l) {
+    private void undoRotate(IPoseStackWrapper matrices, int l) {
         if (l == 0) {
-            matrices.mulPose(PoseStackWrapper.Axis.Y, -180);
+            matrices.mulPose(IPoseStackWrapper.Axis.Y, -180);
         }
         if (l == 1) {
-            matrices.mulPose(PoseStackWrapper.Axis.X, -90);
+            matrices.mulPose(IPoseStackWrapper.Axis.X, -90);
         }
 
         if (l == 2) {
-            matrices.mulPose(PoseStackWrapper.Axis.Y, -180);
-            matrices.mulPose(PoseStackWrapper.Axis.X, 90);
+            matrices.mulPose(IPoseStackWrapper.Axis.Y, -180);
+            matrices.mulPose(IPoseStackWrapper.Axis.X, 90);
         }
 
         if (l == 3) {
-            matrices.mulPose(PoseStackWrapper.Axis.Y, -180);
-            matrices.mulPose(PoseStackWrapper.Axis.X, -180);
+            matrices.mulPose(IPoseStackWrapper.Axis.Y, -180);
+            matrices.mulPose(IPoseStackWrapper.Axis.X, -180);
         }
 
         if (l == 4) {
-            matrices.mulPose(PoseStackWrapper.Axis.Y, 90);
-            matrices.mulPose(PoseStackWrapper.Axis.Z, -90);
+            matrices.mulPose(IPoseStackWrapper.Axis.Y, 90);
+            matrices.mulPose(IPoseStackWrapper.Axis.Z, -90);
         }
 
         if (l == 5) {
-            matrices.mulPose(PoseStackWrapper.Axis.Y, -90);
-            matrices.mulPose(PoseStackWrapper.Axis.Z, 90);
+            matrices.mulPose(IPoseStackWrapper.Axis.Y, -90);
+            matrices.mulPose(IPoseStackWrapper.Axis.Z, 90);
         }
     }
 
@@ -152,16 +152,16 @@ public class ColorSkyBoxObject extends IBaseCelestialObject {
     }
 
     @Override
-    public void begin(BufferBuilderWrapper bufferBuilder) {}
+    public void begin(IBufferBuilderWrapper bufferBuilder) {}
 
     @Override
-    public void end(BufferBuilderWrapper bufferBuilder) {}
+    public void end(IBufferBuilderWrapper bufferBuilder) {}
     @Override
-    public void pushPose(PoseStackWrapper matrices) {
+    public void pushPose(IPoseStackWrapper matrices) {
         matrices.pushPose();
     }
     @Override
-    public void popPose(PoseStackWrapper matrices) {
+    public void popPose(IPoseStackWrapper matrices) {
         matrices.popPose();
     }
 }

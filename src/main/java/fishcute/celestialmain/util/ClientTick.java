@@ -1,6 +1,6 @@
 package fishcute.celestialmain.util;
 
-import fishcute.celestial.version.dependent.VMinecraftInstance;
+import fishcute.celestialmain.version.dependent.Instances.minecraft;
 import fishcute.celestialmain.sky.CelestialSky;
 
 import java.util.ArrayList;
@@ -16,7 +16,7 @@ public class ClientTick {
     }
 
     public static void onTick() {
-        if (VMinecraftInstance.doesLevelExist())
+        if (Instances.minecraft.doesLevelExist())
             onWorldTick();
     }
 
@@ -30,7 +30,7 @@ public class ClientTick {
         onReload();
         if (!hasShownWarning) {
             hasShownWarning = true;
-            VMinecraftInstance.sendRedMessage("Note: This will not reload textures. Use F3-T to reload textures.");
+            Instances.minecraft.sendRedMessage("Note: This will not reload textures. Use F3-T to reload textures.");
         }
     }
 
@@ -40,7 +40,7 @@ public class ClientTick {
             joined = true;
         }
 
-        dimensionHasCustomSky = CelestialSky.dimensionSkyMap.containsKey(VMinecraftInstance.getLevelPath());
+        dimensionHasCustomSky = CelestialSky.dimensionSkyMap.containsKey(Instances.minecraft.getLevelPath());
         CelestialSky.tickValues();
 
         if (CelestialSky.doesDimensionHaveCustomSky()) {

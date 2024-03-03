@@ -1,27 +1,27 @@
 package fishcute.celestialmain.sky.objects;
 
 import com.google.gson.JsonObject;
-import fishcute.celestial.version.dependent.VRenderSystem;
-import fishcute.celestial.version.dependent.util.BufferBuilderWrapper;
-import fishcute.celestial.version.dependent.util.Matrix4fWrapper;
-import fishcute.celestial.version.dependent.util.PoseStackWrapper;
-import fishcute.celestial.version.dependent.util.ResourceLocationWrapper;
+import fishcute.celestialmain.api.minecraft.wrappers.IBufferBuilderWrapper;
+import fishcute.celestialmain.api.minecraft.wrappers.IMatrix4fWrapper;
+import fishcute.celestialmain.api.minecraft.wrappers.IPoseStackWrapper;
+import fishcute.celestialmain.api.minecraft.wrappers.IResourceLocationWrapper;
 import fishcute.celestialmain.sky.CelestialObjectProperties;
 import fishcute.celestialmain.sky.SkyBoxObjectProperties;
 import fishcute.celestialmain.util.MultiCelestialExpression;
 import fishcute.celestialmain.util.Util;
+import fishcute.celestialmain.version.independent.Instances;
 
 import java.util.ArrayList;
 
 public class SkyBoxObject extends IBaseCelestialObject {
     public SkyBoxObject() {}
-    public ResourceLocationWrapper texture;
+    public IResourceLocationWrapper texture;
     public SkyBoxObjectProperties skyBoxObjectProperties;
 
     public SkyBoxObject(SkyBoxObjectProperties skyBoxObjectProperties, String texturePath, String scale, String posX, String posY, String posZ, String distance, String degreesX, String degreesY, String degreesZ, String baseDegreesX, String baseDegreesY, String baseDegreesZ, CelestialObjectProperties properties, String parent, String dimension, String name, ArrayList<Util.VertexPoint> vertexList, MultiCelestialExpression.MultiDataModule multiDataModule) {
         super(scale, posX, posY, posZ, distance, degreesX, degreesY, degreesZ, baseDegreesX, baseDegreesY, baseDegreesZ, properties, parent, dimension, name, vertexList, multiDataModule);
         if (texturePath != null) {
-            this.texture = new ResourceLocationWrapper(texturePath);
+            this.texture = Instances.resourceLocationFactory.build(texturePath);
         }
         this.skyBoxObjectProperties = skyBoxObjectProperties;
     }
@@ -39,16 +39,16 @@ public class SkyBoxObject extends IBaseCelestialObject {
     }
 
     @Override
-    public void renderObject(BufferBuilderWrapper bufferBuilder, PoseStackWrapper matrices, Matrix4fWrapper matrix4f2, float scale, float distance) {
+    public void renderObject(IBufferBuilderWrapper bufferBuilder, IPoseStackWrapper matrices, IMatrix4fWrapper matrix4f2, float scale, float distance) {
         // Set texture
         if (this.texture != null)
-            VRenderSystem.setShaderTexture(0, this.texture);
+            Instances.renderSystem.setShaderTexture(0, this.texture);
 
-        VRenderSystem.setShaderPositionTex();
+        Instances.renderSystem.setShaderPositionTex();
 
         SkyBoxObjectProperties.SkyBoxSideTexture side;
 
-        VRenderSystem.setShaderColor(this.properties.getRed(), this.properties.getGreen(), this.properties.getBlue(), this.properties.alpha.invoke());
+        Instances.renderSystem.setShaderColor(this.properties.getRed(), this.properties.getGreen(), this.properties.getBlue(), this.properties.alpha.invoke());
 
         float size;
         float textureX;
@@ -82,7 +82,7 @@ public class SkyBoxObject extends IBaseCelestialObject {
                 bufferBuilder.beginObject();
 
                 this.rotate(matrices, l);
-                Matrix4fWrapper matrix4f3 = matrices.lastPose();
+                IMatrix4fWrapper matrix4f3 = matrices.lastPose();
 
                 bufferBuilder.vertexUv(matrix4f3, -size, -size, -size, textureX, textureY, 1.0F, 1.0F, 1.0F, 1.0F);
                 bufferBuilder.vertexUv(matrix4f3, -size, -size, size, textureX, textureScaleY,1.0F, 1.0F, 1.0F, 1.0F);
@@ -96,61 +96,61 @@ public class SkyBoxObject extends IBaseCelestialObject {
         }
     }
 
-    private void rotate(PoseStackWrapper matrices, int l) {
+    private void rotate(IPoseStackWrapper matrices, int l) {
         if (l == 0) {
-            matrices.mulPose(PoseStackWrapper.Axis.Y, 180);
+            matrices.mulPose(IPoseStackWrapper.Axis.Y, 180);
         }
         if (l == 1) {
-            matrices.mulPose(PoseStackWrapper.Axis.X, 90);
+            matrices.mulPose(IPoseStackWrapper.Axis.X, 90);
         }
 
         if (l == 2) {
-            matrices.mulPose(PoseStackWrapper.Axis.X, -90);
-            matrices.mulPose(PoseStackWrapper.Axis.Y, 180);
+            matrices.mulPose(IPoseStackWrapper.Axis.X, -90);
+            matrices.mulPose(IPoseStackWrapper.Axis.Y, 180);
         }
 
         if (l == 3) {
-            matrices.mulPose(PoseStackWrapper.Axis.X, 180);
-            matrices.mulPose(PoseStackWrapper.Axis.Y, 180);
+            matrices.mulPose(IPoseStackWrapper.Axis.X, 180);
+            matrices.mulPose(IPoseStackWrapper.Axis.Y, 180);
         }
 
         if (l == 4) {
-            matrices.mulPose(PoseStackWrapper.Axis.Z, 90);
-            matrices.mulPose(PoseStackWrapper.Axis.Y, -90);
+            matrices.mulPose(IPoseStackWrapper.Axis.Z, 90);
+            matrices.mulPose(IPoseStackWrapper.Axis.Y, -90);
         }
 
         if (l == 5) {
-            matrices.mulPose(PoseStackWrapper.Axis.Z, -90);
-            matrices.mulPose(PoseStackWrapper.Axis.Y, 90);
+            matrices.mulPose(IPoseStackWrapper.Axis.Z, -90);
+            matrices.mulPose(IPoseStackWrapper.Axis.Y, 90);
         }
     }
 
-    private void undoRotate(PoseStackWrapper matrices, int l) {
+    private void undoRotate(IPoseStackWrapper matrices, int l) {
         if (l == 0) {
-            matrices.mulPose(PoseStackWrapper.Axis.Y, -180);
+            matrices.mulPose(IPoseStackWrapper.Axis.Y, -180);
         }
         if (l == 1) {
-            matrices.mulPose(PoseStackWrapper.Axis.X, -90);
+            matrices.mulPose(IPoseStackWrapper.Axis.X, -90);
         }
 
         if (l == 2) {
-            matrices.mulPose(PoseStackWrapper.Axis.Y, -180);
-            matrices.mulPose(PoseStackWrapper.Axis.X, 90);
+            matrices.mulPose(IPoseStackWrapper.Axis.Y, -180);
+            matrices.mulPose(IPoseStackWrapper.Axis.X, 90);
         }
 
         if (l == 3) {
-            matrices.mulPose(PoseStackWrapper.Axis.Y, -180);
-            matrices.mulPose(PoseStackWrapper.Axis.X, -180);
+            matrices.mulPose(IPoseStackWrapper.Axis.Y, -180);
+            matrices.mulPose(IPoseStackWrapper.Axis.X, -180);
         }
 
         if (l == 4) {
-            matrices.mulPose(PoseStackWrapper.Axis.Y, 90);
-            matrices.mulPose(PoseStackWrapper.Axis.Z, -90);
+            matrices.mulPose(IPoseStackWrapper.Axis.Y, 90);
+            matrices.mulPose(IPoseStackWrapper.Axis.Z, -90);
         }
 
         if (l == 5) {
-            matrices.mulPose(PoseStackWrapper.Axis.Y, -90);
-            matrices.mulPose(PoseStackWrapper.Axis.Z, 90);
+            matrices.mulPose(IPoseStackWrapper.Axis.Y, -90);
+            matrices.mulPose(IPoseStackWrapper.Axis.Z, 90);
         }
     }
 
@@ -182,16 +182,16 @@ public class SkyBoxObject extends IBaseCelestialObject {
     }
 
     @Override
-    public void begin(BufferBuilderWrapper bufferBuilder) {}
+    public void begin(IBufferBuilderWrapper bufferBuilder) {}
 
     @Override
-    public void end(BufferBuilderWrapper bufferBuilder) {}
+    public void end(IBufferBuilderWrapper bufferBuilder) {}
     @Override
-    public void pushPose(PoseStackWrapper matrices) {
+    public void pushPose(IPoseStackWrapper matrices) {
         matrices.pushPose();
     }
     @Override
-    public void popPose(PoseStackWrapper matrices) {
+    public void popPose(IPoseStackWrapper matrices) {
         matrices.popPose();
     }
 }
