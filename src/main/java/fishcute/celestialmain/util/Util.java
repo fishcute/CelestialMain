@@ -3,10 +3,9 @@ package fishcute.celestialmain.util;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import fishcute.celestialmain.version.dependent.VMath;
-import fishcute.celestialmain.version.dependent.Instances.minecraft;
-import fishcute.celestialmain.version.dependent.Vector;
+import fishcute.celestialmain.api.minecraft.IMcVector;
 import fishcute.celestialmain.sky.CelestialSky;
+import fishcute.celestialmain.version.independent.Instances;
 import net.minecraft.util.Mth;
 import org.apache.commons.lang3.math.NumberUtils;
 
@@ -59,7 +58,7 @@ public class Util {
     }
 
     public static void log(Object i) {
-        if (!Instances.minecraft.isGamePaused())
+        if (Instances.minecraft != null && !Instances.minecraft.isGamePaused())
             System.out.println("[Celestial] " + i.toString());
     }
     public static int errorCount;
@@ -435,7 +434,7 @@ public class Util {
         boolean foundSpot = false;
         double dist;
         double closestDist = searchDistance;
-        Vector pos = new Vector(0, 0, 0);
+        IMcVector pos = Instances.vectorFactory.zero();
         for (float i = -searchDistance; i <= searchDistance; i++) {
             for (float j = (y == -9999 ? -searchDistance : 0); (y == -9999 ? j <= searchDistance : j == 0); j++) {
                 for (float k = -searchDistance; k <= searchDistance; k++) {
@@ -444,13 +443,13 @@ public class Util {
                             k + Instances.minecraft.getPlayerZ());
 
                     if (Instances.minecraft.equalToBiome(pos, biomeName)) {
-                        dist = distanceTo(pos.x, pos.y, pos.z,
+                        dist = distanceTo(pos.x(), pos.y(), pos.z(),
                                 Instances.minecraft.getPlayerX(),
                                 y == -9999 ? Instances.minecraft.getPlayerY() : y,
                                 Instances.minecraft.getPlayerZ());
                         if ((!foundSpot || dist < closestDist)) {
                             closestDist = distanceToArea(Instances.minecraft.getPlayerX(), y == -9999 ? Instances.minecraft.getPlayerY() : y, Instances.minecraft.getPlayerZ(),
-                                    pos.x - 0.5, pos.y - 0.5, pos.z + 0.5, pos.x + 0.5, pos.y + 0.5, pos.z + 0.5);
+                                    pos.x() - 0.5, pos.y() - 0.5, pos.z() + 0.5, pos.x() + 0.5, pos.y() + 0.5, pos.z() + 0.5);
                             foundSpot = true;
                         }
                     }
@@ -476,11 +475,11 @@ public class Util {
         boolean foundSpot = false;
         double dist;
         double closestDist = searchDistance;
-        Vector pos = new Vector(0, 0, 0);
+        IMcVector pos = Instances.vectorFactory.zero();
         for (int i = -searchDistance; i <= searchDistance; i++) {
             for (int k = -searchDistance; k <= searchDistance; k++) {
-                pos.set(i + Instances.minecraft.getPlayerX(), yLevel, k + Instances.minecraft.getPlayerZ());
-                dist = distanceTo(pos.x, yLevel, pos.z,
+                pos.set((float) (i + Instances.minecraft.getPlayerX()), (float)  yLevel, (float) (k + Instances.minecraft.getPlayerZ()));
+                dist = distanceTo(pos.x(), yLevel, pos.z(),
                         Instances.minecraft.getPlayerX(),
                         yLevel,
                         Instances.minecraft.getPlayerZ());
@@ -519,20 +518,20 @@ public class Util {
         return new Color((int) (i[0] * 255), (int) (i[1] * 255), (int) (i[2] * 255));
     }
     public static double getTwilightAlpha(double timeOfDay) {
-        float g = VMath.cos((float) ((timeOfDay / 360) * (Math.PI * 2)));
+        float g = FMath.cos((float) ((timeOfDay / 360) * (Math.PI * 2)));
         if (g >= -0.4F && g <= 0.4F)
-            return Math.pow(1.0F - (1.0F - VMath.sin((float) (((g) / 0.4F * 0.5F + 0.5F) * Math.PI))) * 0.99F, 2);
+            return Math.pow(1.0F - (1.0F - FMath.sin((float) (((g) / 0.4F * 0.5F + 0.5F) * Math.PI))) * 0.99F, 2);
         return 0;
     }
     public static double getTwilightProgress(double timeOfDay) {
-        float i = VMath.cos((float) ((timeOfDay / 360) * (Math.PI * 2)));
+        float i = FMath.cos((float) ((timeOfDay / 360) * (Math.PI * 2)));
         if (i >= -0.4F && i <= 0.4F) {
             return i / 0.4F * 0.5F + 0.5F;
         }
         return 0;
     }
     public static double getTwilightFogEffect(double timeOfDay) {
-        float h = VMath.sin((float) timeOfDay / 360.0F) > 0.0F ? -1.0F : 1.0F;
+        float h = FMath.sin((float) timeOfDay / 360.0F) > 0.0F ? -1.0F : 1.0F;
         float s = Instances.minecraft.getCameraLookVectorTwilight(h);
         if (s < 0) {
             s = 0;
@@ -547,7 +546,7 @@ public class Util {
     }
 
     public static double getDayLight(double timeOfDay) {
-        return clamp((float) (VMath.cos((float) timeOfDay / 360) * 2 + 0.5), 0, 1);
+        return clamp((float) (FMath.cos((float) timeOfDay / 360) * 2 + 0.5), 0, 1);
     }
     public static double clamp(float x, float min, float max) {
         return Math.max(Math.min(x, max), min);

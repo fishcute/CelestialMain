@@ -1,5 +1,7 @@
 package fishcute.celestialmain.api.minecraft;
 
+import fishcute.celestialmain.api.minecraft.wrappers.IResourceLocationWrapper;
+
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -42,7 +44,7 @@ public interface IMinecraftInstance {
     boolean getBiomeSnow();
     boolean isRightClicking();
     boolean isLeftClicking();
-    IResourceLocation getMainHandItemKey();
+    IResourceLocationWrapper getMainHandItemKey();
     String getMainHandItemNamespace();
     String getMainHandItemPath();
 

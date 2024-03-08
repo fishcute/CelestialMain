@@ -72,9 +72,9 @@ public abstract class ICelestialObject {
     }
 
     public void pushPose(IPoseStackWrapper matrices) {
-        matrices.pushPose();
+        matrices.celestial$pushPose();
     }
     public void popPose(IPoseStackWrapper matrices) {
-        matrices.popPose();
+        matrices.celestial$popPose();
     }
 }

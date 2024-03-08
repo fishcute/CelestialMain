@@ -1,5 +1,6 @@
 package fishcute.celestialmain.version.independent;
 
+import fishcute.celestialmain.api.minecraft.IMcVector;
 import fishcute.celestialmain.api.minecraft.IMinecraftInstance;
 import fishcute.celestialmain.api.minecraft.IRenderSystem;
 import fishcute.celestialmain.api.minecraft.wrappers.IBufferBuilderWrapper;
@@ -13,4 +14,6 @@ public class Instances {
     public static IBufferBuilderWrapper.Factory bufferBuilderFactory = null;
     public static IShaderInstanceWrapper.Factory shaderInstanceFactory = null;
     public static IResourceLocationWrapper.Factory resourceLocationFactory = null;
+    public static IMcVector.Factory vectorFactory = null;
+
 }

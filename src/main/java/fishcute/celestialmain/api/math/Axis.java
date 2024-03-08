@@ -1,4 +1,7 @@
 package fishcute.celestialmain.api.math;
 
-public interface IVector3f {
+public enum Axis {
+    X,
+    Y,
+    Z
 }

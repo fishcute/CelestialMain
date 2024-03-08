@@ -55,29 +55,29 @@ public class CelestialObject extends IBaseCelestialObject {
             float f14 = i1 / 2.0F;
             float f15 = (l + 1) / 4.0F;
             float f16 = (i1 + 1) / 2.0F;
-            bufferBuilder.vertexUv(matrix4f2, -scale, distance, (distance < 0 ? scale : -scale),
+            bufferBuilder.celestial$vertexUv(matrix4f2, -scale, distance, (distance < 0 ? scale : -scale),
                     f15, f16, red, green, blue, alpha);
-            bufferBuilder.vertexUv(matrix4f2, scale, distance, (distance < 0 ? scale : -scale),
+            bufferBuilder.celestial$vertexUv(matrix4f2, scale, distance, (distance < 0 ? scale : -scale),
                     f13, f16, red, green, blue, alpha);
-            bufferBuilder.vertexUv(matrix4f2, scale, distance, (distance < 0 ? -scale : scale),
+            bufferBuilder.celestial$vertexUv(matrix4f2, scale, distance, (distance < 0 ? -scale : scale),
                     f13, f14, red, green, blue, alpha);
-            bufferBuilder.vertexUv(matrix4f2, -scale, distance, (distance < 0 ? -scale : scale),
+            bufferBuilder.celestial$vertexUv(matrix4f2, -scale, distance, (distance < 0 ? -scale : scale),
                     f15, f14, red, green, blue, alpha);
         } else if (this.vertexList != null && !this.vertexList.isEmpty()) {
             Util.VertexPointValue v;
             for (Util.VertexPoint vertexPoint : this.vertexList) {
                 v = new Util.VertexPointValue(vertexPoint);
-                bufferBuilder.vertexUv(matrix4f2, (float) v.pointX, (float) v.pointY, (float) v.pointZ,
+                bufferBuilder.celestial$vertexUv(matrix4f2, (float) v.pointX, (float) v.pointY, (float) v.pointZ,
                         (float) v.uvX, (float) v.uvY, red, green, blue, alpha);
             }
         } else {
-            bufferBuilder.vertexUv(matrix4f2, -scale, distance, (distance < 0 ? scale : -scale),
+            bufferBuilder.celestial$vertexUv(matrix4f2, -scale, distance, (distance < 0 ? scale : -scale),
                     0.0F, 0.0F, red, green, blue, alpha);
-            bufferBuilder.vertexUv(matrix4f2, scale, distance, (distance < 0 ? scale : -scale),
+            bufferBuilder.celestial$vertexUv(matrix4f2, scale, distance, (distance < 0 ? scale : -scale),
                     1.0F, 0.0F, red, green, blue, alpha);
-            bufferBuilder.vertexUv(matrix4f2, scale, distance, (distance < 0 ? -scale : scale),
+            bufferBuilder.celestial$vertexUv(matrix4f2, scale, distance, (distance < 0 ? -scale : scale),
                     1.0F, 1.0F, red, green, blue, alpha);
-            bufferBuilder.vertexUv(matrix4f2, -scale, distance, (distance < 0 ? -scale : scale),
+            bufferBuilder.celestial$vertexUv(matrix4f2, -scale, distance, (distance < 0 ? -scale : scale),
                     0.0F, 1.0F, red, green, blue, alpha);
         }
     }
@@ -110,11 +110,11 @@ public class CelestialObject extends IBaseCelestialObject {
 
     @Override
     public void begin(IBufferBuilderWrapper bufferBuilder) {
-        bufferBuilder.beginObject();
+        bufferBuilder.celestial$beginObject();
     }
 
     @Override
     public void end(IBufferBuilderWrapper bufferBuilder) {
-        bufferBuilder.upload();
+        bufferBuilder.celestial$upload();
     }
 }

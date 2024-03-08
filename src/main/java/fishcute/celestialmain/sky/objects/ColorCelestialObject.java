@@ -50,17 +50,17 @@ public class ColorCelestialObject extends IBaseCelestialObject {
             Util.VertexPointValue v;
             for (Util.VertexPoint vertexPoint : this.vertexList) {
                 v = new Util.VertexPointValue(vertexPoint);
-                bufferBuilder.vertexUv(matrix4f2, (float) v.pointX, (float) v.pointY, (float) v.pointZ,
+                bufferBuilder.celestial$vertexUv(matrix4f2, (float) v.pointX, (float) v.pointY, (float) v.pointZ,
                         (float) v.uvX, (float) v.uvY, red, green, blue, 1.0F);
             }
         } else {
-            bufferBuilder.vertexUv(matrix4f2, -scale, distance, (distance < 0 ? scale : -scale),
+            bufferBuilder.celestial$vertexUv(matrix4f2, -scale, distance, (distance < 0 ? scale : -scale),
                     0.0F, 0.0F, red, green, blue, alpha);
-            bufferBuilder.vertexUv(matrix4f2, scale, distance, (distance < 0 ? scale : -scale),
+            bufferBuilder.celestial$vertexUv(matrix4f2, scale, distance, (distance < 0 ? scale : -scale),
                     1.0F, 0.0F, red, green, blue, alpha);
-            bufferBuilder.vertexUv(matrix4f2, scale, distance, (distance < 0 ? -scale : scale),
+            bufferBuilder.celestial$vertexUv(matrix4f2, scale, distance, (distance < 0 ? -scale : scale),
                     1.0F, 1.0F, red, green, blue, alpha);
-            bufferBuilder.vertexUv(matrix4f2, -scale, distance, (distance < 0 ? -scale : scale),
+            bufferBuilder.celestial$vertexUv(matrix4f2, -scale, distance, (distance < 0 ? -scale : scale),
                     0.0F, 1.0F, red, green, blue, alpha);
         }
     }
@@ -95,11 +95,11 @@ public class ColorCelestialObject extends IBaseCelestialObject {
 
     @Override
     public void begin(IBufferBuilderWrapper bufferBuilder) {
-        bufferBuilder.beginColorObject();
+        bufferBuilder.celestial$beginColorObject();
     }
 
     @Override
     public void end(IBufferBuilderWrapper bufferBuilder) {
-        bufferBuilder.upload();
+        bufferBuilder.celestial$upload();
     }
 }

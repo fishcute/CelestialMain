@@ -79,16 +79,16 @@ public class SkyBoxObject extends IBaseCelestialObject {
             textureScaleY = textureY + (uvSizeY / textureSizeY);
 
             if (textureX >= 0 && textureY >= 0 && textureScaleX >= 0 && textureScaleY >= 0) {
-                bufferBuilder.beginObject();
+                bufferBuilder.celestial$beginObject();
 
                 this.rotate(matrices, l);
-                IMatrix4fWrapper matrix4f3 = matrices.lastPose();
+                IMatrix4fWrapper matrix4f3 = matrices.celestial$lastPose();
 
-                bufferBuilder.vertexUv(matrix4f3, -size, -size, -size, textureX, textureY, 1.0F, 1.0F, 1.0F, 1.0F);
-                bufferBuilder.vertexUv(matrix4f3, -size, -size, size, textureX, textureScaleY,1.0F, 1.0F, 1.0F, 1.0F);
-                bufferBuilder.vertexUv(matrix4f3, size, -size, size, textureScaleX, textureScaleY, 1.0F, 1.0F, 1.0F, 1.0F);
-                bufferBuilder.vertexUv(matrix4f3, size, -size, -size, textureScaleX, textureY, 1.0F, 1.0F, 1.0F, 1.0F);
-                bufferBuilder.upload();
+                bufferBuilder.celestial$vertexUv(matrix4f3, -size, -size, -size, textureX, textureY, 1.0F, 1.0F, 1.0F, 1.0F);
+                bufferBuilder.celestial$vertexUv(matrix4f3, -size, -size, size, textureX, textureScaleY,1.0F, 1.0F, 1.0F, 1.0F);
+                bufferBuilder.celestial$vertexUv(matrix4f3, size, -size, size, textureScaleX, textureScaleY, 1.0F, 1.0F, 1.0F, 1.0F);
+                bufferBuilder.celestial$vertexUv(matrix4f3, size, -size, -size, textureScaleX, textureY, 1.0F, 1.0F, 1.0F, 1.0F);
+                bufferBuilder.celestial$upload();
 
                 // Should change this in the future
                 this.undoRotate(matrices, l);
@@ -98,59 +98,59 @@ public class SkyBoxObject extends IBaseCelestialObject {
 
     private void rotate(IPoseStackWrapper matrices, int l) {
         if (l == 0) {
-            matrices.mulPose(IPoseStackWrapper.Axis.Y, 180);
+            matrices.celestial$mulPose(IPoseStackWrapper.Axis.Y, 180);
         }
         if (l == 1) {
-            matrices.mulPose(IPoseStackWrapper.Axis.X, 90);
+            matrices.celestial$mulPose(IPoseStackWrapper.Axis.X, 90);
         }
 
         if (l == 2) {
-            matrices.mulPose(IPoseStackWrapper.Axis.X, -90);
-            matrices.mulPose(IPoseStackWrapper.Axis.Y, 180);
+            matrices.celestial$mulPose(IPoseStackWrapper.Axis.X, -90);
+            matrices.celestial$mulPose(IPoseStackWrapper.Axis.Y, 180);
         }
 
         if (l == 3) {
-            matrices.mulPose(IPoseStackWrapper.Axis.X, 180);
-            matrices.mulPose(IPoseStackWrapper.Axis.Y, 180);
+            matrices.celestial$mulPose(IPoseStackWrapper.Axis.X, 180);
+            matrices.celestial$mulPose(IPoseStackWrapper.Axis.Y, 180);
         }
 
         if (l == 4) {
-            matrices.mulPose(IPoseStackWrapper.Axis.Z, 90);
-            matrices.mulPose(IPoseStackWrapper.Axis.Y, -90);
+            matrices.celestial$mulPose(IPoseStackWrapper.Axis.Z, 90);
+            matrices.celestial$mulPose(IPoseStackWrapper.Axis.Y, -90);
         }
 
         if (l == 5) {
-            matrices.mulPose(IPoseStackWrapper.Axis.Z, -90);
-            matrices.mulPose(IPoseStackWrapper.Axis.Y, 90);
+            matrices.celestial$mulPose(IPoseStackWrapper.Axis.Z, -90);
+            matrices.celestial$mulPose(IPoseStackWrapper.Axis.Y, 90);
         }
     }
 
     private void undoRotate(IPoseStackWrapper matrices, int l) {
         if (l == 0) {
-            matrices.mulPose(IPoseStackWrapper.Axis.Y, -180);
+            matrices.celestial$mulPose(IPoseStackWrapper.Axis.Y, -180);
         }
         if (l == 1) {
-            matrices.mulPose(IPoseStackWrapper.Axis.X, -90);
+            matrices.celestial$mulPose(IPoseStackWrapper.Axis.X, -90);
         }
 
         if (l == 2) {
-            matrices.mulPose(IPoseStackWrapper.Axis.Y, -180);
-            matrices.mulPose(IPoseStackWrapper.Axis.X, 90);
+            matrices.celestial$mulPose(IPoseStackWrapper.Axis.Y, -180);
+            matrices.celestial$mulPose(IPoseStackWrapper.Axis.X, 90);
         }
 
         if (l == 3) {
-            matrices.mulPose(IPoseStackWrapper.Axis.Y, -180);
-            matrices.mulPose(IPoseStackWrapper.Axis.X, -180);
+            matrices.celestial$mulPose(IPoseStackWrapper.Axis.Y, -180);
+            matrices.celestial$mulPose(IPoseStackWrapper.Axis.X, -180);
         }
 
         if (l == 4) {
-            matrices.mulPose(IPoseStackWrapper.Axis.Y, 90);
-            matrices.mulPose(IPoseStackWrapper.Axis.Z, -90);
+            matrices.celestial$mulPose(IPoseStackWrapper.Axis.Y, 90);
+            matrices.celestial$mulPose(IPoseStackWrapper.Axis.Z, -90);
         }
 
         if (l == 5) {
-            matrices.mulPose(IPoseStackWrapper.Axis.Y, -90);
-            matrices.mulPose(IPoseStackWrapper.Axis.Z, 90);
+            matrices.celestial$mulPose(IPoseStackWrapper.Axis.Y, -90);
+            matrices.celestial$mulPose(IPoseStackWrapper.Axis.Z, 90);
         }
     }
 
@@ -188,11 +188,11 @@ public class SkyBoxObject extends IBaseCelestialObject {
     public void end(IBufferBuilderWrapper bufferBuilder) {}
     @Override
     public void pushPose(IPoseStackWrapper matrices) {
-        matrices.pushPose();
+        matrices.celestial$pushPose();
     }
     @Override
     public void popPose(IPoseStackWrapper matrices) {
-        matrices.popPose();
+        matrices.celestial$popPose();
     }
 }
 

@@ -50,16 +50,16 @@ public class ColorSkyBoxObject extends IBaseCelestialObject {
         for (int l = 0; l < 6; ++l) {
             size = this.skyBoxObjectProperties.skyBoxSize.invoke();
 
-            bufferBuilder.beginColorObject();
+            bufferBuilder.celestial$beginColorObject();
 
             this.rotate(matrices, l);
-            IMatrix4fWrapper matrix4f3 = matrices.lastPose();
+            IMatrix4fWrapper matrix4f3 = matrices.celestial$lastPose();
 
-            bufferBuilder.vertex(matrix4f3, -size, -size, -size, 1.0F, 1.0F, 1.0F, 1.0F);
-            bufferBuilder.vertex(matrix4f3, -size, -size, size,1.0F, 1.0F, 1.0F, 1.0F);
-            bufferBuilder.vertex(matrix4f3, size, -size, size, 1.0F, 1.0F, 1.0F, 1.0F);
-            bufferBuilder.vertex(matrix4f3, size, -size, -size, 1.0F, 1.0F, 1.0F, 1.0F);
-            bufferBuilder.upload();
+            bufferBuilder.celestial$vertex(matrix4f3, -size, -size, -size, 1.0F, 1.0F, 1.0F, 1.0F);
+            bufferBuilder.celestial$vertex(matrix4f3, -size, -size, size,1.0F, 1.0F, 1.0F, 1.0F);
+            bufferBuilder.celestial$vertex(matrix4f3, size, -size, size, 1.0F, 1.0F, 1.0F, 1.0F);
+            bufferBuilder.celestial$vertex(matrix4f3, size, -size, -size, 1.0F, 1.0F, 1.0F, 1.0F);
+            bufferBuilder.celestial$upload();
 
             // Should change this in the future
             this.undoRotate(matrices, l);
@@ -68,59 +68,59 @@ public class ColorSkyBoxObject extends IBaseCelestialObject {
 
     private void rotate(IPoseStackWrapper matrices, int l) {
         if (l == 0) {
-            matrices.mulPose(IPoseStackWrapper.Axis.Y, 180);
+            matrices.celestial$mulPose(IPoseStackWrapper.Axis.Y, 180);
         }
         if (l == 1) {
-            matrices.mulPose(IPoseStackWrapper.Axis.X, 90);
+            matrices.celestial$mulPose(IPoseStackWrapper.Axis.X, 90);
         }
 
         if (l == 2) {
-            matrices.mulPose(IPoseStackWrapper.Axis.X, -90);
-            matrices.mulPose(IPoseStackWrapper.Axis.Y, 180);
+            matrices.celestial$mulPose(IPoseStackWrapper.Axis.X, -90);
+            matrices.celestial$mulPose(IPoseStackWrapper.Axis.Y, 180);
         }
 
         if (l == 3) {
-            matrices.mulPose(IPoseStackWrapper.Axis.X, 180);
-            matrices.mulPose(IPoseStackWrapper.Axis.Y, 180);
+            matrices.celestial$mulPose(IPoseStackWrapper.Axis.X, 180);
+            matrices.celestial$mulPose(IPoseStackWrapper.Axis.Y, 180);
         }
 
         if (l == 4) {
-            matrices.mulPose(IPoseStackWrapper.Axis.Z, 90);
-            matrices.mulPose(IPoseStackWrapper.Axis.Y, -90);
+            matrices.celestial$mulPose(IPoseStackWrapper.Axis.Z, 90);
+            matrices.celestial$mulPose(IPoseStackWrapper.Axis.Y, -90);
         }
 
         if (l == 5) {
-            matrices.mulPose(IPoseStackWrapper.Axis.Z, -90);
-            matrices.mulPose(IPoseStackWrapper.Axis.Y, 90);
+            matrices.celestial$mulPose(IPoseStackWrapper.Axis.Z, -90);
+            matrices.celestial$mulPose(IPoseStackWrapper.Axis.Y, 90);
         }
     }
 
     private void undoRotate(IPoseStackWrapper matrices, int l) {
         if (l == 0) {
-            matrices.mulPose(IPoseStackWrapper.Axis.Y, -180);
+            matrices.celestial$mulPose(IPoseStackWrapper.Axis.Y, -180);
         }
         if (l == 1) {
-            matrices.mulPose(IPoseStackWrapper.Axis.X, -90);
+            matrices.celestial$mulPose(IPoseStackWrapper.Axis.X, -90);
         }
 
         if (l == 2) {
-            matrices.mulPose(IPoseStackWrapper.Axis.Y, -180);
-            matrices.mulPose(IPoseStackWrapper.Axis.X, 90);
+            matrices.celestial$mulPose(IPoseStackWrapper.Axis.Y, -180);
+            matrices.celestial$mulPose(IPoseStackWrapper.Axis.X, 90);
         }
 
         if (l == 3) {
-            matrices.mulPose(IPoseStackWrapper.Axis.Y, -180);
-            matrices.mulPose(IPoseStackWrapper.Axis.X, -180);
+            matrices.celestial$mulPose(IPoseStackWrapper.Axis.Y, -180);
+            matrices.celestial$mulPose(IPoseStackWrapper.Axis.X, -180);
         }
 
         if (l == 4) {
-            matrices.mulPose(IPoseStackWrapper.Axis.Y, 90);
-            matrices.mulPose(IPoseStackWrapper.Axis.Z, -90);
+            matrices.celestial$mulPose(IPoseStackWrapper.Axis.Y, 90);
+            matrices.celestial$mulPose(IPoseStackWrapper.Axis.Z, -90);
         }
 
         if (l == 5) {
-            matrices.mulPose(IPoseStackWrapper.Axis.Y, -90);
-            matrices.mulPose(IPoseStackWrapper.Axis.Z, 90);
+            matrices.celestial$mulPose(IPoseStackWrapper.Axis.Y, -90);
+            matrices.celestial$mulPose(IPoseStackWrapper.Axis.Z, 90);
         }
     }
 
@@ -158,11 +158,11 @@ public class ColorSkyBoxObject extends IBaseCelestialObject {
     public void end(IBufferBuilderWrapper bufferBuilder) {}
     @Override
     public void pushPose(IPoseStackWrapper matrices) {
-        matrices.pushPose();
+        matrices.celestial$pushPose();
     }
     @Override
     public void popPose(IPoseStackWrapper matrices) {
-        matrices.popPose();
+        matrices.celestial$popPose();
     }
 }
 

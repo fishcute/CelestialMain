@@ -1,7 +1,7 @@
 package fishcute.celestialmain.util;
 
-import fishcute.celestialmain.version.dependent.Instances.minecraft;
 import fishcute.celestialmain.sky.CelestialSky;
+import fishcute.celestialmain.version.independent.Instances;
 
 import java.util.ArrayList;
 

@@ -89,12 +89,12 @@ public class TriangleFanObject extends IBaseCelestialObject {
 
     @Override
     public void begin(IBufferBuilderWrapper bufferBuilder) {
-        bufferBuilder.beginTriangleFan();
+        bufferBuilder.celestial$beginTriangleFan();
     }
 
     @Override
     public void end(IBufferBuilderWrapper bufferBuilder) {
-        bufferBuilder.upload();
+        bufferBuilder.celestial$upload();
     }
     @Override
     public void tick() {
@@ -127,7 +127,7 @@ public class TriangleFanObject extends IBaseCelestialObject {
         float blue = this.solidColor.getStoredBlue() * this.properties.getBlue();
         float alpha = this.properties.alpha.invoke();
 
-        bufferBuilder.vertex(matrix4f2, this.sideX.invoke(), this.sideY.invoke(), this.sideZ.invoke(), red, green, blue, alpha);
+        bufferBuilder.celestial$vertex(matrix4f2, this.sideX.invoke(), this.sideY.invoke(), this.sideZ.invoke(), red, green, blue, alpha);
 
         for (int n = 0; n <= complexity; ++n) {
             this.data.index = n + 1;
@@ -142,7 +142,7 @@ public class TriangleFanObject extends IBaseCelestialObject {
 
             //Instances.renderSystem.setShaderColor(red, green, blue, alpha);
 
-            bufferBuilder.vertex(matrix4f2, this.sideX.invoke(), this.sideY.invoke(), this.sideZ.invoke(), red, green, blue, alpha);
+            bufferBuilder.celestial$vertex(matrix4f2, this.sideX.invoke(), this.sideY.invoke(), this.sideZ.invoke(), red, green, blue, alpha);
         }
     }
 

@@ -89,6 +89,9 @@ val module = Module("fishcute/celestial",
         },
         "sneaking" to {
             if (Instances.minecraft.isSneaking()) 1.0 else 0.0;
+        },
+        "dayLight" to {
+            Util.getDayLight(Util.repeat(Instances.minecraft.getWorldTime().toFloat(), 0.0F, 24000.0F))
         }
     )),
     FunctionList(hashMapOf(

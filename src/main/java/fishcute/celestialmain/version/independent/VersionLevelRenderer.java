@@ -15,41 +15,41 @@ public class VersionLevelRenderer {
         Instances.renderSystem.toggleBlend(true);
         Instances.renderSystem.defaultBlendFunction();
 
-        skyBuffer.bind();
-        skyBuffer.drawWithShader(matrices.lastPose(), projectionMatrix, shader);
-        float[] fs = level.getSunriseColor(tickDelta);
+        skyBuffer.celestial$bind();
+        skyBuffer.celestial$drawWithShader(matrices.celestial$lastPose(), projectionMatrix, shader);
+        float[] fs = level.celestial$getSunriseColor(tickDelta);
         if (fs != null) {
             Instances.renderSystem.setShaderPositionColor();
             Instances.renderSystem.toggleTexture(false);
             Instances.renderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-            matrices.pushPose();
-            matrices.mulPose(IPoseStackWrapper.Axis.X, 90.0F);
-            float f3 = Math.sin(level.getSunAngle(tickDelta)) < 0.0F ? 180.0F : 0.0F;
-            matrices.mulPose(IPoseStackWrapper.Axis.Z, f3);
-            matrices.mulPose(IPoseStackWrapper.Axis.Z, 90.0F);
+            matrices.celestial$pushPose();
+            matrices.celestial$mulPose(IPoseStackWrapper.Axis.X, 90.0F);
+            float f3 = Math.sin(level.celestial$getSunAngle(tickDelta)) < 0.0F ? 180.0F : 0.0F;
+            matrices.celestial$mulPose(IPoseStackWrapper.Axis.Z, f3);
+            matrices.celestial$mulPose(IPoseStackWrapper.Axis.Z, 90.0F);
             float j = fs[0];
             float k = fs[1];
             float l = fs[2];
-            IMatrix4fWrapper matrix4f = matrices.lastPose();
-            bufferBuilder.beginTriangleFan();
-            bufferBuilder.vertex(matrix4f, 0.0F, 100.0F, 0.0F, j, k, l, fs[3]);
+            IMatrix4fWrapper matrix4f = matrices.celestial$lastPose();
+            bufferBuilder.celestial$beginTriangleFan();
+            bufferBuilder.celestial$vertex(matrix4f, 0.0F, 100.0F, 0.0F, j, k, l, fs[3]);
 
             for (int n = 0; n <= 16; ++n) {
                 float o = (float) n * 6.2831855F / 16.0F;
                 float p = FMath.sin(o);
                 float q = FMath.cos(o);
-                bufferBuilder.vertex(matrix4f, p * 120.0F, q * 120.0F, -q * 40.0F * fs[3], fs[0], fs[1], fs[2], 0.0F);
+                bufferBuilder.celestial$vertex(matrix4f, p * 120.0F, q * 120.0F, -q * 40.0F * fs[3], fs[0], fs[1], fs[2], 0.0F);
             }
 
-            bufferBuilder.upload();
-            matrices.popPose();
+            bufferBuilder.celestial$upload();
+            matrices.celestial$popPose();
         }
     }
 
     public static void renderLevel(IMatrix4fWrapper projectionMatrix, IPoseStackWrapper matrices, IVertexBufferWrapper skyBuffer, IVertexBufferWrapper darkBuffer, ICameraWrapper camera, ILevelWrapper level, float tickDelta) {
-        if (camera.doesFogBlockSky() && !(camera.doesMobEffectBlockSky())) {
+        if (camera.celestial$doesFogBlockSky() && !(camera.celestial$doesMobEffectBlockSky())) {
             Instances.renderSystem.toggleTexture(false);
-            IMcVector Vector3d = level.getSkyColor(tickDelta);
+            IMcVector Vector3d = level.celestial$getSkyColor(tickDelta);
             float f = (float) Vector3d.x();
             float g = (float) Vector3d.y();
             float h = (float) Vector3d.z();
@@ -77,17 +77,17 @@ public class VersionLevelRenderer {
             Instances.renderSystem.toggleTexture(false);
             Instances.renderSystem.setShaderColor(0.0F, 0.0F, 0.0F, 1.0F);
 
-            double d = Instances.minecraft.getPlayerEyePosition().y() - level.getHorizonHeight();
+            double d = Instances.minecraft.getPlayerEyePosition().y() - level.celestial$getHorizonHeight();
             if (d < 0.0) {
-                matrices.pushPose();
-                matrices.translate(0.0, 12.0 + renderInfo.environment.voidCullingLevel.invoke(), 0.0);
-                darkBuffer.bind();
-                darkBuffer.drawWithShader(matrices.lastPose(), projectionMatrix, shader);
+                matrices.celestial$pushPose();
+                matrices.celestial$translate(0.0, 12.0 + renderInfo.environment.voidCullingLevel.invoke(), 0.0);
+                darkBuffer.celestial$bind();
+                darkBuffer.celestial$drawWithShader(matrices.celestial$lastPose(), projectionMatrix, shader);
                 Instances.renderSystem.unbindVertexBuffer();
-                matrices.popPose();
+                matrices.celestial$popPose();
             }
 
-            if (level.hasGround()) {
+            if (level.celestial$hasGround()) {
                 Instances.renderSystem.setShaderColor(f * 0.2F + 0.04F, g * 0.2F + 0.04F, h * 0.6F + 0.1F, 1.0F);
             } else {
                 Instances.renderSystem.setShaderColor(f, g, h, 1.0F);
@@ -104,7 +104,7 @@ public class VersionLevelRenderer {
         for (ICelestialObject c : renderInfo.skyObjects) {
             // Different push/pop functions so that pushing and popping can be handled differently for skybox objects
             c.pushPose(matrices);
-            c.render(bufferBuilder, matrices, matrices.lastPose());
+            c.render(bufferBuilder, matrices, matrices.celestial$lastPose());
             c.popPose(matrices);
         }
     }

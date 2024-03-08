@@ -143,7 +143,7 @@ public abstract class IBaseCelestialObject extends ICelestialObject {
     public void render(IBufferBuilderWrapper bufferBuilder, IPoseStackWrapper matrices, IMatrix4fWrapper matrix4f2) {
         Instances.renderSystem.toggleBlend(this.properties.blend);
 
-        FogRenderer.levelFogColor(); //TODO: Figure out what this is
+        //FogRenderer.levelFogColor(); //TODO: Figure out what this is
 
         if (this.properties.isSolid)
             Instances.renderSystem.defaultBlendFunc();
@@ -151,9 +151,9 @@ public abstract class IBaseCelestialObject extends ICelestialObject {
         Instances.renderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         this.begin(bufferBuilder);
 
-        matrices.mulPose(IPoseStackWrapper.Axis.Z, this.baseDegreesX.invoke());
-        matrices.mulPose(IPoseStackWrapper.Axis.X, this.baseDegreesY.invoke());
-        matrices.mulPose(IPoseStackWrapper.Axis.Y, this.baseDegreesZ.invoke());
+        matrices.celestial$mulPose(IPoseStackWrapper.Axis.Z, this.baseDegreesX.invoke());
+        matrices.celestial$mulPose(IPoseStackWrapper.Axis.X, this.baseDegreesY.invoke());
+        matrices.celestial$mulPose(IPoseStackWrapper.Axis.Y, this.baseDegreesZ.invoke());
 
         if (this.populateData != null) {
             this.populateData.renderPopulateObjects(this, bufferBuilder, matrices, matrix4f2);
@@ -175,7 +175,7 @@ public abstract class IBaseCelestialObject extends ICelestialObject {
     public abstract void begin(IBufferBuilderWrapper bufferBuilder);
     public abstract void end(IBufferBuilderWrapper bufferBuilder);
     public void renderPre(IBufferBuilderWrapper bufferBuilder, IPoseStackWrapper matrices, IMatrix4fWrapper matrix4f2, float degreesX, float degreesY, float degreesZ, float posX, float posY, float posZ, float scale, float distance) {
-        renderObject(bufferBuilder, matrices, matrices.rotateThenTranslate(
+        renderObject(bufferBuilder, matrices, matrices.celestial$rotateThenTranslate(
                 degreesX,
                 degreesY,
                 degreesZ,
@@ -185,7 +185,7 @@ public abstract class IBaseCelestialObject extends ICelestialObject {
 
         // Undo translations and rotations
         // Should change this in the future
-        matrices.translateThenRotate(-degreesX, -degreesY, -degreesZ, -posX, -posY, -posZ);
+        matrices.celestial$translateThenRotate(-degreesX, -degreesY, -degreesZ, -posX, -posY, -posZ);
     }
     public abstract void renderObject(IBufferBuilderWrapper bufferBuilder, IPoseStackWrapper matrices, IMatrix4fWrapper matrix4f2, float scale, float distance);
 }
