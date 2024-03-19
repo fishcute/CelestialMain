@@ -10,7 +10,7 @@ import fishcute.celestialmain.sky.objects.ICelestialObject;
 
 public class VersionLevelRenderer {
 
-    public static void renderTwilight(IShaderInstanceWrapper shader, IBufferBuilderWrapper bufferBuilder, float tickDelta, IMatrix4fWrapper projectionMatrix, IPoseStackWrapper matrices, IVertexBufferWrapper skyBuffer, ILevelWrapper level) {
+    public static void renderTwilight(IShaderInstanceWrapper shader, IBufferBuilderWrapper bufferBuilder, float tickDelta, Object projectionMatrix, IPoseStackWrapper matrices, IVertexBufferWrapper skyBuffer, ILevelWrapper level) {
         Instances.renderSystem.unbindVertexBuffer();
         Instances.renderSystem.toggleBlend(true);
         Instances.renderSystem.defaultBlendFunction();
@@ -30,7 +30,7 @@ public class VersionLevelRenderer {
             float j = fs[0];
             float k = fs[1];
             float l = fs[2];
-            IMatrix4fWrapper matrix4f = matrices.celestial$lastPose();
+            Object matrix4f = matrices.celestial$lastPose();
             bufferBuilder.celestial$beginTriangleFan();
             bufferBuilder.celestial$vertex(matrix4f, 0.0F, 100.0F, 0.0F, j, k, l, fs[3]);
 
@@ -46,7 +46,7 @@ public class VersionLevelRenderer {
         }
     }
 
-    public static void renderLevel(IMatrix4fWrapper projectionMatrix, IPoseStackWrapper matrices, IVertexBufferWrapper skyBuffer, IVertexBufferWrapper darkBuffer, ICameraWrapper camera, ILevelWrapper level, float tickDelta) {
+    public static void renderLevel(Object projectionMatrix, IPoseStackWrapper matrices, IVertexBufferWrapper skyBuffer, IVertexBufferWrapper darkBuffer, ICameraWrapper camera, ILevelWrapper level, float tickDelta) {
         if (camera.celestial$doesFogBlockSky() && !(camera.celestial$doesMobEffectBlockSky())) {
             Instances.renderSystem.toggleTexture(false);
             IMcVector Vector3d = level.celestial$getSkyColor(tickDelta);
@@ -172,7 +172,7 @@ public class VersionLevelRenderer {
         return dataArray;
     }
 
-    private static void renderSkyObject(IBufferBuilderWrapper bufferBuilder, IPoseStackWrapper matrices, IMatrix4fWrapper matrix4f2, CelestialObject c, IMcVector color, IMcVector colorsSolid, float alpha, float distancePre, float scalePre, int moonPhase, ArrayList<Util.VertexPointValue> vertexList, HashMap<String, Util.DynamicValue> objectReplaceMap) {
+    private static void renderSkyObject(IBufferBuilderWrapper bufferBuilder, IPoseStackWrapper matrices, Object matrix4f2, CelestialObject c, IMcVector color, IMcVector colorsSolid, float alpha, float distancePre, float scalePre, int moonPhase, ArrayList<Util.VertexPointValue> vertexList, HashMap<String, Util.DynamicValue> objectReplaceMap) {
         Instances.renderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 
         float distance = (float) (distancePre + c.populateDistanceAdd);
@@ -315,7 +315,7 @@ public class VersionLevelRenderer {
 
                 size = c.skyBoxProperties.skyBoxSize.invoke().floatValue();
 
-                IMatrix4fWrapper matrix4f3 = matrices.lastPose();
+                Object matrix4f3 = matrices.lastPose();
 
                 if (c.solidColor != null) {
                     Instances.renderSystem.toggleTexture(false);

@@ -5,5 +5,5 @@ repositories {
 }
 
 dependencies {
-    implementation "org.spongepowered:mixin:0.8.3"
+    compileOnly "org.spongepowered:mixin:0.8.5"
 }

@@ -106,7 +106,7 @@ public class TriangleFanObject extends IBaseCelestialObject {
         }
     }
     @Override
-    public void renderObject(IBufferBuilderWrapper bufferBuilder, IPoseStackWrapper matrices, IMatrix4fWrapper matrix4f2, float scale, float distance) {
+    public void renderObject(IBufferBuilderWrapper bufferBuilder, IPoseStackWrapper matrices, Object matrix4f2, float scale, float distance) {
         Instances.renderSystem.toggleTexture(false);
 
         Instances.renderSystem.setShaderPositionColor();

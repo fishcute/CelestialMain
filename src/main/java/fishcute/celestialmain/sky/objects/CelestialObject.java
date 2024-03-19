@@ -32,7 +32,7 @@ public class CelestialObject extends IBaseCelestialObject {
     }
 
     @Override
-    public void renderObject(IBufferBuilderWrapper bufferBuilder, IPoseStackWrapper matrices, IMatrix4fWrapper matrix4f2, float scale, float distance) {
+    public void renderObject(IBufferBuilderWrapper bufferBuilder, IPoseStackWrapper matrices, Object matrix4f2, float scale, float distance) {
         int moonPhase = this.properties.moonPhase.invokeInt();
 
         Instances.renderSystem.setShaderPositionTex();

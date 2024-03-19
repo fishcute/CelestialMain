@@ -2,7 +2,6 @@ package fishcute.celestialmain.sky.objects;
 
 import com.google.gson.JsonObject;
 import fishcute.celestialmain.api.minecraft.wrappers.IBufferBuilderWrapper;
-import fishcute.celestialmain.api.minecraft.wrappers.IMatrix4fWrapper;
 import fishcute.celestialmain.api.minecraft.wrappers.IPoseStackWrapper;
 import fishcute.celestialmain.sky.CelestialObjectProperties;
 import fishcute.celestialmain.util.ColorEntry;
@@ -36,7 +35,7 @@ public class ColorCelestialObject extends IBaseCelestialObject {
     }
 
     @Override
-    public void renderObject(IBufferBuilderWrapper bufferBuilder, IPoseStackWrapper matrices, IMatrix4fWrapper matrix4f2, float scale, float distance) {
+    public void renderObject(IBufferBuilderWrapper bufferBuilder, IPoseStackWrapper matrices, Object matrix4f2, float scale, float distance) {
         Instances.renderSystem.setShaderPositionColor();
 
         float red = this.properties.getRed() * this.solidColor.getStoredRed();

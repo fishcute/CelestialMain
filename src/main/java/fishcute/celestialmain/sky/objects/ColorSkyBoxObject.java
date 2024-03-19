@@ -3,7 +3,6 @@ package fishcute.celestialmain.sky.objects;
 import com.google.gson.JsonObject;
 import fishcute.celestialmain.api.minecraft.wrappers.IBufferBuilderWrapper;
 import fishcute.celestialmain.api.minecraft.wrappers.IPoseStackWrapper;
-import fishcute.celestialmain.api.minecraft.wrappers.IMatrix4fWrapper;
 import fishcute.celestialmain.sky.CelestialObjectProperties;
 import fishcute.celestialmain.sky.SkyBoxObjectProperties;
 import fishcute.celestialmain.util.ColorEntry;
@@ -40,7 +39,7 @@ public class ColorSkyBoxObject extends IBaseCelestialObject {
     }
 
     @Override
-    public void renderObject(IBufferBuilderWrapper bufferBuilder, IPoseStackWrapper matrices, IMatrix4fWrapper matrix4f2, float scale, float distance) {
+    public void renderObject(IBufferBuilderWrapper bufferBuilder, IPoseStackWrapper matrices, Object matrix4f2, float scale, float distance) {
         Instances.renderSystem.setShaderPositionColor();
 
         Instances.renderSystem.setShaderColor(this.properties.getRed() * this.solidColor.getStoredRed(), this.properties.getGreen() * this.solidColor.getStoredGreen(), this.properties.getBlue() * this.solidColor.getStoredBlue(), this.properties.alpha.invoke());
@@ -53,7 +52,7 @@ public class ColorSkyBoxObject extends IBaseCelestialObject {
             bufferBuilder.celestial$beginColorObject();
 
             this.rotate(matrices, l);
-            IMatrix4fWrapper matrix4f3 = matrices.celestial$lastPose();
+            Object matrix4f3 = matrices.celestial$lastPose();
 
             bufferBuilder.celestial$vertex(matrix4f3, -size, -size, -size, 1.0F, 1.0F, 1.0F, 1.0F);
             bufferBuilder.celestial$vertex(matrix4f3, -size, -size, size,1.0F, 1.0F, 1.0F, 1.0F);

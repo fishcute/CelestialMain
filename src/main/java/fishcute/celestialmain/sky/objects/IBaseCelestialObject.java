@@ -140,7 +140,7 @@ public abstract class IBaseCelestialObject extends ICelestialObject {
     }
 
     @Override
-    public void render(IBufferBuilderWrapper bufferBuilder, IPoseStackWrapper matrices, IMatrix4fWrapper matrix4f2) {
+    public void render(IBufferBuilderWrapper bufferBuilder, IPoseStackWrapper matrices, Object matrix4f2) {
         Instances.renderSystem.toggleBlend(this.properties.blend);
 
         //FogRenderer.levelFogColor(); //TODO: Figure out what this is
@@ -174,7 +174,7 @@ public abstract class IBaseCelestialObject extends ICelestialObject {
     }
     public abstract void begin(IBufferBuilderWrapper bufferBuilder);
     public abstract void end(IBufferBuilderWrapper bufferBuilder);
-    public void renderPre(IBufferBuilderWrapper bufferBuilder, IPoseStackWrapper matrices, IMatrix4fWrapper matrix4f2, float degreesX, float degreesY, float degreesZ, float posX, float posY, float posZ, float scale, float distance) {
+    public void renderPre(IBufferBuilderWrapper bufferBuilder, IPoseStackWrapper matrices, Object matrix4f2, float degreesX, float degreesY, float degreesZ, float posX, float posY, float posZ, float scale, float distance) {
         renderObject(bufferBuilder, matrices, matrices.celestial$rotateThenTranslate(
                 degreesX,
                 degreesY,
@@ -187,5 +187,5 @@ public abstract class IBaseCelestialObject extends ICelestialObject {
         // Should change this in the future
         matrices.celestial$translateThenRotate(-degreesX, -degreesY, -degreesZ, -posX, -posY, -posZ);
     }
-    public abstract void renderObject(IBufferBuilderWrapper bufferBuilder, IPoseStackWrapper matrices, IMatrix4fWrapper matrix4f2, float scale, float distance);
+    public abstract void renderObject(IBufferBuilderWrapper bufferBuilder, IPoseStackWrapper matrices, Object matrix4f2, float scale, float distance);
 }

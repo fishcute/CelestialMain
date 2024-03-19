@@ -2,18 +2,18 @@ package fishcute.celestialmain.api.minecraft.wrappers;
 
 
 public interface IPoseStackWrapper {
-     IMatrix4fWrapper celestial$lastPose();
+     Object celestial$lastPose();
      void celestial$pushPose();
      void celestial$popPose();
      void celestial$translate(double x, double y, double z);
      void celestial$mulPose(Axis a, float rot);
 
-     void celestial$mulPose(IQuaternionWrapper quaternion);
+     void celestial$mulPose(Object quaternion);
 
 
-     void celestial$mulPose(IQuaternionWrapper quaternion, IMatrix4fWrapper intermediate4, IMatrix3fWrapper intermediate3);
+     void celestial$mulPose(Object quaternion, Object intermediate4, Object intermediate3);
 
-     void celestial$mulPose(IMatrix3fWrapper matrix3f, IMatrix4fWrapper intermediate4);
+     void celestial$mulPose(Object matrix3f, Object intermediate4);
 
      enum Axis {
         X,
@@ -21,9 +21,9 @@ public interface IPoseStackWrapper {
         Z
     }
 
-     IMatrix4fWrapper celestial$rotate(float i, float j, float k);
+     Object celestial$rotate(float i, float j, float k);
 
-     IMatrix4fWrapper celestial$rotateThenTranslate(float i, float j, float k, float x, float y, float z);
+     Object celestial$rotateThenTranslate(float i, float j, float k, float x, float y, float z);
 
-     IMatrix4fWrapper celestial$translateThenRotate(float i, float j, float k, float x, float y, float z);
+     Object celestial$translateThenRotate(float i, float j, float k, float x, float y, float z);
 }

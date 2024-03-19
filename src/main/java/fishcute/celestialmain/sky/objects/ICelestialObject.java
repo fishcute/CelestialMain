@@ -2,7 +2,6 @@ package fishcute.celestialmain.sky.objects;
 
 import com.google.gson.JsonObject;
 import fishcute.celestialmain.api.minecraft.wrappers.IBufferBuilderWrapper;
-import fishcute.celestialmain.api.minecraft.wrappers.IMatrix4fWrapper;
 import fishcute.celestialmain.api.minecraft.wrappers.IPoseStackWrapper;
 import fishcute.celestialmain.util.Util;
 
@@ -11,7 +10,7 @@ public abstract class ICelestialObject {
 
     }
     public abstract CelestialObjectType getType();
-    public abstract void render(IBufferBuilderWrapper bufferBuilder, IPoseStackWrapper matrices, IMatrix4fWrapper matrix4f2);
+    public abstract void render(IBufferBuilderWrapper bufferBuilder, IPoseStackWrapper matrices, Object matrix4f2);
     public abstract ICelestialObject createFromJson(JsonObject o, String name, String dimension);
     public abstract void tick();
     public enum CelestialObjectType {

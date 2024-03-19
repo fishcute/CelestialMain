@@ -2,7 +2,6 @@ package fishcute.celestialmain.sky.objects;
 
 import com.google.gson.JsonObject;
 import fishcute.celestialmain.api.minecraft.wrappers.IBufferBuilderWrapper;
-import fishcute.celestialmain.api.minecraft.wrappers.IMatrix4fWrapper;
 import fishcute.celestialmain.api.minecraft.wrappers.IPoseStackWrapper;
 import fishcute.celestialmain.api.minecraft.wrappers.IResourceLocationWrapper;
 import fishcute.celestialmain.sky.CelestialObjectProperties;
@@ -39,7 +38,7 @@ public class SkyBoxObject extends IBaseCelestialObject {
     }
 
     @Override
-    public void renderObject(IBufferBuilderWrapper bufferBuilder, IPoseStackWrapper matrices, IMatrix4fWrapper matrix4f2, float scale, float distance) {
+    public void renderObject(IBufferBuilderWrapper bufferBuilder, IPoseStackWrapper matrices, Object matrix4f2, float scale, float distance) {
         // Set texture
         if (this.texture != null)
             Instances.renderSystem.setShaderTexture(0, this.texture);
@@ -82,7 +81,7 @@ public class SkyBoxObject extends IBaseCelestialObject {
                 bufferBuilder.celestial$beginObject();
 
                 this.rotate(matrices, l);
-                IMatrix4fWrapper matrix4f3 = matrices.celestial$lastPose();
+                Object matrix4f3 = matrices.celestial$lastPose();
 
                 bufferBuilder.celestial$vertexUv(matrix4f3, -size, -size, -size, textureX, textureY, 1.0F, 1.0F, 1.0F, 1.0F);
                 bufferBuilder.celestial$vertexUv(matrix4f3, -size, -size, size, textureX, textureScaleY,1.0F, 1.0F, 1.0F, 1.0F);
