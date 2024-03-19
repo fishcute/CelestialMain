@@ -34,12 +34,12 @@ public class Util {
     public static CelestialExpression compileExpression(String input, String location) {
         return new CelestialExpression(input, location);
     }
-    public static CelestialExpression compileExpression(String input, String location, MultiCelestialExpression.MultiDataModule multiDataModule) {
-        if (multiDataModule == null) {
-            return new CelestialExpression(input, location);
-        }
-        return compileMultiExpression(input, location, multiDataModule);
-    }
+//    public static CelestialExpression compileExpression(String input, String location, MultiCelestialExpression.MultiDataModule multiDataModule) {
+//        if (multiDataModule == null) {
+//            return new CelestialExpression(input, location);
+//        }
+//        return compileMultiExpression(input, location, multiDataModule);
+//    }
 
     public static MultiCelestialExpression compileMultiExpression(String input, String location, MultiCelestialExpression.MultiDataModule... multiDataModule) {
         return new MultiCelestialExpression(input, location, multiDataModule);
@@ -266,7 +266,7 @@ public class Util {
         return (LocalDate.now().atTime(LocalTime.now()).getHour() * 60) + LocalDate.now().atTime(LocalTime.now()).getMinute();
     }
 
-    public static ArrayList<VertexPoint> convertToPointUvList(JsonObject o, String name, String location) {
+    public static ArrayList<VertexPoint> convertToPointUvList(JsonObject o, String name, String location, MultiCelestialExpression.MultiDataModule... dataModules) {
 
         ArrayList<VertexPoint> returnList = new ArrayList<>();
         try {
@@ -281,7 +281,8 @@ public class Util {
                                 getOptionalString(entry, "z", "", location),
                                 getOptionalString(entry, "uv_x", null, location),
                                 getOptionalString(entry, "uv_y", null, location),
-                                location
+                                location,
+                                dataModules
                         )
                 );
             }
@@ -302,15 +303,15 @@ public class Util {
 
         public boolean hasUv;
 
-        public VertexPoint(String pointX, String pointY, String pointZ, String uvX, String uvY, String location) {
-            this.pointX = Util.compileExpression(pointX, location + ".x");
-            this.pointY = Util.compileExpression(pointY, location + ".y");
-            this.pointZ = Util.compileExpression(pointZ, location + ".z");
+        public VertexPoint(String pointX, String pointY, String pointZ, String uvX, String uvY, String location, MultiCelestialExpression.MultiDataModule... dataModules) {
+            this.pointX = Util.compileMultiExpression(pointX, location + ".x", dataModules);
+            this.pointY = Util.compileMultiExpression(pointY, location + ".y", dataModules);
+            this.pointZ = Util.compileMultiExpression(pointZ, location + ".z", dataModules);
 
             this.hasUv = uvX != null || uvY != null;
 
-            this.uvX = Util.compileExpression(uvX, location + ".uv_x");
-            this.uvY = Util.compileExpression(uvY, location + ".uv_x");
+            this.uvX = Util.compileMultiExpression(uvX, location + ".uv_x", dataModules);
+            this.uvY = Util.compileMultiExpression(uvY, location + ".uv_x", dataModules);
         }
     }
 

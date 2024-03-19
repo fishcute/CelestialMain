@@ -56,10 +56,10 @@ public class TriangleFanObject extends IBaseCelestialObject {
     public fishcute.celestialmain.sky.objects.ICelestialObject createObjectFromJson(JsonObject o, String name, String dimension, fishcute.celestialmain.sky.objects.PopulateObjectData.Module module) {
         JsonObject display = o.getAsJsonObject("display");
         JsonObject rotation = o.getAsJsonObject("rotation");
-        var modules = new ArrayList<MultiCelestialExpression.MultiDataModule>(2);
+        var modules = new MultiCelestialExpression.MultiDataModule[module != null ? 2:1];
         var data = new TriangleFanData();
-        modules.add(new TriangleFanModule(data));
-        if (module != null) modules.add(module);
+        modules[0] = new TriangleFanModule(data);
+        if (module != null) modules[1] = module;
         return new TriangleFanObject(
                 Util.getOptionalString(display, "pos_side_x", "sideXPos", Util.locationFormat(dimension, name, "display")),
                 Util.getOptionalString(display, "pos_side_y", "sideYPos", Util.locationFormat(dimension, name, "display")),
@@ -77,13 +77,13 @@ public class TriangleFanObject extends IBaseCelestialObject {
                 Util.getOptionalString(rotation, "base_degrees_x", "-90", Util.locationFormat(dimension, name, "rotation")),
                 Util.getOptionalString(rotation, "base_degrees_y", "0", Util.locationFormat(dimension, name, "rotation")),
                 Util.getOptionalString(rotation, "base_degrees_z", "-90", Util.locationFormat(dimension, name, "rotation")),
-                CelestialObjectProperties.createCelestialObjectPropertiesFromJson(o.getAsJsonObject("properties"), dimension, name, modules.toArray(MultiCelestialExpression.MultiDataModule[]::new)),
+                CelestialObjectProperties.createCelestialObjectPropertiesFromJson(o.getAsJsonObject("properties"), dimension, name, modules),
                 Util.getOptionalString(o, "parent", null, Util.locationFormat(dimension, name)),
                 dimension,
                 name,
-                Util.convertToPointUvList(o, "vertex", Util.locationFormat(dimension, "objects/" + name, "vertex")),
+                Util.convertToPointUvList(o, "vertex", Util.locationFormat(dimension, "objects/" + name, "vertex"), modules),
                 data,
-                modules.toArray(MultiCelestialExpression.MultiDataModule[]::new)
+                modules
         );
     }
 

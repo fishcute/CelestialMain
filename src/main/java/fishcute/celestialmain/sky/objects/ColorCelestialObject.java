@@ -85,7 +85,7 @@ public class ColorCelestialObject extends IBaseCelestialObject {
                 Util.getOptionalString(o, "parent", null, Util.locationFormat(dimension, name)),
                 dimension,
                 name,
-                Util.convertToPointUvList(o, "vertex", Util.locationFormat(dimension, "objects/" + name, "vertex")),
+                Util.convertToPointUvList(o, "vertex", Util.locationFormat(dimension, "objects/" + name, "vertex"), module),
                 module
         );
     }
