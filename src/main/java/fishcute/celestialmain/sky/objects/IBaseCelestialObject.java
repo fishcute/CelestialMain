@@ -68,7 +68,7 @@ public abstract class IBaseCelestialObject extends ICelestialObject {
         }
         IBaseCelestialObject i;
         if (o.has("populate")) {
-            var data = createPopulateData(o, dimension);
+            PopulateObjectData data = createPopulateData(o, dimension);
             i = (IBaseCelestialObject) this.createObjectFromJson(o, name, dimension, new PopulateObjectData.Module(data));
             i.registerPopulateObjects(data);
         } else {

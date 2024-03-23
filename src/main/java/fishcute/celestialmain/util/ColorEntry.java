@@ -226,13 +226,14 @@ public class ColorEntry {
                 modules);
     }
     public ColorEntry(String baseColor, JsonArray colorsJson, String elementName, int updateFrequency, boolean ignoreSkyEffects, String r, String g, String b, String location, MultiCelestialExpression.MultiDataModule... module) {
-        ArrayList<MultiCelestialExpression.MultiDataModule> modules = new ArrayList<>(Arrays.asList(module));
+        MultiCelestialExpression.MultiDataModule[] modules = new MultiCelestialExpression.MultiDataModule[module.length + 1];
+
+        System.arraycopy(module, 0, modules, 0, module.length);
+
         ColorEntryData data = new ColorEntryData();
         this.data = data;
 
-        modules.add(new ColorEntryModule(data));
-
-        MultiCelestialExpression.MultiDataModule[] moduleArray = modules.toArray(MultiCelestialExpression.MultiDataModule[]::new);
+        modules[modules.length - 1] = new ColorEntryModule(data);
 
         ArrayList<ColorListEntry> colors = new ArrayList<>();
 
@@ -243,13 +244,13 @@ public class ColorEntry {
                     colors.add(new ColorListEntry(
                             getBlendType(Util.getOptionalString(color.getAsJsonObject(), "blend_type", "linear_interpolation", location), location + ".blend_type"),
                             hexColor, location + ".color",
-                            Util.compileMultiExpression(Util.getOptionalString(color.getAsJsonObject(), "ratio", "1", location), location + ".ratio", moduleArray),
-                            Util.compileMultiExpression(Util.getOptionalString(color.getAsJsonObject(), "red", "1", location), location + ".red", moduleArray),
-                            Util.compileMultiExpression(Util.getOptionalString(color.getAsJsonObject(), "green", "1", location), location + ".green", moduleArray),
-                            Util.compileMultiExpression(Util.getOptionalString(color.getAsJsonObject(), "blue", "1", location), location + ".blue", moduleArray),
-                            Util.compileMultiExpression(Util.getOptionalString(color.getAsJsonObject(), "red_ratio", "1", location), location + ".red_ratio", moduleArray),
-                            Util.compileMultiExpression(Util.getOptionalString(color.getAsJsonObject(), "green_ratio", "1", location), location + ".green_ratio", moduleArray),
-                            Util.compileMultiExpression(Util.getOptionalString(color.getAsJsonObject(), "blue_ratio", "1", location), location + ".blue_ratio", moduleArray)
+                            Util.compileMultiExpression(Util.getOptionalString(color.getAsJsonObject(), "ratio", "1", location), location + ".ratio", modules),
+                            Util.compileMultiExpression(Util.getOptionalString(color.getAsJsonObject(), "red", "1", location), location + ".red", modules),
+                            Util.compileMultiExpression(Util.getOptionalString(color.getAsJsonObject(), "green", "1", location), location + ".green", modules),
+                            Util.compileMultiExpression(Util.getOptionalString(color.getAsJsonObject(), "blue", "1", location), location + ".blue", modules),
+                            Util.compileMultiExpression(Util.getOptionalString(color.getAsJsonObject(), "red_ratio", "1", location), location + ".red_ratio", modules),
+                            Util.compileMultiExpression(Util.getOptionalString(color.getAsJsonObject(), "green_ratio", "1", location), location + ".green_ratio", modules),
+                            Util.compileMultiExpression(Util.getOptionalString(color.getAsJsonObject(), "blue_ratio", "1", location), location + ".blue_ratio", modules)
                     ));
                 }
             } catch (Exception e) {
