@@ -15,12 +15,12 @@ public class MultiCelestialExpression extends CelestialExpression {
 
     public MultiCelestialExpression(String input, String location, MultiDataModule... modules) {
         super(location);
-        var context = new ExpressionContext();
+        ExpressionContext context = new ExpressionContext();
         try {
             //TODO
             context.addModule(CelestialModuleKt.getModule());
             context.addModule(CelestialSky.variableModule);
-            for (var module : modules) {
+            for (Module module : modules) {
                 if (module != null) context.addModule(module);
             }
             this.expression = ExpressionCompiler.compile(input, context);
@@ -77,14 +77,12 @@ public class MultiCelestialExpression extends CelestialExpression {
 
         @Override
         public boolean hasVariable(String name) {
-            var id = name.split(":");
             return this.getVariables().hasVariable(name);
         }
 
         @NotNull
         @Override
         public Function0<Double> getVariable(@NotNull String name) {
-            var id = name.split(":");
             return this.getVariables().getVariable(name);
         }
     }

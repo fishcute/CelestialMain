@@ -56,8 +56,8 @@ public class TriangleFanObject extends IBaseCelestialObject {
     public fishcute.celestialmain.sky.objects.ICelestialObject createObjectFromJson(JsonObject o, String name, String dimension, fishcute.celestialmain.sky.objects.PopulateObjectData.Module module) {
         JsonObject display = o.getAsJsonObject("display");
         JsonObject rotation = o.getAsJsonObject("rotation");
-        var modules = new MultiCelestialExpression.MultiDataModule[module != null ? 2:1];
-        var data = new TriangleFanData();
+        MultiCelestialExpression.MultiDataModule[] modules = new MultiCelestialExpression.MultiDataModule[module != null ? 2:1];
+        TriangleFanData data = new TriangleFanData();
         modules[0] = new TriangleFanModule(data);
         if (module != null) modules[1] = module;
         return new TriangleFanObject(

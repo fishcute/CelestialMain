@@ -161,14 +161,12 @@ public class PopulateObjectData implements MultiCelestialExpression.MultiDataMod
 
         @Override
         public boolean hasVariable(String name) {
-            var id = name.split(":");
             return this.getVariables().hasVariable(name);
         }
 
         @NotNull
         @Override
         public Function0<Double> getVariable(@NotNull String name) {
-            var id = name.split(":");
             return this.getVariables().getVariable(name);
         }
 
@@ -176,12 +174,28 @@ public class PopulateObjectData implements MultiCelestialExpression.MultiDataMod
     }
 
     public static HashMap<String, Function0<Double>> buildMap(Entry... entries) {
-        var out = new HashMap<String, Function0<Double>>();
+        HashMap<String, Function0<Double>> out = new HashMap<>();
         for (Entry entry: entries) {
             out.put(entry.key(), entry.value());
         }
         return out;
     }
 
-    public record Entry(String key, Expression value) {}
+    public static class Entry {
+        public final String key;
+        public final Expression value;
+
+        public Entry(String key, Expression value) {
+            this.key = key;
+            this.value = value;
+        }
+
+        public String key() {
+            return this.key;
+        }
+
+        public Expression value() {
+            return this.value;
+        }
+    }
 }

@@ -11,7 +11,7 @@ public class CelestialExpression {
     public CelestialExpression(String input, String location) {
         this.localLocation = location;
         try {
-            var context = new ExpressionContext();
+            ExpressionContext context = new ExpressionContext();
             context.addModule(CelestialModuleKt.getModule());
             context.addModule(CelestialSky.variableModule);
             this.expression = ExpressionCompiler.compile(input, context);
