@@ -92,6 +92,9 @@ val module = Module("fishcute/celestial",
         },
         "dayLight" to {
             Util.getDayLight(Util.repeat(Instances.minecraft.getWorldTime().toFloat(), 0.0F, 24000.0F))
+        },
+        "tickDelta" to {
+            Instances.minecraft.tickDelta.toDouble()
         }
     )),
     FunctionList(hashMapOf(

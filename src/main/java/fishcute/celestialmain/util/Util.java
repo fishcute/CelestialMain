@@ -6,7 +6,6 @@ import com.google.gson.JsonObject;
 import fishcute.celestialmain.api.minecraft.IMcVector;
 import fishcute.celestialmain.sky.CelestialSky;
 import fishcute.celestialmain.version.independent.Instances;
-import net.minecraft.util.Mth;
 import org.apache.commons.lang3.math.NumberUtils;
 
 import javax.imageio.ImageIO;
@@ -541,8 +540,8 @@ public class Util {
     }
     public static double getStarAlpha(double timeOfDay) {
         float g = (float) (timeOfDay / 360);
-        float h = 1.0F - (Mth.cos(g * 6.2831855F) * 2.0F + 0.25F);
-        h = Mth.clamp(h, 0.0F, 1.0F);
+        float h = 1.0F - (FMath.cos(g * 6.2831855F) * 2.0F + 0.25F);
+        h = FMath.clamp(h, 0.0F, 1.0F);
         return h * h * 0.5F;
     }
 
