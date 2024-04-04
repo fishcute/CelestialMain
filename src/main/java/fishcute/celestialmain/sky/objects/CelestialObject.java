@@ -26,9 +26,7 @@ public class CelestialObject extends IBaseCelestialObject {
 
     @Override
     public void tick() {
-        if (this.properties.color != null) {
-            this.properties.color.updateColor();
-        }
+
     }
 
     @Override
@@ -46,7 +44,7 @@ public class CelestialObject extends IBaseCelestialObject {
         float blue = this.properties.getBlue();
         float alpha = this.properties.alpha.invoke();
 
-        Instances.renderSystem.setShaderColor(red, green, blue, alpha);
+        Instances.renderSystem.setShaderColor(1, 1, 1, 1);
 
         if (this.properties.hasMoonPhases) {
             int l = (moonPhase % 4);

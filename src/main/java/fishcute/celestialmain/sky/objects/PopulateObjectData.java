@@ -120,6 +120,10 @@ public class PopulateObjectData implements MultiCelestialExpression.MultiDataMod
                 posZ = object.posZ.invoke();
                 scale = object.scale.invoke();
                 distance = object.distance.invoke();
+
+                if (object.properties.color != null) {
+                    object.properties.color.updateColor();
+                }
             }
             object.renderPre(bufferBuilder, matrices, matrix4f2,
                     (float) (degreesX + populateObject.degreesX),

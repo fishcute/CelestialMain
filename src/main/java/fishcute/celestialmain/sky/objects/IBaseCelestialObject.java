@@ -155,6 +155,10 @@ public abstract class IBaseCelestialObject extends ICelestialObject {
         matrices.celestial$mulPose(IPoseStackWrapper.Axis.X, this.baseDegreesY.invoke());
         matrices.celestial$mulPose(IPoseStackWrapper.Axis.Y, this.baseDegreesZ.invoke());
 
+        if (this.properties.color != null) {
+            this.properties.color.updateColor();
+        }
+
         if (this.populateData != null) {
             this.populateData.renderPopulateObjects(this, bufferBuilder, matrices, matrix4f2);
         }

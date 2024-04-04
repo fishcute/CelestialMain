@@ -43,7 +43,7 @@ public class ColorCelestialObject extends IBaseCelestialObject {
         float blue = this.properties.getBlue() * this.solidColor.getStoredBlue();
         float alpha = this.properties.alpha.invoke();
 
-        Instances.renderSystem.setShaderColor(red, green, blue, alpha);
+        Instances.renderSystem.setShaderColor(1, 1, 1, 1);
 
         if (this.vertexList != null && this.vertexList.size() > 0) {
             Util.VertexPointValue v;
