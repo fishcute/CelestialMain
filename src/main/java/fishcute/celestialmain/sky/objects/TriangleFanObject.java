@@ -136,7 +136,7 @@ public class TriangleFanObject extends IBaseCelestialObject {
             float q = FMath.cos(o);
             this.data.sideX = p;
             this.data.sideY = q;
-            this.data.sideZ = -q;
+            this.data.sideZ = 0;
 
             alpha = this.properties.alpha.invoke();
 
