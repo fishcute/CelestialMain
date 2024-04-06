@@ -55,7 +55,7 @@ public class ColorCelestialObject extends IBaseCelestialObject {
                         v.color == null ? red : red * (v.color.getRed() / 255.0F),
                         v.color == null ? green : green * (v.color.getGreen() / 255.0F),
                         v.color == null ? blue : blue * (v.color.getBlue() / 255.0F),
-                        (float) v.alpha);
+                        (float) v.alpha * alpha);
             }
         } else {
             bufferBuilder.celestial$vertexUv(matrix4f2, -scale, distance, (distance < 0 ? scale : -scale),
