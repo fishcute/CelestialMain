@@ -66,7 +66,7 @@ public class CelestialSky {
         JsonArray dimensionList = getFile("celestial:sky/dimensions.json").getAsJsonArray("dimensions");
 
         if (dimensionList == null) {
-            Util.sendCompilationError("Could not find dimension list in \"dimensions.json\".", "sky");
+            Util.sendCompilationError("Could not find dimension list in \"dimensions.json\".", "sky", null);
             return;
         }
 
@@ -138,7 +138,7 @@ public class CelestialSky {
                 colorEntryCount++;
             }
             catch (Exception e) {
-                Util.sendError("Failed to load empty color entry. Skipping global color entry initialization.", null);
+                Util.sendError("Failed to load empty color entry. Skipping global color entry initialization.", "color_entries.json", null);
                 break;
             }
         }
@@ -246,7 +246,7 @@ public class CelestialSky {
                 variableCount++;
             }
             catch (Exception e) {
-                Util.sendError("Failed to load empty variable entry. Skipping variable initialization.", null);
+                Util.sendError("Failed to load empty variable entry. Skipping variable initialization.", "variables.json", null);
                 break;
             }
         }

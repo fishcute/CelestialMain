@@ -63,19 +63,28 @@ public class Util {
     public static int errorCount;
     static ArrayList<String> errors = new ArrayList<>();
 
-    public static void sendCompilationError(String i, String location) {
+    public static void sendCompilationError(String i, String location, Exception e) {
         errorCount++;
         if (!Instances.minecraft.doesPlayerExist())
             return;
         Instances.minecraft.sendFormattedErrorMessage(i, "Compilation Error", location);
+        if (e != null) {
+            System.out.println("If this error looks unusual, please report the stack trace below!");
+            e.printStackTrace();
+        }
     }
 
-    public static void sendError(String i, String location) {
+    public static void sendError(String i, String location, Exception e) {
         if (!Instances.minecraft.doesPlayerExist() || errorCount > 25 || errors.contains(i))
             return;
         errorCount++;
         errors.add(i);
         Instances.minecraft.sendFormattedErrorMessage(i, "Error", location);
+
+        if (e != null) {
+            System.out.println("If this error looks unusual, please report the stack trace below!");
+            e.printStackTrace();
+        }
 
         if (errorCount >= 25)
             Instances.minecraft.sendErrorMessage("Passing 25 error messages. Muting error messages.");
@@ -87,10 +96,10 @@ public class Util {
         }
         catch (Exception e) {
             if (o.has(toGet)) {
-                Util.sendCompilationError("Failed to parse boolean \"" + o.get(toGet) + "\".", location + "." + toGet);
+                Util.sendCompilationError("Failed to parse boolean \"" + o.get(toGet) + "\".", location + "." + toGet, e);
             }
             else {
-                Util.sendCompilationError("Failed to parse boolean.", location + "." + toGet);
+                Util.sendCompilationError("Failed to parse boolean.", location + "." + toGet, e);
             }
             return false;
         }
@@ -102,10 +111,10 @@ public class Util {
         }
         catch (Exception e) {
             if (o.has(toGet)) {
-                Util.sendCompilationError("Failed to parse string \"" + o.get(toGet) + "\".", location + "." + toGet);
+                Util.sendCompilationError("Failed to parse string \"" + o.get(toGet) + "\".", location + "." + toGet, e);
             }
             else {
-                Util.sendCompilationError("Failed to parse string.", location + "." + toGet);
+                Util.sendCompilationError("Failed to parse string.", location + "." + toGet, e);
             }
             return "";
         }
@@ -117,7 +126,7 @@ public class Util {
             ImageIO.read(Instances.minecraft.getResource(texture));
         }
         catch (Exception e) {
-            Util.sendCompilationError("Invalid texture path \"" + texture + "\".", location + "." + toGet);
+            Util.sendCompilationError("Invalid texture path \"" + texture + "\".", location + "." + toGet, e);
         }
         return texture;
     }
@@ -128,10 +137,10 @@ public class Util {
         }
         catch (Exception e) {
             if (o.has(toGet)) {
-                Util.sendCompilationError("Failed to parse double \"" + o.get(toGet) + "\".", location + "." + toGet);
+                Util.sendCompilationError("Failed to parse double \"" + o.get(toGet) + "\".", location + "." + toGet, e);
             }
             else {
-                Util.sendCompilationError("Failed to parse double.", location + "." + toGet);
+                Util.sendCompilationError("Failed to parse double.", location + "." + toGet, e);
             }
             return 0;
         }
@@ -143,10 +152,10 @@ public class Util {
         }
         catch (Exception e) {
             if (o.has(toGet)) {
-                Util.sendCompilationError("Failed to parse integer \"" + o.get(toGet) + "\".", location + "." + toGet);
+                Util.sendCompilationError("Failed to parse integer \"" + o.get(toGet) + "\".", location + "." + toGet, e);
             }
             else {
-                Util.sendCompilationError("Failed to parse integer.", location + "." + toGet);
+                Util.sendCompilationError("Failed to parse integer.", location + "." + toGet, e);
             }
             return 0;
         }
@@ -179,8 +188,8 @@ public class Util {
     public static Color decodeColor(String hex, String location) {
         try {
             return decodeColor(hex);
-        } catch (Exception ignored) {
-            sendError("Failed to parse HEX color \"" + hex + "\".", location);
+        } catch (Exception e) {
+            sendError("Failed to parse HEX color \"" + hex + "\".", location, e);
             return new Color(255, 255, 255);
         }
     }
@@ -275,18 +284,20 @@ public class Util {
                 JsonObject entry = e.getAsJsonObject();
                 returnList.add(
                         new VertexPoint(
-                                getOptionalString(entry, "x", "", location),
-                                getOptionalString(entry, "y", "", location),
-                                getOptionalString(entry, "z", "", location),
-                                getOptionalString(entry, "uv_x", null, location),
-                                getOptionalString(entry, "uv_y", null, location),
+                                getOptionalString(entry, "x", "0", location),
+                                getOptionalString(entry, "y", "0", location),
+                                getOptionalString(entry, "z", "0", location),
+                                getOptionalString(entry, "uv_x", "0", location),
+                                getOptionalString(entry, "uv_y", "0", location),
+                                getOptionalString(entry, "alpha", "1", location),
+                                ColorEntry.createColorEntry(entry, location, "color", null, false, dataModules),
                                 location,
                                 dataModules
                         )
                 );
             }
         } catch (Exception e) {
-            sendError("Failed to parse vertex point list \"" + name + "\".", location);
+            sendError("Failed to parse vertex point list \"" + name + "\".", location, e);
             return new ArrayList<>();
         }
 
@@ -299,10 +310,12 @@ public class Util {
         public CelestialExpression pointZ;
         public CelestialExpression uvX;
         public CelestialExpression uvY;
+        public CelestialExpression alpha;
+        public ColorEntry color;
 
         public boolean hasUv;
 
-        public VertexPoint(String pointX, String pointY, String pointZ, String uvX, String uvY, String location, MultiCelestialExpression.MultiDataModule... dataModules) {
+        public VertexPoint(String pointX, String pointY, String pointZ, String uvX, String uvY, String alpha, ColorEntry color, String location, MultiCelestialExpression.MultiDataModule... dataModules) {
             this.pointX = Util.compileMultiExpression(pointX, location + ".x", dataModules);
             this.pointY = Util.compileMultiExpression(pointY, location + ".y", dataModules);
             this.pointZ = Util.compileMultiExpression(pointZ, location + ".z", dataModules);
@@ -311,6 +324,8 @@ public class Util {
 
             this.uvX = Util.compileMultiExpression(uvX, location + ".uv_x", dataModules);
             this.uvY = Util.compileMultiExpression(uvY, location + ".uv_x", dataModules);
+            this.alpha = Util.compileMultiExpression(alpha, location + ".alpha", dataModules);
+            this.color = color;
         }
     }
 
@@ -322,6 +337,8 @@ public class Util {
         public double uvY = 0;
 
         public boolean hasUv;
+        public Color color = new Color(255, 255, 255);
+        public double alpha = 0;
 
         public VertexPointValue(VertexPoint point) {
             this.pointX = point.pointX.invoke();
@@ -334,6 +351,13 @@ public class Util {
                 this.uvX = point.uvX.invoke();
                 this.uvY = point.uvY.invoke();
             }
+
+            if (point.color != null) {
+                point.color.tick();
+                this.color = point.color.getStoredColor();
+            }
+
+            this.alpha = point.alpha.invoke();
         }
     }
 

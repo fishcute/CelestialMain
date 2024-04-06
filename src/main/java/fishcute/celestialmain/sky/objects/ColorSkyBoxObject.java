@@ -30,20 +30,25 @@ public class ColorSkyBoxObject extends IBaseCelestialObject {
 
     @Override
     public void tick() {
-        if (this.properties.color != null) {
-            this.properties.color.updateColor();
-        }
-        if (this.solidColor != null) {
-            this.solidColor.updateColor();
-        }
     }
 
     @Override
     public void renderObject(IBufferBuilderWrapper bufferBuilder, IPoseStackWrapper matrices, Object matrix4f2, float scale, float distance) {
         Instances.renderSystem.setShaderPositionColor();
 
-        Instances.renderSystem.setShaderColor(this.properties.getRed() * this.solidColor.getStoredRed(), this.properties.getGreen() * this.solidColor.getStoredGreen(), this.properties.getBlue() * this.solidColor.getStoredBlue(), this.properties.alpha.invoke());
+        if (this.properties.color != null) {
+            this.properties.color.updateColor();
+        }
+        if (this.solidColor != null) {
+            this.solidColor.updateColor();
+        }
 
+        float red = this.properties.getRed() * this.solidColor.getStoredRed();
+        float green = this.properties.getGreen() * this.solidColor.getStoredGreen();
+        float blue = this.properties.getBlue() * this.solidColor.getStoredBlue();
+        float alpha = this.properties.alpha.invoke();
+
+        Instances.renderSystem.setShaderColor(1, 1, 1, 1);
         float size;
 
         for (int l = 0; l < 6; ++l) {
@@ -54,10 +59,10 @@ public class ColorSkyBoxObject extends IBaseCelestialObject {
             this.rotate(matrices, l);
             Object matrix4f3 = matrices.celestial$lastPose();
 
-            bufferBuilder.celestial$vertex(matrix4f3, -size, -size, -size, 1.0F, 1.0F, 1.0F, 1.0F);
-            bufferBuilder.celestial$vertex(matrix4f3, -size, -size, size,1.0F, 1.0F, 1.0F, 1.0F);
-            bufferBuilder.celestial$vertex(matrix4f3, size, -size, size, 1.0F, 1.0F, 1.0F, 1.0F);
-            bufferBuilder.celestial$vertex(matrix4f3, size, -size, -size, 1.0F, 1.0F, 1.0F, 1.0F);
+            bufferBuilder.celestial$vertex(matrix4f3, -size, -size, -size, red, green, blue, alpha);
+            bufferBuilder.celestial$vertex(matrix4f3, -size, -size, size,red, green, blue, alpha);
+            bufferBuilder.celestial$vertex(matrix4f3, size, -size, size, red, green, blue, alpha);
+            bufferBuilder.celestial$vertex(matrix4f3, size, -size, -size, red, green, blue, alpha);
             bufferBuilder.celestial$upload();
 
             // Should change this in the future

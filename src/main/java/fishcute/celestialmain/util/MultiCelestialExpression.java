@@ -25,16 +25,16 @@ public class MultiCelestialExpression extends CelestialExpression {
             }
             this.expression = ExpressionCompiler.compile(input, context);
         } catch (Exception e) {
-            Util.sendCompilationError(e.getMessage(), this.localLocation);
+            Util.sendCompilationError(e.getMessage(), this.localLocation, e);
+
             this.expression = () -> 0.0;
-            e.printStackTrace();
         }
     }
     public float invoke() {
         try {
             return this.expression.invoke().floatValue();
         } catch (Exception e) {
-            Util.sendError(e.getMessage(), this.localLocation);
+            Util.sendError(e.getMessage(), this.localLocation, e);
             return 0.0f;
         }
     }
@@ -43,7 +43,7 @@ public class MultiCelestialExpression extends CelestialExpression {
         try {
             return this.expression.invoke().intValue();
         } catch (Exception e) {
-            Util.sendError(e.getMessage(), this.localLocation);
+            Util.sendError(e.getMessage(), this.localLocation, e);
             return 0;
         }
     }

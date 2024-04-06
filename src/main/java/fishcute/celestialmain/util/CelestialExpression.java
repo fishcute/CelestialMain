@@ -5,6 +5,8 @@ import celestialexpressions.ExpressionCompiler;
 import celestialexpressions.ExpressionContext;
 import fishcute.celestialmain.sky.CelestialSky;
 
+import java.util.Arrays;
+
 public class CelestialExpression {
     public Expression expression;
     public final String localLocation;
@@ -16,7 +18,7 @@ public class CelestialExpression {
             context.addModule(CelestialSky.variableModule);
             this.expression = ExpressionCompiler.compile(input, context);
         } catch (Exception e) {
-            Util.sendCompilationError(e.getMessage(), this.localLocation);
+            Util.sendCompilationError(e.getMessage(), this.localLocation, e);
             this.expression = () -> 0.0;
         }
     }
@@ -33,7 +35,7 @@ public class CelestialExpression {
         try {
             return this.expression.invoke().floatValue();
         } catch (Exception e) {
-            Util.sendError(e.getMessage(), this.localLocation);
+            Util.sendError(e.getMessage(), this.localLocation, e);
             return 0.0f;
         }
     }
@@ -41,7 +43,7 @@ public class CelestialExpression {
         try {
             return this.expression.invoke().intValue();
         } catch (Exception e) {
-            Util.sendError(e.getMessage(), this.localLocation);
+            Util.sendError(e.getMessage(), this.localLocation, e);
             return 0;
         }
     }

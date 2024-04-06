@@ -23,7 +23,7 @@ public abstract class ICelestialObject {
 
     public static ICelestialObject getObjectFromJson(JsonObject o, String name, String dimension) {
         if (o == null) {
-            Util.sendCompilationError("Sky object \"" + name + "\" does not exist, or is formatted incorrectly.", dimension + "/sky");
+            Util.sendCompilationError("Sky object \"" + name + "\" does not exist, or is formatted incorrectly.", dimension + "/sky", null);
             return null;
         }
 

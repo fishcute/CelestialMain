@@ -26,17 +26,18 @@ public class ColorCelestialObject extends IBaseCelestialObject {
     }
     @Override
     public void tick() {
+    }
+
+    @Override
+    public void renderObject(IBufferBuilderWrapper bufferBuilder, IPoseStackWrapper matrices, Object matrix4f2, float scale, float distance) {
+        Instances.renderSystem.setShaderPositionColor();
+
         if (this.properties.color != null) {
             this.properties.color.updateColor();
         }
         if (this.solidColor != null) {
             this.solidColor.updateColor();
         }
-    }
-
-    @Override
-    public void renderObject(IBufferBuilderWrapper bufferBuilder, IPoseStackWrapper matrices, Object matrix4f2, float scale, float distance) {
-        Instances.renderSystem.setShaderPositionColor();
 
         float red = this.properties.getRed() * this.solidColor.getStoredRed();
         float green = this.properties.getGreen() * this.solidColor.getStoredGreen();
@@ -50,7 +51,11 @@ public class ColorCelestialObject extends IBaseCelestialObject {
             for (Util.VertexPoint vertexPoint : this.vertexList) {
                 v = new Util.VertexPointValue(vertexPoint);
                 bufferBuilder.celestial$vertexUv(matrix4f2, (float) v.pointX, (float) v.pointY, (float) v.pointZ,
-                        (float) v.uvX, (float) v.uvY, red, green, blue, 1.0F);
+                        (float) v.uvX, (float) v.uvY,
+                        v.color == null ? red : red * (v.color.getRed() / 255.0F),
+                        v.color == null ? green : green * (v.color.getGreen() / 255.0F),
+                        v.color == null ? blue : blue * (v.color.getBlue() / 255.0F),
+                        (float) v.alpha);
             }
         } else {
             bufferBuilder.celestial$vertexUv(matrix4f2, -scale, distance, (distance < 0 ? scale : -scale),

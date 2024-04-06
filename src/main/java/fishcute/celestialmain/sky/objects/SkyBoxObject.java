@@ -47,7 +47,13 @@ public class SkyBoxObject extends IBaseCelestialObject {
 
         SkyBoxObjectProperties.SkyBoxSideTexture side;
 
-        Instances.renderSystem.setShaderColor(this.properties.getRed(), this.properties.getGreen(), this.properties.getBlue(), this.properties.alpha.invoke());
+        if (this.properties.color != null) {
+            this.properties.color.updateColor();
+        }
+        float red = this.properties.getRed();
+        float green = this.properties.getGreen();
+        float blue = this.properties.getBlue();
+        float alpha = this.properties.alpha.invoke();
 
         float size;
         float textureX;
@@ -83,10 +89,10 @@ public class SkyBoxObject extends IBaseCelestialObject {
                 this.rotate(matrices, l);
                 Object matrix4f3 = matrices.celestial$lastPose();
 
-                bufferBuilder.celestial$vertexUv(matrix4f3, -size, -size, -size, textureX, textureY, 1.0F, 1.0F, 1.0F, 1.0F);
-                bufferBuilder.celestial$vertexUv(matrix4f3, -size, -size, size, textureX, textureScaleY,1.0F, 1.0F, 1.0F, 1.0F);
-                bufferBuilder.celestial$vertexUv(matrix4f3, size, -size, size, textureScaleX, textureScaleY, 1.0F, 1.0F, 1.0F, 1.0F);
-                bufferBuilder.celestial$vertexUv(matrix4f3, size, -size, -size, textureScaleX, textureY, 1.0F, 1.0F, 1.0F, 1.0F);
+                bufferBuilder.celestial$vertexUv(matrix4f3, -size, -size, -size, textureX, textureY, red, green, blue, alpha);
+                bufferBuilder.celestial$vertexUv(matrix4f3, -size, -size, size, textureX, textureScaleY, red, green, blue, alpha);
+                bufferBuilder.celestial$vertexUv(matrix4f3, size, -size, size, textureScaleX, textureScaleY, red, green, blue, alpha);
+                bufferBuilder.celestial$vertexUv(matrix4f3, size, -size, -size, textureScaleX, textureY, red, green, blue, alpha);
                 bufferBuilder.celestial$upload();
 
                 // Should change this in the future

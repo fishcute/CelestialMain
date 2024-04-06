@@ -52,7 +52,7 @@ public class CelestialEnvironmentRenderInfo {
     );
     public static CelestialEnvironmentRenderInfo createEnvironmentRenderInfoFromJson(JsonObject o, String dimension) {
         if (o == null) {
-            Util.sendCompilationError("Failed to read \"sky.json\" for dimension \"" + dimension + "\" while loading environment render info.", dimension + "/sky.json");
+            Util.sendCompilationError("Failed to read \"sky.json\" for dimension \"" + dimension + "\" while loading environment render info.", dimension + "/sky.json", null);
             return DEFAULT;
         }
         if (!o.has("environment")) {

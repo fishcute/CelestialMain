@@ -63,7 +63,7 @@ public abstract class IBaseCelestialObject extends ICelestialObject {
     @Override
     public ICelestialObject createFromJson(JsonObject o, String name, String dimension) {
         if (o == null) {
-            Util.sendCompilationError("Failed to load celestial object \"" + name + ".json\", as it did not exist.", dimension + "/sky.json");
+            Util.sendCompilationError("Failed to load celestial object \"" + name + ".json\", as it did not exist.", dimension + "/sky.json", null);
             return null;
         }
         IBaseCelestialObject i;
@@ -154,10 +154,6 @@ public abstract class IBaseCelestialObject extends ICelestialObject {
         matrices.celestial$mulPose(IPoseStackWrapper.Axis.Z, this.baseDegreesX.invoke());
         matrices.celestial$mulPose(IPoseStackWrapper.Axis.X, this.baseDegreesY.invoke());
         matrices.celestial$mulPose(IPoseStackWrapper.Axis.Y, this.baseDegreesZ.invoke());
-
-        if (this.properties.color != null) {
-            this.properties.color.updateColor();
-        }
 
         if (this.populateData != null) {
             this.populateData.renderPopulateObjects(this, bufferBuilder, matrices, matrix4f2);

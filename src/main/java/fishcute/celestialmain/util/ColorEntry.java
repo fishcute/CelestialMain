@@ -38,7 +38,7 @@ public class ColorEntry {
             case "lab":
                 return BlendType.LAB;
         }
-        Util.sendCompilationError("Unknown color entry blend type \"" + type + "\".", location);
+        Util.sendCompilationError("Unknown color entry blend type \"" + type + "\".", location, null);
         return BlendType.LINEAR_INTERPOLATION;
     }
 
@@ -172,27 +172,15 @@ public class ColorEntry {
     }
 
     public float getStoredRed() {
-        if (this.updateFrequency == -1) {
-            this.updateColor();
-        }
         return this.storedColor.getRed() / 255.0F;
     }
     public float getStoredGreen() {
-        if (this.updateFrequency == -1) {
-            this.updateColor();
-        }
         return this.storedColor.getGreen() / 255.0F;
     }
     public float getStoredBlue() {
-        if (this.updateFrequency == -1) {
-            this.updateColor();
-        }
         return this.storedColor.getBlue() / 255.0F;
     }
     public Color getStoredColor() {
-        if (this.updateFrequency == -1) {
-            this.updateColor();
-        }
         return this.storedColor.color == null ? new Color(255, 255, 255) : this.storedColor.color;
     }
 
@@ -254,7 +242,7 @@ public class ColorEntry {
                     ));
                 }
             } catch (Exception e) {
-                Util.sendError("Failed to parse color entry \"" + elementName + "\".", location + "." + elementName);
+                Util.sendError("Failed to parse color entry \"" + elementName + "\".", location + "." + elementName, null);
             }
         }
 
