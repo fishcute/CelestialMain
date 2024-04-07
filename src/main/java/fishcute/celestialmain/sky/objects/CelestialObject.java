@@ -1,20 +1,23 @@
 package fishcute.celestialmain.sky.objects;
 
+import celestialexpressions.Module;
 import com.google.gson.JsonObject;
 import fishcute.celestialmain.api.minecraft.wrappers.*;
 import fishcute.celestialmain.sky.CelestialObjectProperties;
+import fishcute.celestialmain.sky.CelestialSky;
 import fishcute.celestialmain.util.MultiCelestialExpression;
 import fishcute.celestialmain.util.Util;
 import fishcute.celestialmain.version.independent.Instances;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class CelestialObject extends IBaseCelestialObject {
     public CelestialObject() {}
     public IResourceLocationWrapper texture;
 
-    public CelestialObject(String texturePath, String scale, String posX, String posY, String posZ, String distance, String degreesX, String degreesY, String degreesZ, String baseDegreesX, String baseDegreesY, String baseDegreesZ, CelestialObjectProperties properties, String parent, String dimension, String name, ArrayList<Util.VertexPoint> vertexList, MultiCelestialExpression.MultiDataModule multiDataModule) {
-        super(scale, posX, posY, posZ, distance, degreesX, degreesY, degreesZ, baseDegreesX, baseDegreesY, baseDegreesZ, properties, parent, dimension, name, vertexList, multiDataModule);
+    public CelestialObject(Object[] localVariables, String texturePath, String scale, String posX, String posY, String posZ, String distance, String degreesX, String degreesY, String degreesZ, String baseDegreesX, String baseDegreesY, String baseDegreesZ, CelestialObjectProperties properties, String parent, String dimension, String name, ArrayList<Util.VertexPoint> vertexList, Module... multiDataModule) {
+        super(localVariables, scale, posX, posY, posZ, distance, degreesX, degreesY, degreesZ, baseDegreesX, baseDegreesY, baseDegreesZ, properties, parent, dimension, name, vertexList, multiDataModule);
         if (texturePath != null)
             this.texture = Instances.resourceLocationFactory.build(texturePath);
     }
@@ -91,7 +94,12 @@ public class CelestialObject extends IBaseCelestialObject {
     public ICelestialObject createObjectFromJson(JsonObject o, String name, String dimension, PopulateObjectData.Module module) {
         JsonObject display = o.getAsJsonObject("display");
         JsonObject rotation = o.getAsJsonObject("rotation");
+
+        Object[] localVariables = this.setupLocalVariables(o, name, dimension);
+        Module localModule = (Module) localVariables[1];
+
         return new CelestialObject(
+                localVariables,
                 Util.getOptionalTexture(o, "texture", null, Util.locationFormat(dimension, "objects/" + name, "")),
                 Util.getOptionalString(display, "scale", "0", Util.locationFormat(dimension, name, "display")),
                 Util.getOptionalString(display, "pos_x", "0", Util.locationFormat(dimension, name, "display")),
@@ -104,12 +112,13 @@ public class CelestialObject extends IBaseCelestialObject {
                 Util.getOptionalString(rotation, "base_degrees_x", "-90", Util.locationFormat(dimension, name, "rotation")),
                 Util.getOptionalString(rotation, "base_degrees_y", "0", Util.locationFormat(dimension, name, "rotation")),
                 Util.getOptionalString(rotation, "base_degrees_z", "-90", Util.locationFormat(dimension, name, "rotation")),
-                CelestialObjectProperties.createCelestialObjectPropertiesFromJson(o.getAsJsonObject("properties"), dimension, name, module),
+                CelestialObjectProperties.createCelestialObjectPropertiesFromJson(o.getAsJsonObject("properties"), dimension, name, module, localModule),
                 Util.getOptionalString(o, "parent", null, Util.locationFormat(dimension, name)),
                 dimension,
                 name,
-                Util.convertToPointUvList(o, "vertex", Util.locationFormat(dimension, "objects/" + name, "vertex"), module),
-                module
+                Util.convertToPointUvList(o, "vertex", Util.locationFormat(dimension, "objects/" + name, "vertex"), module, localModule),
+                module,
+                localModule
         );
     }
 

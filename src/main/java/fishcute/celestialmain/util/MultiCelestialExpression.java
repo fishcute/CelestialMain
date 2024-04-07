@@ -13,7 +13,7 @@ public class MultiCelestialExpression extends CelestialExpression {
 
     public int index = 0;
 
-    public MultiCelestialExpression(String input, String location, MultiDataModule... modules) {
+    public MultiCelestialExpression(String input, String location, Module... modules) {
         super(location);
         ExpressionContext context = new ExpressionContext();
         try {

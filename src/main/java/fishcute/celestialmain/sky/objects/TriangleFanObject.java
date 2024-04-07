@@ -1,8 +1,10 @@
 package fishcute.celestialmain.sky.objects;
 
+import celestialexpressions.Module;
 import com.google.gson.JsonObject;
 import fishcute.celestialmain.api.minecraft.wrappers.*;
 import fishcute.celestialmain.sky.CelestialObjectProperties;
+import fishcute.celestialmain.sky.CelestialSky;
 import fishcute.celestialmain.util.*;
 import fishcute.celestialmain.version.independent.Instances;
 import kotlin.jvm.functions.Function0;
@@ -42,8 +44,8 @@ public class TriangleFanObject extends IBaseCelestialObject {
         }
     }
 
-    public TriangleFanObject(String sideX, String sideY, String sideZ, String complexity, ColorEntry solidColor, String scale, String posX, String posY, String posZ, String distance, String degreesX, String degreesY, String degreesZ, String baseDegreesX, String baseDegreesY, String baseDegreesZ, CelestialObjectProperties properties, String parent, String dimension, String name, ArrayList<Util.VertexPoint> vertexList, TriangleFanData data, @NotNull MultiCelestialExpression.MultiDataModule... multiDataModule) {
-        super(scale, posX, posY, posZ, distance, degreesX, degreesY, degreesZ, baseDegreesX, baseDegreesY, baseDegreesZ, properties, parent, dimension, name, vertexList, multiDataModule);
+    public TriangleFanObject(Object[] localVariables, String sideX, String sideY, String sideZ, String complexity, ColorEntry solidColor, String scale, String posX, String posY, String posZ, String distance, String degreesX, String degreesY, String degreesZ, String baseDegreesX, String baseDegreesY, String baseDegreesZ, CelestialObjectProperties properties, String parent, String dimension, String name, ArrayList<Util.VertexPoint> vertexList, TriangleFanData data, Module... multiDataModule) {
+        super(localVariables, scale, posX, posY, posZ, distance, degreesX, degreesY, degreesZ, baseDegreesX, baseDegreesY, baseDegreesZ, properties, parent, dimension, name, vertexList, multiDataModule);
         this.solidColor = solidColor;
         this.sideX = Util.compileExpressionObject(sideX, dimension, name, "display.pos_side_x", multiDataModule);
         this.sideY = Util.compileExpressionObject(sideY, dimension, name, "display.pos_side_y", multiDataModule);
@@ -56,16 +58,22 @@ public class TriangleFanObject extends IBaseCelestialObject {
     public fishcute.celestialmain.sky.objects.ICelestialObject createObjectFromJson(JsonObject o, String name, String dimension, fishcute.celestialmain.sky.objects.PopulateObjectData.Module module) {
         JsonObject display = o.getAsJsonObject("display");
         JsonObject rotation = o.getAsJsonObject("rotation");
-        MultiCelestialExpression.MultiDataModule[] modules = new MultiCelestialExpression.MultiDataModule[module != null ? 2:1];
+
+        Object[] localVariables = this.setupLocalVariables(o, name, dimension);
+        Module localModule = (Module) localVariables[1];
+
+        Module[] modules = new Module[module != null ? 3:2];
         TriangleFanData data = new TriangleFanData();
         modules[0] = new TriangleFanModule(data);
-        if (module != null) modules[1] = module;
+        modules[1] = localModule;
+        if (module != null) modules[2] = module;
         return new TriangleFanObject(
+                localVariables,
                 Util.getOptionalString(display, "pos_side_x", "sideXPos", Util.locationFormat(dimension, name, "display")),
                 Util.getOptionalString(display, "pos_side_y", "sideYPos", Util.locationFormat(dimension, name, "display")),
                 Util.getOptionalString(display, "pos_side_z", "sideZPos", Util.locationFormat(dimension, name, "display")),
                 Util.getOptionalString(display, "complexity", "16", Util.locationFormat(dimension, name, "display")),
-                ColorEntry.createColorEntry(o, Util.locationFormat(dimension, "objects/" + name, "solid_color"), "solid_color", null, false, module),
+                ColorEntry.createColorEntry(o, Util.locationFormat(dimension, "objects/" + name, "solid_color"), "solid_color", null, false, modules),
                 Util.getOptionalString(display, "scale", "0", Util.locationFormat(dimension, name, "display")),
                 Util.getOptionalString(display, "pos_x", "0", Util.locationFormat(dimension, name, "display")),
                 Util.getOptionalString(display, "pos_z", "0", Util.locationFormat(dimension, name, "display")),

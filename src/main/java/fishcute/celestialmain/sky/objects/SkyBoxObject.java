@@ -1,24 +1,27 @@
 package fishcute.celestialmain.sky.objects;
 
+import celestialexpressions.Module;
 import com.google.gson.JsonObject;
 import fishcute.celestialmain.api.minecraft.wrappers.IBufferBuilderWrapper;
 import fishcute.celestialmain.api.minecraft.wrappers.IPoseStackWrapper;
 import fishcute.celestialmain.api.minecraft.wrappers.IResourceLocationWrapper;
 import fishcute.celestialmain.sky.CelestialObjectProperties;
+import fishcute.celestialmain.sky.CelestialSky;
 import fishcute.celestialmain.sky.SkyBoxObjectProperties;
 import fishcute.celestialmain.util.MultiCelestialExpression;
 import fishcute.celestialmain.util.Util;
 import fishcute.celestialmain.version.independent.Instances;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class SkyBoxObject extends IBaseCelestialObject {
     public SkyBoxObject() {}
     public IResourceLocationWrapper texture;
     public SkyBoxObjectProperties skyBoxObjectProperties;
 
-    public SkyBoxObject(SkyBoxObjectProperties skyBoxObjectProperties, String texturePath, String scale, String posX, String posY, String posZ, String distance, String degreesX, String degreesY, String degreesZ, String baseDegreesX, String baseDegreesY, String baseDegreesZ, CelestialObjectProperties properties, String parent, String dimension, String name, ArrayList<Util.VertexPoint> vertexList, MultiCelestialExpression.MultiDataModule multiDataModule) {
-        super(scale, posX, posY, posZ, distance, degreesX, degreesY, degreesZ, baseDegreesX, baseDegreesY, baseDegreesZ, properties, parent, dimension, name, vertexList, multiDataModule);
+    public SkyBoxObject(Object[] localVariables, SkyBoxObjectProperties skyBoxObjectProperties, String texturePath, String scale, String posX, String posY, String posZ, String distance, String degreesX, String degreesY, String degreesZ, String baseDegreesX, String baseDegreesY, String baseDegreesZ, CelestialObjectProperties properties, String parent, String dimension, String name, ArrayList<Util.VertexPoint> vertexList, Module... multiDataModule) {
+        super(localVariables, scale, posX, posY, posZ, distance, degreesX, degreesY, degreesZ, baseDegreesX, baseDegreesY, baseDegreesZ, properties, parent, dimension, name, vertexList, multiDataModule);
         if (texturePath != null) {
             this.texture = Instances.resourceLocationFactory.build(texturePath);
         }
@@ -163,7 +166,12 @@ public class SkyBoxObject extends IBaseCelestialObject {
     public ICelestialObject createObjectFromJson(JsonObject o, String name, String dimension, PopulateObjectData.Module module) {
         JsonObject display = o.getAsJsonObject("display");
         JsonObject rotation = o.getAsJsonObject("rotation");
+
+        Object[] localVariables = this.setupLocalVariables(o, name, dimension);
+        Module localModule = (Module) localVariables[1];
+
         return new SkyBoxObject(
+                localVariables,
                 SkyBoxObjectProperties.getSkyboxPropertiesFromJson(o, dimension, name),
                 Util.getOptionalTexture(o, "texture", null, Util.locationFormat(dimension, "objects/" + name, "texture")),
                 Util.getOptionalString(display, "scale", "0", Util.locationFormat(dimension, name, "display")),
@@ -177,12 +185,13 @@ public class SkyBoxObject extends IBaseCelestialObject {
                 Util.getOptionalString(rotation, "base_degrees_x", "-90", Util.locationFormat(dimension, name, "rotation")),
                 Util.getOptionalString(rotation, "base_degrees_y", "0", Util.locationFormat(dimension, name, "rotation")),
                 Util.getOptionalString(rotation, "base_degrees_z", "-90", Util.locationFormat(dimension, name, "rotation")),
-                CelestialObjectProperties.createCelestialObjectPropertiesFromJson(o.getAsJsonObject("properties"), dimension, name, module),
+                CelestialObjectProperties.createCelestialObjectPropertiesFromJson(o.getAsJsonObject("properties"), dimension, name, module, localModule),
                 Util.getOptionalString(o, "parent", null, Util.locationFormat(dimension, name)),
                 dimension,
                 name,
-                Util.convertToPointUvList(o, "vertex", Util.locationFormat(dimension, "objects/" + name, "vertex"), module),
-                module
+                Util.convertToPointUvList(o, "vertex", Util.locationFormat(dimension, "objects/" + name, "vertex"), module, localModule),
+                module,
+                localModule
         );
     }
 

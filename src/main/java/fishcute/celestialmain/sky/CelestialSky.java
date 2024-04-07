@@ -181,7 +181,7 @@ public class CelestialSky {
         if (doesDimensionHaveCustomSky()) {
             getDimensionRenderInfo().environment.updateColorEntries();
             for (ICelestialObject object : getDimensionRenderInfo().skyObjects) {
-                object.tick();
+                object.preTick();
             }
         }
 
@@ -260,7 +260,7 @@ public class CelestialSky {
                 new FunctionList());
     }
 
-    static class Variable {
+    public static class Variable {
         public int updateFrequency;
         public int updateTick;
         public CelestialExpression value;
@@ -281,7 +281,9 @@ public class CelestialSky {
         public void compile() {
             this.value = Util.compileExpression(this.valueString, this.location);
         }
-
+        public void compile(Module m) {
+            this.value = Util.compileMultiExpression(this.valueString, this.location, m);
+        }
         public void updateValue() {
             this.storedValue = this.value.invoke();
         }

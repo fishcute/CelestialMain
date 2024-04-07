@@ -1,5 +1,6 @@
 package fishcute.celestialmain.util;
 
+import celestialexpressions.Module;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -184,7 +185,7 @@ public class ColorEntry {
         return this.storedColor.color == null ? new Color(255, 255, 255) : this.storedColor.color;
     }
 
-    public static ColorEntry createColorEntry(JsonObject o, String location, String elementName, ColorEntry defaultEntry, boolean optionalSkyEffects, MultiCelestialExpression.MultiDataModule... modules) {
+    public static ColorEntry createColorEntry(JsonObject o, String location, String elementName, ColorEntry defaultEntry, boolean optionalSkyEffects, Module... modules) {
         location += "." + elementName;
 
         if (o == null)
@@ -213,8 +214,8 @@ public class ColorEntry {
                 location,
                 modules);
     }
-    public ColorEntry(String baseColor, JsonArray colorsJson, String elementName, int updateFrequency, boolean ignoreSkyEffects, String r, String g, String b, String location, MultiCelestialExpression.MultiDataModule... module) {
-        MultiCelestialExpression.MultiDataModule[] modules = new MultiCelestialExpression.MultiDataModule[module.length + 1];
+    public ColorEntry(String baseColor, JsonArray colorsJson, String elementName, int updateFrequency, boolean ignoreSkyEffects, String r, String g, String b, String location, Module... module) {
+        Module[] modules = new Module[module.length + 1];
 
         System.arraycopy(module, 0, modules, 0, module.length);
 

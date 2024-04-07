@@ -1,5 +1,6 @@
 package fishcute.celestialmain.sky;
 
+import celestialexpressions.Module;
 import com.google.gson.JsonObject;
 import fishcute.celestialmain.util.CelestialExpression;
 import fishcute.celestialmain.util.ColorEntry;
@@ -24,7 +25,7 @@ public class CelestialObjectProperties {
         return this.color == null ? 1.0F : (color.getStoredBlue());
     }
 
-    public CelestialObjectProperties(boolean hasMoonPhases, String moonPhase, boolean isSolid, String alpha, boolean blend, ColorEntry color, String location, MultiCelestialExpression.MultiDataModule... module) {
+    public CelestialObjectProperties(boolean hasMoonPhases, String moonPhase, boolean isSolid, String alpha, boolean blend, ColorEntry color, String location, Module... module) {
         this.hasMoonPhases = hasMoonPhases;
         this.moonPhase = Util.compileMultiExpression(moonPhase, location + ".moon_phase", module);
         this.isSolid = isSolid;
@@ -32,7 +33,7 @@ public class CelestialObjectProperties {
         this.blend = blend;
         this.color = color;
     }
-    public static CelestialObjectProperties createCelestialObjectPropertiesFromJson(JsonObject o, String dimension, String object, MultiCelestialExpression.MultiDataModule... module) {
+    public static CelestialObjectProperties createCelestialObjectPropertiesFromJson(JsonObject o, String dimension, String object, Module... module) {
         return new CelestialObjectProperties(
                 Util.getOptionalBoolean(o, "has_moon_phases", false, Util.locationFormat(dimension, "properties")),
                 Util.getOptionalString(o, "moon_phase", "moonPhase", Util.locationFormat(dimension, "properties")),

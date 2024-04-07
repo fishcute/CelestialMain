@@ -1,5 +1,6 @@
 package fishcute.celestialmain.util;
 
+import celestialexpressions.Module;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -40,11 +41,11 @@ public class Util {
 //        return compileMultiExpression(input, location, multiDataModule);
 //    }
 
-    public static MultiCelestialExpression compileMultiExpression(String input, String location, MultiCelestialExpression.MultiDataModule... multiDataModule) {
+    public static MultiCelestialExpression compileMultiExpression(String input, String location, Module... multiDataModule) {
         return new MultiCelestialExpression(input, location, multiDataModule);
     }
 
-    public static CelestialExpression compileExpressionObject(String equation, String dimension, String objectName, String location, MultiCelestialExpression.MultiDataModule... multiDataModule) {
+    public static CelestialExpression compileExpressionObject(String equation, String dimension, String objectName, String location, Module... multiDataModule) {
         if (multiDataModule == null) {
             return compileExpression(equation, Util.locationFormat(dimension, "objects/" + objectName, location));
         }
@@ -274,7 +275,7 @@ public class Util {
         return (LocalDate.now().atTime(LocalTime.now()).getHour() * 60) + LocalDate.now().atTime(LocalTime.now()).getMinute();
     }
 
-    public static ArrayList<VertexPoint> convertToPointUvList(JsonObject o, String name, String location, MultiCelestialExpression.MultiDataModule... dataModules) {
+    public static ArrayList<VertexPoint> convertToPointUvList(JsonObject o, String name, String location, Module... dataModules) {
 
         ArrayList<VertexPoint> returnList = new ArrayList<>();
         try {
@@ -315,7 +316,7 @@ public class Util {
 
         public boolean hasUv;
 
-        public VertexPoint(String pointX, String pointY, String pointZ, String uvX, String uvY, String alpha, ColorEntry color, String location, MultiCelestialExpression.MultiDataModule... dataModules) {
+        public VertexPoint(String pointX, String pointY, String pointZ, String uvX, String uvY, String alpha, ColorEntry color, String location, Module... dataModules) {
             this.pointX = Util.compileMultiExpression(pointX, location + ".x", dataModules);
             this.pointY = Util.compileMultiExpression(pointY, location + ".y", dataModules);
             this.pointZ = Util.compileMultiExpression(pointZ, location + ".z", dataModules);

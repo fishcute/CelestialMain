@@ -1,9 +1,11 @@
 package fishcute.celestialmain.sky.objects;
 
+import celestialexpressions.Module;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import fishcute.celestialmain.api.minecraft.wrappers.*;
 import fishcute.celestialmain.sky.CelestialObjectProperties;
+import fishcute.celestialmain.sky.CelestialSky;
 import fishcute.celestialmain.util.CelestialExpression;
 import fishcute.celestialmain.util.MultiCelestialExpression;
 import fishcute.celestialmain.util.Util;
@@ -11,6 +13,7 @@ import fishcute.celestialmain.version.independent.Instances;
 import net.minecraft.client.renderer.FogRenderer;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public abstract class IBaseCelestialObject extends ICelestialObject {
     public IBaseCelestialObject() {
@@ -38,7 +41,13 @@ public abstract class IBaseCelestialObject extends ICelestialObject {
     public final CelestialObjectProperties properties;
     public final ArrayList<Util.VertexPoint> vertexList;
 
-    public IBaseCelestialObject(String scale, String posX, String posY, String posZ, String distance, String degreesX, String degreesY, String degreesZ, String baseDegreesX, String baseDegreesY, String baseDegreesZ, CelestialObjectProperties celestialObjectProperties, String parent, String dimension, String name, ArrayList<Util.VertexPoint> vertexList, MultiCelestialExpression.MultiDataModule... multiDataModule) {
+    public IBaseCelestialObject(Object[] localVariables, String scale, String posX, String posY, String posZ, String distance, String degreesX, String degreesY, String degreesZ, String baseDegreesX, String baseDegreesY, String baseDegreesZ, CelestialObjectProperties celestialObjectProperties, String parent, String dimension, String name, ArrayList<Util.VertexPoint> vertexList, Module... multiDataModule) {
+        this.localVariables = (HashMap<String, CelestialSky.Variable>) localVariables[0];
+        this.localVariableModule = (Module) localVariables[1];
+
+        for (CelestialSky.Variable v : this.localVariables.values()) {
+            v.compile(this.localVariableModule);
+        }
 
         this.posX = Util.compileExpressionObject(posX, dimension, name, "display.pos_x", multiDataModule);
         this.posY = Util.compileExpressionObject(posY, dimension, name, "display.pos_y", multiDataModule);
@@ -150,6 +159,10 @@ public abstract class IBaseCelestialObject extends ICelestialObject {
 
         Instances.renderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         this.begin(bufferBuilder);
+
+        if (this.populateData != null) {
+            this.populateData.index = 0;
+        }
 
         matrices.celestial$mulPose(IPoseStackWrapper.Axis.Z, this.baseDegreesX.invoke());
         matrices.celestial$mulPose(IPoseStackWrapper.Axis.X, this.baseDegreesY.invoke());
