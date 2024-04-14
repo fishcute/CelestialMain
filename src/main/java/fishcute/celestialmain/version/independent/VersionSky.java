@@ -124,7 +124,7 @@ public class VersionSky {
     public static void setupFog() {
         if (CelestialSky.doesDimensionHaveCustomSky() && !CelestialSky.getDimensionRenderInfo().environment.useSimpleFog() && !Instances.minecraft.disableFogChanges()) {
             if (Instances.minecraft.hasDarkness()) {
-                float darkness = Instances.minecraft.getDarknessFogEffect(CelestialSky.getDimensionRenderInfo().environment.fogStart.invoke(), Instances.minecraft.getTickDelta());
+                float darkness = Instances.minecraft.getDarknessFogEffect(CelestialSky.getDimensionRenderInfo().environment.fogStart.invoke());
                 Instances.renderSystem.setShaderFogStart(darkness * 0.75F);
                 Instances.renderSystem.setShaderFogEnd(darkness);
             }
@@ -144,7 +144,7 @@ public class VersionSky {
 
         if (color != null && color[0] != 0.0F && color[1] != 0.0F && color[2] != 0.0F) {
             float w = Math.min(1.0F / color[0], Math.min(1.0F / color[1], 1.0F / color[2]));
-            float v = (float) Instances.minecraft.getNightVisionModifier(Instances.minecraft.getTickDelta());
+            float v = (float) Instances.minecraft.getNightVisionModifier();
             color[0] = color[0] * (1.0F - v) + color[0] * w * v;
             color[1] = color[1] * (1.0F - v) + color[1] * w * v;
             color[2] = color[2] * (1.0F - v) + color[2] * w * v;
@@ -152,7 +152,7 @@ public class VersionSky {
 
         if (Instances.minecraft.hasDarkness()) {
             // Probably not the exact calculations minecraft makes, but results in the same effect
-            float darkness = 1 - (Instances.minecraft.getDarknessFogEffect(0, Instances.minecraft.getTickDelta()) / 15);
+            float darkness = 1 - (Instances.minecraft.getDarknessFogEffect(0) / 15);
             color[0] = color[0] * darkness;
             color[1] = color[1] * darkness;
             color[2] = color[2] * darkness;
