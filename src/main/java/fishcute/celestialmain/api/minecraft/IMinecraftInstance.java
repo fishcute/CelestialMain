@@ -54,9 +54,9 @@ public interface IMinecraftInstance {
 
     boolean disableFogChanges();
     boolean isCameraInWater();
-    double getNightVisionModifier(float tickDelta);
+    double getNightVisionModifier();
     boolean isSneaking();
 
-    float getDarknessFogEffect(float fogStart, float tickDelta);
+    float getDarknessFogEffect(float fogStart);
     boolean hasDarkness();
 }
