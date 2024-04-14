@@ -69,22 +69,22 @@ public class TriangleFanObject extends IBaseCelestialObject {
         if (module != null) modules[2] = module;
         return new TriangleFanObject(
                 localVariables,
-                Util.getOptionalString(display, "pos_side_x", "sideXPos", Util.locationFormat(dimension, name, "display")),
-                Util.getOptionalString(display, "pos_side_y", "sideYPos", Util.locationFormat(dimension, name, "display")),
-                Util.getOptionalString(display, "pos_side_z", "sideZPos", Util.locationFormat(dimension, name, "display")),
-                Util.getOptionalString(display, "complexity", "16", Util.locationFormat(dimension, name, "display")),
+                Util.getOptionalString(display, "pos_side_x", DEFAULT_POS_SIDE_X, Util.locationFormat(dimension, name, "display")),
+                Util.getOptionalString(display, "pos_side_y", DEFAULT_POS_SIDE_Y, Util.locationFormat(dimension, name, "display")),
+                Util.getOptionalString(display, "pos_side_z", DEFAULT_POS_SIDE_Z, Util.locationFormat(dimension, name, "display")),
+                Util.getOptionalString(display, "complexity", DEFAULT_COMPLEXITY, Util.locationFormat(dimension, name, "display")),
                 ColorEntry.createColorEntry(o, Util.locationFormat(dimension, "objects/" + name, "solid_color"), "solid_color", null, false, modules),
-                Util.getOptionalString(display, "scale", "0", Util.locationFormat(dimension, name, "display")),
-                Util.getOptionalString(display, "pos_x", "0", Util.locationFormat(dimension, name, "display")),
-                Util.getOptionalString(display, "pos_z", "0", Util.locationFormat(dimension, name, "display")),
-                Util.getOptionalString(display, "pos_y", "0", Util.locationFormat(dimension, name, "display")),
-                Util.getOptionalString(display, "distance", "0", Util.locationFormat(dimension, name, "display")),
-                Util.getOptionalString(rotation, "degrees_x", "0", Util.locationFormat(dimension, name, "rotation")),
-                Util.getOptionalString(rotation, "degrees_y", "0", Util.locationFormat(dimension, name, "rotation")),
-                Util.getOptionalString(rotation, "degrees_z", "0", Util.locationFormat(dimension, name, "rotation")),
-                Util.getOptionalString(rotation, "base_degrees_x", "-90", Util.locationFormat(dimension, name, "rotation")),
-                Util.getOptionalString(rotation, "base_degrees_y", "0", Util.locationFormat(dimension, name, "rotation")),
-                Util.getOptionalString(rotation, "base_degrees_z", "-90", Util.locationFormat(dimension, name, "rotation")),
+                Util.getOptionalString(display, "scale", DEFAULT_SCALE, Util.locationFormat(dimension, name, "display")),
+                Util.getOptionalString(display, "pos_x", DEFAULT_POS_X, Util.locationFormat(dimension, name, "display")),
+                Util.getOptionalString(display, "pos_y", DEFAULT_POS_Y, Util.locationFormat(dimension, name, "display")),
+                Util.getOptionalString(display, "pos_z", DEFAULT_POS_Z, Util.locationFormat(dimension, name, "display")),
+                Util.getOptionalString(display, "distance", DEFAULT_DISTANCE, Util.locationFormat(dimension, name, "display")),
+                Util.getOptionalString(rotation, "degrees_x", DEFAULT_DEGREES_X, Util.locationFormat(dimension, name, "rotation")),
+                Util.getOptionalString(rotation, "degrees_y", DEFAULT_DEGREES_Y, Util.locationFormat(dimension, name, "rotation")),
+                Util.getOptionalString(rotation, "degrees_z", DEFAULT_DEGREES_Z, Util.locationFormat(dimension, name, "rotation")),
+                Util.getOptionalString(rotation, "base_degrees_x", DEFAULT_BASE_DEGREES_X, Util.locationFormat(dimension, name, "rotation")),
+                Util.getOptionalString(rotation, "base_degrees_y", DEFAULT_BASE_DEGREES_Y, Util.locationFormat(dimension, name, "rotation")),
+                Util.getOptionalString(rotation, "base_degrees_z", DEFAULT_BASE_DEGREES_Z, Util.locationFormat(dimension, name, "rotation")),
                 CelestialObjectProperties.createCelestialObjectPropertiesFromJson(o.getAsJsonObject("properties"), dimension, name, modules),
                 Util.getOptionalString(o, "parent", null, Util.locationFormat(dimension, name)),
                 dimension,
@@ -135,7 +135,7 @@ public class TriangleFanObject extends IBaseCelestialObject {
         float blue = this.solidColor.getStoredBlue() * this.properties.getBlue();
         float alpha = this.properties.alpha.invoke();
 
-        bufferBuilder.celestial$vertex(matrix4f2, this.sideX.invoke(), this.sideY.invoke(), this.sideZ.invoke(), red, green, blue, alpha);
+        bufferBuilder.celestial$vertex(matrix4f2, this.sideX.invoke() * scale, this.sideY.invoke() * scale, this.sideZ.invoke() * scale, red, green, blue, alpha);
 
         for (int n = 0; n <= complexity; ++n) {
             this.data.index = n + 1;
@@ -150,7 +150,7 @@ public class TriangleFanObject extends IBaseCelestialObject {
 
             //Instances.renderSystem.setShaderColor(red, green, blue, alpha);
 
-            bufferBuilder.celestial$vertex(matrix4f2, this.sideX.invoke(), this.sideY.invoke(), this.sideZ.invoke(), red, green, blue, alpha);
+            bufferBuilder.celestial$vertex(matrix4f2, this.sideX.invoke() * scale, this.sideY.invoke() * scale, this.sideZ.invoke() * scale, red, green, blue, alpha);
         }
     }
 

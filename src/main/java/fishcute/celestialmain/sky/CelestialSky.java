@@ -7,6 +7,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import fishcute.celestialmain.sky.objects.IBaseCelestialObject;
 import fishcute.celestialmain.sky.objects.ICelestialObject;
 import fishcute.celestialmain.util.CelestialExpression;
 import fishcute.celestialmain.util.ClientTick;
@@ -68,6 +69,16 @@ public class CelestialSky {
         if (dimensionList == null) {
             Util.sendCompilationError("Could not find dimension list in \"dimensions.json\".", "sky", null);
             return;
+        }
+
+        boolean legacy = Util.getOptionalBoolean(getFile("celestial:sky/dimensions.json"), "legacy_rotations", false, Util.locationFormat("sky/dimensions.json", "legacy_rotations"));
+        if (legacy) {
+            IBaseCelestialObject.DEFAULT_BASE_DEGREES_X = "-90";
+            IBaseCelestialObject.DEFAULT_BASE_DEGREES_Z = "-90";
+        }
+        else {
+            IBaseCelestialObject.DEFAULT_BASE_DEGREES_X = "0";
+            IBaseCelestialObject.DEFAULT_BASE_DEGREES_Z = "0";
         }
 
         for (String dimension : getAsStringList(dimensionList)) {

@@ -16,6 +16,24 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public abstract class IBaseCelestialObject extends ICelestialObject {
+    public static final String DEFAULT_SCALE = "10";
+    public static final String DEFAULT_POS_X = "0";
+    public static final String DEFAULT_POS_Y = "0";
+    public static final String DEFAULT_POS_Z = "0";
+    public static final String DEFAULT_DISTANCE = "100";
+    public static final String DEFAULT_DEGREES_X = "0";
+    public static final String DEFAULT_DEGREES_Y = "0";
+    public static final String DEFAULT_DEGREES_Z = "0";
+    public static String DEFAULT_BASE_DEGREES_X = "0";
+    public static String DEFAULT_BASE_DEGREES_Y = "0";
+    public static String DEFAULT_BASE_DEGREES_Z = "0";
+    public static String DEFAULT_POS_SIDE_X = "sideXPos";
+    public static String DEFAULT_POS_SIDE_Y = "sideYPos";
+    public static String DEFAULT_POS_SIDE_Z = "sideZPos";
+    public static String DEFAULT_COMPLEXITY = "16";
+
+
+
     public IBaseCelestialObject() {
         scale = null;
         distance = null;
@@ -103,7 +121,7 @@ public abstract class IBaseCelestialObject extends ICelestialObject {
 
         String location = Util.locationFormat(dimension, "populate");
 
-        int count = Util.getOptionalInteger(o, "count", 0, location);
+        int count = Util.getOptionalInteger(o, "count", 1, location);
 
         data = new PopulateObjectData(
                 count,
@@ -152,7 +170,7 @@ public abstract class IBaseCelestialObject extends ICelestialObject {
     public void render(IBufferBuilderWrapper bufferBuilder, IPoseStackWrapper matrices, Object matrix4f2) {
         Instances.renderSystem.toggleBlend(this.properties.blend);
 
-        //FogRenderer.levelFogColor(); //TODO: Figure out what this is
+        //FogRenderer.levelFogColor();
 
         if (this.properties.isSolid)
             Instances.renderSystem.defaultBlendFunc();
