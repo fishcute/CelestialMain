@@ -115,6 +115,8 @@ public class TriangleFanObject extends IBaseCelestialObject {
     }
     @Override
     public void renderObject(IBufferBuilderWrapper bufferBuilder, IPoseStackWrapper matrices, Object matrix4f2, float scale, float distance) {
+        Instances.renderSystem.shadeModel(7425);
+
         Instances.renderSystem.toggleTexture(false);
 
         Instances.renderSystem.setShaderPositionColor();
@@ -152,6 +154,8 @@ public class TriangleFanObject extends IBaseCelestialObject {
 
             bufferBuilder.celestial$vertex(matrix4f2, this.sideX.invoke() * scale, this.sideY.invoke() * scale, this.sideZ.invoke() * scale, red, green, blue, alpha);
         }
+
+        Instances.renderSystem.shadeModel(7424);
     }
 
     @Override

@@ -131,4 +131,15 @@ public class CelestialObject extends IBaseCelestialObject {
     public void end(IBufferBuilderWrapper bufferBuilder) {
         bufferBuilder.celestial$upload();
     }
+
+    @Override
+    public void pushPose(IPoseStackWrapper matrices) {
+        matrices.celestial$pushPose();
+        Instances.renderSystem.toggleTexture(true);
+    }
+    @Override
+    public void popPose(IPoseStackWrapper matrices) {
+        matrices.celestial$popPose();
+        Instances.renderSystem.toggleTexture(false);
+    }
 }

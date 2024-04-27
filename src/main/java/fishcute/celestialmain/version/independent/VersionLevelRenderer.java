@@ -1,24 +1,31 @@
 package fishcute.celestialmain.version.independent;
 
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import fishcute.celestialmain.api.minecraft.IMcVector;
 import fishcute.celestialmain.util.FMath;
 import fishcute.celestialmain.api.minecraft.wrappers.*;
 import fishcute.celestialmain.sky.CelestialRenderInfo;
 import fishcute.celestialmain.sky.CelestialSky;
 import fishcute.celestialmain.sky.objects.ICelestialObject;
+import org.jetbrains.annotations.Nullable;
 
 public class VersionLevelRenderer {
+    public abstract static class RunnableArg implements Runnable {
+        public boolean b;
+        public RunnableArg() {
+        }
+        public void run(boolean b) {
+            this.b = b;
+            this.run();
+        }
+    }
 
     public static void renderTwilight(IShaderInstanceWrapper shader, IBufferBuilderWrapper bufferBuilder, float tickDelta, Object projectionMatrix, IPoseStackWrapper matrices, IVertexBufferWrapper skyBuffer, ILevelWrapper level) {
-        Instances.renderSystem.unbindVertexBuffer();
-        Instances.renderSystem.toggleBlend(true);
-        Instances.renderSystem.defaultBlendFunction();
-
-        skyBuffer.celestial$bind();
-        skyBuffer.celestial$drawWithShader(matrices.celestial$lastPose(), projectionMatrix, shader);
         float[] fs = level.celestial$getSunriseColor(tickDelta);
         if (fs != null) {
+            Instances.renderSystem.shadeModel(7425);
+
             Instances.renderSystem.setShaderPositionColor();
             Instances.renderSystem.toggleTexture(false);
             Instances.renderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
@@ -43,10 +50,12 @@ public class VersionLevelRenderer {
 
             bufferBuilder.celestial$upload();
             matrices.celestial$popPose();
+
+            Instances.renderSystem.shadeModel(7424);
         }
     }
 
-    public static void renderLevel(Object projectionMatrix, IPoseStackWrapper matrices, IVertexBufferWrapper skyBuffer, IVertexBufferWrapper darkBuffer, ICameraWrapper camera, ILevelWrapper level, float tickDelta) {
+    public static void renderLevel(Object projectionMatrix, IPoseStackWrapper matrices, IVertexBufferWrapper skyBuffer, IVertexBufferWrapper darkBuffer, ICameraWrapper camera, ILevelWrapper level, float tickDelta, @Nullable RunnableArg skyFormat) {
         if (camera.celestial$doesFogBlockSky() && !(camera.celestial$doesMobEffectBlockSky())) {
             Instances.renderSystem.toggleTexture(false);
             IMcVector Vector3d = level.celestial$getSkyColor(tickDelta);
@@ -59,6 +68,24 @@ public class VersionLevelRenderer {
             Instances.renderSystem.setShaderColor(f, g, h, 1.0F);
 
             IShaderInstanceWrapper shader = Instances.shaderInstanceFactory.build();
+
+            Instances.renderSystem.unbindVertexBuffer();
+            Instances.renderSystem.toggleBlend(true);
+            Instances.renderSystem.defaultBlendFunction();
+
+            skyBuffer.celestial$bind();
+
+            if (skyFormat != null) {
+                skyFormat.run(true);
+            }
+
+            skyBuffer.celestial$drawWithShader(matrices.celestial$lastPose(), projectionMatrix, shader);
+
+            if (skyFormat != null) {
+                skyFormat.run(false);
+            }
+
+            Instances.renderSystem.unbindVertexBuffer();
 
             renderTwilight(shader, bufferBuilder, tickDelta, projectionMatrix, matrices, skyBuffer, level);
 
@@ -79,10 +106,21 @@ public class VersionLevelRenderer {
 
             double d = Instances.minecraft.getPlayerEyePosition().y() - level.celestial$getHorizonHeight();
             if (d < 0.0) {
+
                 matrices.celestial$pushPose();
                 matrices.celestial$translate(0.0, 12.0 + renderInfo.environment.voidCullingLevel.invoke(), 0.0);
                 darkBuffer.celestial$bind();
+
+                if (skyFormat != null) {
+                    skyFormat.run(true);
+                }
+
                 darkBuffer.celestial$drawWithShader(matrices.celestial$lastPose(), projectionMatrix, shader);
+
+                if (skyFormat != null) {
+                    skyFormat.run(false);
+                }
+
                 Instances.renderSystem.unbindVertexBuffer();
                 matrices.celestial$popPose();
             }

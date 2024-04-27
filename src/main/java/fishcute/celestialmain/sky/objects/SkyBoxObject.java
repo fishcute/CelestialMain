@@ -203,10 +203,12 @@ public class SkyBoxObject extends IBaseCelestialObject {
     @Override
     public void pushPose(IPoseStackWrapper matrices) {
         matrices.celestial$pushPose();
+        Instances.renderSystem.toggleTexture(true);
     }
     @Override
     public void popPose(IPoseStackWrapper matrices) {
         matrices.celestial$popPose();
+        Instances.renderSystem.toggleTexture(false);
     }
 }
 
