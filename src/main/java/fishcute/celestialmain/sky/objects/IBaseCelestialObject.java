@@ -10,7 +10,6 @@ import fishcute.celestialmain.util.CelestialExpression;
 import fishcute.celestialmain.util.MultiCelestialExpression;
 import fishcute.celestialmain.util.Util;
 import fishcute.celestialmain.version.independent.Instances;
-import net.minecraft.client.renderer.FogRenderer;
 
 import java.util.ArrayList;
 import java.util.HashMap;

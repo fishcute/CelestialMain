@@ -1,7 +1,6 @@
 package fishcute.celestialmain.version.independent;
 
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import fishcute.celestialmain.api.minecraft.IMcVector;
 import fishcute.celestialmain.util.FMath;
 import fishcute.celestialmain.api.minecraft.wrappers.*;
