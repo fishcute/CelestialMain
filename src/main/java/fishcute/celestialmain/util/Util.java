@@ -564,14 +564,12 @@ public class Util {
         return s > 0 ? s : 0;
     }
     public static double getStarAlpha(double timeOfDay) {
-        float g = (float) (timeOfDay / 360);
-        float h = 1.0F - (FMath.cos(g * 6.2831855F) * 2.0F + 0.25F);
-        h = FMath.clamp(h, 0.0F, 1.0F);
-        return h * h * 0.5F;
+        double d = getDayLight(timeOfDay);
+        return 0.5 - (d * d * 0.5);
     }
 
     public static double getDayLight(double timeOfDay) {
-        return clamp((float) (FMath.cos((float) timeOfDay / 360) * 2 + 0.5), 0, 1);
+        return clamp((float) (FMath.cos((((float) timeOfDay) / 360F) * 6.2831855F) * 2 + 0.5), 0, 1);
     }
     public static double clamp(float x, float min, float max) {
         return Math.max(Math.min(x, max), min);
