@@ -16,6 +16,8 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Util {
     public static float fogStart = 0;
@@ -34,12 +36,6 @@ public class Util {
     public static CelestialExpression compileExpression(String input, String location) {
         return new CelestialExpression(input, location);
     }
-//    public static CelestialExpression compileExpression(String input, String location, MultiCelestialExpression.MultiDataModule multiDataModule) {
-//        if (multiDataModule == null) {
-//            return new CelestialExpression(input, location);
-//        }
-//        return compileMultiExpression(input, location, multiDataModule);
-//    }
 
     public static MultiCelestialExpression compileMultiExpression(String input, String location, Module... multiDataModule) {
         return new MultiCelestialExpression(input, location, multiDataModule);
@@ -70,7 +66,7 @@ public class Util {
             return;
         Instances.minecraft.sendFormattedErrorMessage(i, "Compilation Error", location);
         if (e != null) {
-            System.out.println("If this error looks unusual, please report the stack trace below!");
+            Util.log("If this error looks unusual, please report the stack trace below!");
             e.printStackTrace();
         }
     }
@@ -83,7 +79,7 @@ public class Util {
         Instances.minecraft.sendFormattedErrorMessage(i, "Error", location);
 
         if (e != null) {
-            System.out.println("If this error looks unusual, please report the stack trace below!");
+            Util.log("If this error looks unusual, please report the stack trace below!");
             e.printStackTrace();
         }
 

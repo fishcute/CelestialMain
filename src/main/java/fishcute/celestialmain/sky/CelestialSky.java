@@ -173,12 +173,19 @@ public class CelestialSky {
         for (String name : variables.keySet()) {
             v = variables.get(name);
 
-            if (v.updateTick <= 0 || forceUpdateVariables) {
+            if ((v.updateTick <= 0 && !Instances.minecraft.isGamePaused()) || forceUpdateVariables) {
                 v.updateTick = v.updateFrequency;
                 v.updateValue();
             }
             else
                 v.updateTick--;
+        }
+
+        if (doesDimensionHaveCustomSky()) {
+            getDimensionRenderInfo().environment.updateColorEntries();
+            for (ICelestialObject object : getDimensionRenderInfo().skyObjects) {
+                object.preTick();
+            }
         }
 
         for (ColorEntry color : colorEntries.values()) {
@@ -187,13 +194,6 @@ public class CelestialSky {
                 forceUpdateColorEntry = false;
             }
             color.tick();
-        }
-
-        if (doesDimensionHaveCustomSky()) {
-            getDimensionRenderInfo().environment.updateColorEntries();
-            for (ICelestialObject object : getDimensionRenderInfo().skyObjects) {
-                object.preTick();
-            }
         }
 
         if (forceUpdateVariables)

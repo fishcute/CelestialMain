@@ -10,6 +10,7 @@ import fishcute.celestialmain.api.minecraft.wrappers.IPoseStackWrapper;
 import fishcute.celestialmain.sky.CelestialSky;
 import fishcute.celestialmain.util.ColorEntry;
 import fishcute.celestialmain.util.Util;
+import fishcute.celestialmain.version.independent.Instances;
 import kotlin.jvm.functions.Function0;
 
 import java.util.HashMap;
@@ -55,7 +56,7 @@ public abstract class ICelestialObject {
             }
         }
 
-        Util.log("Registered " + variableCount + " variable(s).");
+        Util.log("Registered " + variableCount + " local variable(s).");
 
         return new Object[]{variables,
                 new Module("variable", new VariableList(variableList),
@@ -70,7 +71,7 @@ public abstract class ICelestialObject {
         for (String name : localVariables.keySet()) {
             v = localVariables.get(name);
 
-            if (v.updateTick <= 0 || this.forceUpdateLocalVariables) {
+            if ((v.updateTick <= 0 && !Instances.minecraft.isGamePaused()) || this.forceUpdateLocalVariables) {
                 v.updateTick = v.updateFrequency;
                 v.updateValue();
             }
