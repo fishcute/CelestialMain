@@ -10,6 +10,12 @@ public class ClientTick {
     public static boolean dimensionHasCustomSky = false;
 
     public static void onReload() {
+        // Prevent initial resource load since celestial resources load on world join
+        if (!firstLoad) {
+            firstLoad = true;
+            return;
+        }
+
         Util.errorCount = 0;
         Util.errors = new ArrayList<>();
         CelestialSky.loadResources(true);
@@ -23,6 +29,7 @@ public class ClientTick {
     // For sending errors on first join
     private static boolean joined = false;
     private static boolean hasShownWarning = false;
+    private static boolean firstLoad = false;
     public static void onFirstJoin() {
         CelestialSky.loadResources(false);
     }

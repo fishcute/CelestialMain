@@ -16,6 +16,8 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Util {
     public static float fogStart = 0;
@@ -34,12 +36,6 @@ public class Util {
     public static CelestialExpression compileExpression(String input, String location) {
         return new CelestialExpression(input, location);
     }
-//    public static CelestialExpression compileExpression(String input, String location, MultiCelestialExpression.MultiDataModule multiDataModule) {
-//        if (multiDataModule == null) {
-//            return new CelestialExpression(input, location);
-//        }
-//        return compileMultiExpression(input, location, multiDataModule);
-//    }
 
     public static MultiCelestialExpression compileMultiExpression(String input, String location, Module... multiDataModule) {
         return new MultiCelestialExpression(input, location, multiDataModule);
@@ -58,8 +54,7 @@ public class Util {
     }
 
     public static void log(Object i) {
-        if (Instances.minecraft != null && !Instances.minecraft.isGamePaused())
-            System.out.println("[Celestial] " + i.toString());
+        System.out.println("[Celestial] " + i.toString());
     }
     public static int errorCount;
     static ArrayList<String> errors = new ArrayList<>();
@@ -70,7 +65,7 @@ public class Util {
             return;
         Instances.minecraft.sendFormattedErrorMessage(i, "Compilation Error", location);
         if (e != null) {
-            System.out.println("If this error looks unusual, please report the stack trace below!");
+            Util.log("If this error looks unusual, please report the stack trace below!");
             e.printStackTrace();
         }
     }
@@ -83,7 +78,7 @@ public class Util {
         Instances.minecraft.sendFormattedErrorMessage(i, "Error", location);
 
         if (e != null) {
-            System.out.println("If this error looks unusual, please report the stack trace below!");
+            Util.log("If this error looks unusual, please report the stack trace below!");
             e.printStackTrace();
         }
 
@@ -564,14 +559,12 @@ public class Util {
         return s > 0 ? s : 0;
     }
     public static double getStarAlpha(double timeOfDay) {
-        float g = (float) (timeOfDay / 360);
-        float h = 1.0F - (FMath.cos(g * 6.2831855F) * 2.0F + 0.25F);
-        h = FMath.clamp(h, 0.0F, 1.0F);
-        return h * h * 0.5F;
+        double d = getDayLight(timeOfDay);
+        return 0.5 - (d * d * 0.5);
     }
 
     public static double getDayLight(double timeOfDay) {
-        return clamp((float) (FMath.cos((float) timeOfDay / 360) * 2 + 0.5), 0, 1);
+        return clamp((float) (FMath.cos((((float) timeOfDay) / 360F) * 6.2831855F) * 2 + 0.5), 0, 1);
     }
     public static double clamp(float x, float min, float max) {
         return Math.max(Math.min(x, max), min);

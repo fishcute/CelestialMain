@@ -1,5 +1,6 @@
 package fishcute.celestialmain.api.minecraft;
 
+import fishcute.celestialmain.api.minecraft.wrappers.IBufferBuilderWrapper;
 import fishcute.celestialmain.api.minecraft.wrappers.IResourceLocationWrapper;
 
 public interface IRenderSystem {
@@ -21,4 +22,5 @@ public interface IRenderSystem {
      void toggleTexture(boolean texture);
      void blendFuncSeparate();
      void setShaderTexture(int i, IResourceLocationWrapper j);
+     void shadeModel(int i);
 }

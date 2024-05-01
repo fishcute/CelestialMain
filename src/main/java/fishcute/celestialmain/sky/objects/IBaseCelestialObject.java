@@ -10,7 +10,6 @@ import fishcute.celestialmain.util.CelestialExpression;
 import fishcute.celestialmain.util.MultiCelestialExpression;
 import fishcute.celestialmain.util.Util;
 import fishcute.celestialmain.version.independent.Instances;
-import net.minecraft.client.renderer.FogRenderer;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -174,8 +173,11 @@ public abstract class IBaseCelestialObject extends ICelestialObject {
 
         if (this.properties.isSolid)
             Instances.renderSystem.defaultBlendFunc();
+        else
+            Instances.renderSystem.blendFuncSeparate();
 
         Instances.renderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+
         this.begin(bufferBuilder);
 
         if (this.populateData != null) {
@@ -197,11 +199,6 @@ public abstract class IBaseCelestialObject extends ICelestialObject {
         }
 
         this.end(bufferBuilder);
-
-        Instances.renderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-
-        if (this.properties.isSolid)
-            Instances.renderSystem.blendFuncSeparate();
     }
     public abstract void begin(IBufferBuilderWrapper bufferBuilder);
     public abstract void end(IBufferBuilderWrapper bufferBuilder);

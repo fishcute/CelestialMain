@@ -152,6 +152,8 @@ public class TriangleFanObject extends IBaseCelestialObject {
 
             bufferBuilder.celestial$vertex(matrix4f2, this.sideX.invoke() * scale, this.sideY.invoke() * scale, this.sideZ.invoke() * scale, red, green, blue, alpha);
         }
+
+
     }
 
     @Override

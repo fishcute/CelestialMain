@@ -91,7 +91,10 @@ val module = Module("fishcute/celestial",
             if (Instances.minecraft.isSneaking()) 1.0 else 0.0;
         },
         "dayLight" to {
-            Util.getDayLight(Util.repeat(Instances.minecraft.getWorldTime().toFloat(), 0.0F, 24000.0F))
+            Util.getDayLight((Instances.minecraft.getTimeOfDay() * 360.0f).toDouble())
+        },
+        "starAlpha" to {
+            Util.getStarAlpha((Instances.minecraft.getTimeOfDay() * 360.0f).toDouble())
         },
         "tickDelta" to {
             Instances.minecraft.tickDelta.toDouble()

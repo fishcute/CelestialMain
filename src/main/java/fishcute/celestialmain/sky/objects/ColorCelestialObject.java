@@ -50,15 +50,13 @@ public class ColorCelestialObject extends IBaseCelestialObject {
         Instances.renderSystem.setShaderColor(1, 1, 1, 1);
 
         if (this.vertexList != null && this.vertexList.size() > 0) {
-            Util.VertexPointValue v;
-            for (Util.VertexPoint vertexPoint : this.vertexList) {
-                v = new Util.VertexPointValue(vertexPoint);
-                bufferBuilder.celestial$vertexUv(matrix4f2, (float) v.pointX, (float) v.pointY, (float) v.pointZ,
-                        (float) v.uvX, (float) v.uvY,
-                        v.color == null ? red : red * (v.color.getRed() / 255.0F),
-                        v.color == null ? green : green * (v.color.getGreen() / 255.0F),
-                        v.color == null ? blue : blue * (v.color.getBlue() / 255.0F),
-                        (float) v.alpha * alpha);
+            for (Util.VertexPoint v : this.vertexList) {
+                bufferBuilder.celestial$vertexUv(matrix4f2, v.pointX.invoke(), v.pointY.invoke(), v.pointZ.invoke(),
+                        v.uvX.invoke(), v.uvY.invoke(),
+                        v.color == null ? red : red * v.color.getStoredRed(),
+                        v.color == null ? green : green * v.color.getStoredGreen(),
+                        v.color == null ? blue : blue * v.color.getStoredBlue(),
+                        v.alpha.invoke() * alpha);
             }
         } else {
             bufferBuilder.celestial$vertexUv(matrix4f2, -scale, distance, (distance < 0 ? scale : -scale),
