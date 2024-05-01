@@ -82,7 +82,7 @@ public class ColorEntry {
         }
     }
     public boolean isFinalized() {
-        if (this.colors == null || this.colors.size() == 0) {
+        if (this.colors == null || this.colors.isEmpty()) {
             return this.baseColor.color.isFinalized();
         }
         boolean result = this.baseColor.color.isFinalized();
@@ -288,7 +288,7 @@ public class ColorEntry {
         this.data.currentGreen = green / 255F;
         this.data.currentBlue = blue / 255F;
 
-        if (colors == null || colors.size() == 0)
+        if (colors == null || colors.isEmpty())
             return new Color(red, green, blue);
 
         int resultRed = baseColor.getRed();
