@@ -54,8 +54,7 @@ public class Util {
     }
 
     public static void log(Object i) {
-        if (Instances.minecraft != null && !Instances.minecraft.isGamePaused())
-            System.out.println("[Celestial] " + i.toString());
+        System.out.println("[Celestial] " + i.toString());
     }
     public static int errorCount;
     static ArrayList<String> errors = new ArrayList<>();
