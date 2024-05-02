@@ -22,7 +22,7 @@ public class ClientTick {
     }
 
     public static void onTick() {
-        if (Instances.minecraft.doesLevelExist())
+        if (Instances.minecraft != null && Instances.minecraft.doesLevelExist())
             onWorldTick();
     }
 
