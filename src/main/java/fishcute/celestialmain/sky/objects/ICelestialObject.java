@@ -24,6 +24,8 @@ public abstract class ICelestialObject {
     public Module localVariableModule;
     public boolean forceUpdateLocalVariables;
     public Object[] setupLocalVariables(JsonObject object, String objectName, String dimension) {
+        
+
         HashMap<String, CelestialSky.Variable> variables = new HashMap<>();
         try {
             object.getAsJsonArray("local_variables").toString();
@@ -90,7 +92,8 @@ public abstract class ICelestialObject {
         COLOR,
         SKYBOX,
         COLOR_SKYBOX,
-        TRIANGLE_FAN
+        TRIANGLE_FAN,
+        TWILIGHT
     }
 
     public static ICelestialObject getObjectFromJson(JsonObject o, String name, String dimension) {
@@ -108,6 +111,8 @@ public abstract class ICelestialObject {
                 return new SkyBoxObject().createFromJson(o, name, dimension);
             case COLOR_SKYBOX:
                 return new ColorSkyBoxObject().createFromJson(o, name, dimension);
+            case TWILIGHT:
+                return new TwilightObject().createFromJson(o, name, dimension);
             default:
                 return new CelestialObject().createFromJson(o, name, dimension);
         }
@@ -137,6 +142,8 @@ public abstract class ICelestialObject {
                 return CelestialObjectType.TRIANGLE_FAN;
             case "skybox":
                 return CelestialObjectType.SKYBOX;
+            case "twilight":
+                return CelestialObjectType.TWILIGHT;
             default:
                 return CelestialObjectType.DEFAULT;
         }
