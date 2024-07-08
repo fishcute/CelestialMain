@@ -1,5 +1,6 @@
 package fishcute.celestialmain.util;
 
+import celestialexpressions.Expression;
 import celestialexpressions.Module;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -387,7 +388,7 @@ public class ColorEntry {
 
     public static class ColorEntryModule extends MultiCelestialExpression.MultiDataModule {
 
-        public ColorEntryModule(@NotNull String name, @NotNull HashMap<String, Function0<Double>> variables, IndexSupplier indexSupplier) {
+        public ColorEntryModule(@NotNull String name, @NotNull HashMap<String, Expression> variables, IndexSupplier indexSupplier) {
             super(name, variables, indexSupplier);
         }
 

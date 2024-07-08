@@ -170,15 +170,15 @@ public class PopulateObjectData implements MultiCelestialExpression.MultiDataMod
 
         @NotNull
         @Override
-        public Function0<Double> getVariable(@NotNull String name) {
+        public Expression getVariable(@NotNull String name) {
             return this.getVariables().getVariable(name);
         }
 
 
     }
 
-    public static HashMap<String, Function0<Double>> buildMap(Entry... entries) {
-        HashMap<String, Function0<Double>> out = new HashMap<>();
+    public static HashMap<String, Expression> buildMap(Entry... entries) {
+        HashMap<String, Expression> out = new HashMap<>();
         for (Entry entry: entries) {
             out.put(entry.key(), entry.value());
         }

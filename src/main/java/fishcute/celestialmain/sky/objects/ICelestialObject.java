@@ -1,5 +1,6 @@
 package fishcute.celestialmain.sky.objects;
 
+import celestialexpressions.Expression;
 import celestialexpressions.FunctionList;
 import celestialexpressions.Module;
 import celestialexpressions.VariableList;
@@ -35,7 +36,7 @@ public abstract class ICelestialObject {
         }
 
 
-        HashMap<String, Function0<Double>> variableList = new HashMap<>();
+        HashMap<String, Expression> variableList = new HashMap<>();
 
         int variableCount = 0;
         for (JsonElement o : object.getAsJsonArray("local_variables")) {
@@ -120,7 +121,7 @@ public abstract class ICelestialObject {
 
     public static CelestialObjectType findObjectType(JsonObject o, String name, String dimension) {
         String objectType = Util.getOptionalString(o, "type", "default", Util.locationFormat(dimension, name));
-        if (!objectType.equals("skybox") && !objectType.equals("triangle_fan")) {
+        if (!objectType.equals("skybox") && !objectType.equals("triangle_fan") && !objectType.equals("twilight")) {
             if (o.has("texture"))
                 return CelestialObjectType.DEFAULT;
             else if (o.has("solid_color"))

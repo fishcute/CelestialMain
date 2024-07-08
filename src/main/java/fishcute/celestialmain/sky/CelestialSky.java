@@ -1,5 +1,6 @@
 package fishcute.celestialmain.sky;
 
+import celestialexpressions.Expression;
 import celestialexpressions.FunctionList;
 import celestialexpressions.Module;
 import celestialexpressions.VariableList;
@@ -239,7 +240,7 @@ public class CelestialSky {
         }
 
 
-        HashMap<String, Function0<Double>> variableList = new HashMap<>();
+        HashMap<String, Expression> variableList = new HashMap<>();
 
         int variableCount = 0;
         for (JsonElement o : getFile("celestial:sky/variables.json").getAsJsonArray("variables")) {

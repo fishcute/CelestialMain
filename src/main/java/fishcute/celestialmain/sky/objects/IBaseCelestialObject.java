@@ -167,6 +167,13 @@ public abstract class IBaseCelestialObject extends ICelestialObject {
 
     @Override
     public void render(IBufferBuilderWrapper bufferBuilder, IPoseStackWrapper matrices, Object matrix4f2) {
+        float addX = 0;
+        float addY = 0;
+        float addZ = 0;
+        float mulX = 1;
+        float mulY = 1;
+        float mulZ = 1;
+
         Instances.renderSystem.toggleBlend(this.properties.blend);
 
         //FogRenderer.levelFogColor();
@@ -184,16 +191,24 @@ public abstract class IBaseCelestialObject extends ICelestialObject {
             this.populateData.index = 0;
         }
 
-        matrices.celestial$mulPose(IPoseStackWrapper.Axis.Z, this.baseDegreesX.invoke());
-        matrices.celestial$mulPose(IPoseStackWrapper.Axis.X, this.baseDegreesY.invoke());
-        matrices.celestial$mulPose(IPoseStackWrapper.Axis.Y, this.baseDegreesZ.invoke());
+        if (this instanceof TwilightObject t) {
+            mulX = 0;
+            mulZ = 0;
+            addX = 180 - 90;
+            addY = t.angle > 180 ? 180 : 0;
+            addZ = -90;
+        }
+
+        matrices.celestial$mulPose(IPoseStackWrapper.Axis.Z, (this.baseDegreesX.invoke() * mulX) + addX);
+        matrices.celestial$mulPose(IPoseStackWrapper.Axis.X, (this.baseDegreesY.invoke() * mulY) + addY);
+        matrices.celestial$mulPose(IPoseStackWrapper.Axis.Y, (this.baseDegreesZ.invoke() * mulZ) + addZ);
 
         if (this.populateData != null) {
             this.populateData.renderPopulateObjects(this, bufferBuilder, matrices, matrix4f2);
         }
         else {
             renderPre(bufferBuilder, matrices, matrix4f2,
-                    this.degreesX.invoke(), this.degreesY.invoke(), this.degreesZ.invoke(),
+                    this.degreesX.invoke() * mulX, this.degreesY.invoke() * mulY, this.degreesZ.invoke() * mulZ,
                     this.posX.invoke(), this.posY.invoke(), this.posZ.invoke(),
                     this.scale.invoke(), this.distance.invoke());
         }

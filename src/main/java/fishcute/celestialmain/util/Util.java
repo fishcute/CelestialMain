@@ -11,6 +11,7 @@ import org.apache.commons.lang3.math.NumberUtils;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
+import java.rmi.ServerRuntimeException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -201,35 +202,35 @@ public class Util {
         }
         return Color.decode(hex.startsWith("#") ? hex : "#" + hex);
     }
-    public static double getRedFromColor(String color) throws Exception {
+    public static double getRedFromColor(String color) {
         try {
             return decodeColor(color).getRed() / 255.0;
         }
         catch (Exception e) {
             if (!CelestialSky.initializingColorEntries && !CelestialSky.isColorEntry(color)) {
-                throw new Exception("Failed to parse HEX color \"" + color + "\" in colorEntryRed function.");
+                throw new RuntimeException("Failed to parse HEX color \"" + color + "\" in colorEntryRed function.");
             }
             return 0.0;
         }
     }
-    public static double getGreenFromColor(String color) throws Exception {
+    public static double getGreenFromColor(String color) {
         try {
             return decodeColor(color).getGreen() / 255.0;
         }
         catch (Exception e) {
             if (!CelestialSky.initializingColorEntries && !CelestialSky.isColorEntry(color)) {
-                throw new Exception("Failed to parse HEX color \"" + color + "\" in colorEntryGreen function.");
+                throw new RuntimeException("Failed to parse HEX color \"" + color + "\" in colorEntryGreen function.");
             }
             return 0.0;
         }
     }
-    public static double getBlueFromColor(String color) throws Exception {
+    public static double getBlueFromColor(String color) {
         try {
             return decodeColor(color).getBlue() / 255.0;
         }
         catch (Exception e) {
             if (!CelestialSky.initializingColorEntries && !CelestialSky.isColorEntry(color)) {
-                throw new Exception("Failed to parse HEX color \"" + color + "\" in colorEntryBlue function.");
+                throw new RuntimeException("Failed to parse HEX color \"" + color + "\" in colorEntryBlue function.");
             }
             return 0.0;
         }
@@ -550,9 +551,9 @@ public class Util {
         }
         return 0;
     }
-    public static double getTwilightFogEffect(double timeOfDay) {
+    public static double getTwilightFogEffect(double timeOfDay, float rotate) {
         float h = FMath.sin((float) timeOfDay / 360.0F) > 0.0F ? -1.0F : 1.0F;
-        float s = Instances.minecraft.getCameraLookVectorTwilight(h);
+        float s = Instances.minecraft.getCameraLookVectorTwilight(h, rotate);
         if (s < 0) {
             s = 0;
         }
@@ -566,13 +567,13 @@ public class Util {
     public static double getDayLight(double timeOfDay) {
         return clamp((float) (FMath.cos((((float) timeOfDay) / 360F) * 6.2831855F) * 2 + 0.5), 0, 1);
     }
-    public static double clamp(float x, float min, float max) {
+    public static double clamp(double x, double min, double max) {
         return Math.max(Math.min(x, max), min);
     }
-    public static double lerp(float a, float b, float ratio) {
+    public static double lerp(double a, double b, double ratio) {
         return (a * ratio) + b * (1 - ratio);
     }
-    public static double repeat(float a, float min, float max) {
+    public static double repeat(double a, double min, double max) {
         return (a % (max - min)) + min;
     }
 }

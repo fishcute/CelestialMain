@@ -18,7 +18,7 @@ public class MultiCelestialExpression extends CelestialExpression {
         ExpressionContext context = new ExpressionContext();
         try {
             //TODO
-            context.addModule(CelestialModuleKt.getModule());
+            context.addModule(CelestialModule.CELESTIAL_MODULE);
             context.addModule(CelestialSky.variableModule);
             for (Module module : modules) {
                 if (module != null) context.addModule(module);
@@ -55,12 +55,12 @@ public class MultiCelestialExpression extends CelestialExpression {
             return this.indexSupplier.getIndex();
         }
 
-        protected MultiDataModule(@NotNull String name, @NotNull VariableList variables, @NotNull FunctionList functions, @NotNull IndexSupplier indexSupplier, HashMap<String, Function0<Double>> populateVars) {
+        protected MultiDataModule(@NotNull String name, @NotNull VariableList variables, @NotNull FunctionList functions, @NotNull IndexSupplier indexSupplier, HashMap<String, Expression> populateVars) {
             super(name, variables, functions);
             this.indexSupplier = indexSupplier;
         }
 
-        public MultiDataModule(@NotNull String name, @NotNull HashMap<String, Function0<Double>> variables, IndexSupplier indexSupplier) {
+        public MultiDataModule(@NotNull String name, @NotNull HashMap<String, Expression> variables, IndexSupplier indexSupplier) {
             super(
                     name,
                     new VariableList(variables),
@@ -82,7 +82,7 @@ public class MultiCelestialExpression extends CelestialExpression {
 
         @NotNull
         @Override
-        public Function0<Double> getVariable(@NotNull String name) {
+        public Expression getVariable(@NotNull String name) {
             return this.getVariables().getVariable(name);
         }
     }
