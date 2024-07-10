@@ -8,7 +8,6 @@ import fishcute.celestialmain.sky.CelestialObjectProperties;
 import fishcute.celestialmain.sky.CelestialSky;
 import fishcute.celestialmain.util.*;
 import fishcute.celestialmain.version.independent.Instances;
-import kotlin.jvm.functions.Function0;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;

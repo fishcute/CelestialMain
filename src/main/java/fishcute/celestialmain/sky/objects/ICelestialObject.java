@@ -12,7 +12,6 @@ import fishcute.celestialmain.sky.CelestialSky;
 import fishcute.celestialmain.util.ColorEntry;
 import fishcute.celestialmain.util.Util;
 import fishcute.celestialmain.version.independent.Instances;
-import kotlin.jvm.functions.Function0;
 
 import java.util.HashMap;
 

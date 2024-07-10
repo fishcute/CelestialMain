@@ -15,7 +15,6 @@ import fishcute.celestialmain.util.ClientTick;
 import fishcute.celestialmain.util.ColorEntry;
 import fishcute.celestialmain.util.Util;
 import fishcute.celestialmain.version.independent.Instances;
-import kotlin.jvm.functions.Function0;
 
 import java.awt.*;
 import java.io.BufferedReader;

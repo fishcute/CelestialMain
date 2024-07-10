@@ -3,7 +3,6 @@ package fishcute.celestialmain.util;
 import celestialexpressions.Module;
 import celestialexpressions.*;
 import fishcute.celestialmain.sky.CelestialSky;
-import kotlin.jvm.functions.Function0;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;

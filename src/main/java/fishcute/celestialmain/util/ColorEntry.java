@@ -7,7 +7,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import fishcute.celestialmain.sky.CelestialSky;
 import fishcute.celestialmain.sky.objects.PopulateObjectData;
-import kotlin.jvm.functions.Function0;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
