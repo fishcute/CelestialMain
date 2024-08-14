@@ -6,7 +6,9 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import fishcute.celestialmain.sky.CelestialSky;
+import fishcute.celestialmain.sky.objects.ICelestialObject;
 import fishcute.celestialmain.sky.objects.PopulateObjectData;
+import fishcute.celestialmain.sky.objects.TwilightObject;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
@@ -38,6 +40,8 @@ public class ColorEntry {
                 return BlendType.OVERRIDE;
             case "lab":
                 return BlendType.LAB;
+            case "apply_fog_additions":
+                return BlendType.APPLY_FOG_ADDITIONS;
         }
         Util.sendCompilationError("Unknown color entry blend type \"" + type + "\".", location, null);
         return BlendType.LINEAR_INTERPOLATION;
@@ -46,7 +50,8 @@ public class ColorEntry {
     public enum BlendType {
         LINEAR_INTERPOLATION,
         OVERRIDE,
-        LAB
+        LAB,
+        APPLY_FOG_ADDITIONS
     }
 
     public static class PendingColor {
@@ -347,6 +352,15 @@ public class ColorEntry {
                 resultRed = (int) (rgb[0]);
                 resultGreen = (int) (rgb[1]);
                 resultBlue = (int) (rgb[2]);
+            }
+            else if (color.type == BlendType.APPLY_FOG_ADDITIONS && CelestialSky.doesDimensionHaveCustomSky()) {
+                for (ICelestialObject o : CelestialSky.getDimensionRenderInfo().skyObjects) {
+                    if (o instanceof TwilightObject t) {
+                        resultRed = (int) (Util.lerp(t.fogTwilightColor.x,  resultRed / 255.0F, redRatio * t.fogTwilightColor.w) * 255);
+                        resultGreen = (int) (Util.lerp(t.fogTwilightColor.y,  resultGreen / 255.0F, greenRatio * t.fogTwilightColor.w) * 255);
+                        resultBlue = (int) (Util.lerp(t.fogTwilightColor.z, resultBlue / 255.0F, blueRatio * t.fogTwilightColor.w) * 255);
+                    }
+                }
             }
         }
 
