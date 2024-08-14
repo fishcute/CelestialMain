@@ -7,15 +7,31 @@ import fishcute.celestialmain.api.minecraft.wrappers.IPoseStackWrapper;
 import fishcute.celestialmain.sky.CelestialObjectProperties;
 import fishcute.celestialmain.util.*;
 import fishcute.celestialmain.version.independent.Instances;
-import org.jetbrains.annotations.NotNull;
-import org.joml.Vector3d;
-import org.joml.Vector4d;
 
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public class TwilightObject extends IBaseCelestialObject {
+    public static class Vector4d {
+        public double x;
+        public double y;
+        public double z;
+        public double w;
+        public Vector4d() {
+            this.x = 0;
+            this.y = 0;
+            this.z = 0;
+            this.w = 0;
+        }
+        public Vector4d(double x, double y, double z, double w) {
+            this.x = x;
+            this.y = y;
+            this.z = z;
+            this.w = w;
+        }
+    }
+
     public TwilightObject() {}
     public ColorEntry solidColor;
     public ColorEntry solidColor2;
