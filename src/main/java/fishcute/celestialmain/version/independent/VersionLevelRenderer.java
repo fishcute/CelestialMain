@@ -1,11 +1,13 @@
 package fishcute.celestialmain.version.independent;
 
 import fishcute.celestialmain.api.minecraft.IMcVector;
+import fishcute.celestialmain.sky.objects.TwilightObject;
 import fishcute.celestialmain.util.FMath;
 import fishcute.celestialmain.api.minecraft.wrappers.*;
 import fishcute.celestialmain.sky.CelestialRenderInfo;
 import fishcute.celestialmain.sky.CelestialSky;
 import fishcute.celestialmain.sky.objects.ICelestialObject;
+import fishcute.celestialmain.util.Util;
 import org.jetbrains.annotations.Nullable;
 
 public class VersionLevelRenderer {
@@ -25,9 +27,11 @@ public class VersionLevelRenderer {
             // Init stuff
             Instances.renderSystem.toggleTexture(false);
             IMcVector Vector3d = level.celestial$getSkyColor(tickDelta);
+
             float f = Vector3d.x();
             float g = Vector3d.y();
             float h = Vector3d.z();
+
             Instances.renderSystem.levelFogColor();
             IBufferBuilderWrapper bufferBuilder = Instances.bufferBuilderFactory.build();
             Instances.renderSystem.depthMask(false);

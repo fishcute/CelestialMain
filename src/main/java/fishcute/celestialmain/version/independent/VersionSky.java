@@ -1,6 +1,9 @@
 package fishcute.celestialmain.version.independent;
 
 import fishcute.celestialmain.sky.CelestialSky;
+import fishcute.celestialmain.sky.objects.CelestialObject;
+import fishcute.celestialmain.sky.objects.ICelestialObject;
+import fishcute.celestialmain.sky.objects.TwilightObject;
 import fishcute.celestialmain.util.FMath;
 import fishcute.celestialmain.util.Util;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
@@ -28,7 +31,15 @@ public class VersionSky {
                 return biomeColor;
             }
             else {
-                return Util.getDecimal(CelestialSky.getDimensionRenderInfo().environment.fogColor.getStoredColor());
+                Color c = CelestialSky.getDimensionRenderInfo().environment.fogColor.getStoredColor();
+                float r = c.getRed();
+                float g = c.getGreen();
+                float b = c.getBlue();
+                return Util.getDecimal(new Color(
+                        (int) Util.clamp(r, 0, 255),
+                        (int) Util.clamp(g, 0, 255),
+                        (int) Util.clamp(b, 0, 255)
+                ));
             }
         }
         return defaultBiomeColor;
@@ -174,13 +185,28 @@ public class VersionSky {
         return colors;
     }
 
-    public static float[] setupFogColor(float tickDelta) {
+    public static float[] setupFogColor() {
         if (!CelestialSky.doesDimensionHaveCustomSky())
             return null;
         float[] color = CelestialSky.getDimensionRenderInfo().environment.fogColor.ignoreSkyEffects ? getFogColorApplyModifications() : getFogColor();
+
         if (color != null) {
             Instances.renderSystem.clearColor(color[0], color[1], color[2], 0);
         }
+
         return color;
+    }
+
+    public static float[] applyPostFogChanges(float r, float g, float b) {
+        if (CelestialSky.doesDimensionHaveCustomSky()) {
+            for (ICelestialObject o : CelestialSky.getDimensionRenderInfo().skyObjects) {
+                if (o instanceof TwilightObject t) {
+                    r = (float) Util.lerp(t.fogTwilightColor.x, r, t.fogTwilightColor.w);
+                    g = (float) Util.lerp(t.fogTwilightColor.y, g, t.fogTwilightColor.w);
+                    b = (float) Util.lerp(t.fogTwilightColor.z, b, t.fogTwilightColor.w);
+                }
+            }
+        }
+        return new float[]{r, g, b};
     }
 }

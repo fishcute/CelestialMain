@@ -1,5 +1,6 @@
 package fishcute.celestialmain.sky.objects;
 
+import celestialexpressions.Expression;
 import celestialexpressions.FunctionList;
 import celestialexpressions.Module;
 import celestialexpressions.VariableList;
@@ -11,7 +12,6 @@ import fishcute.celestialmain.sky.CelestialSky;
 import fishcute.celestialmain.util.ColorEntry;
 import fishcute.celestialmain.util.Util;
 import fishcute.celestialmain.version.independent.Instances;
-import kotlin.jvm.functions.Function0;
 
 import java.util.HashMap;
 
@@ -24,6 +24,8 @@ public abstract class ICelestialObject {
     public Module localVariableModule;
     public boolean forceUpdateLocalVariables;
     public Object[] setupLocalVariables(JsonObject object, String objectName, String dimension) {
+        
+
         HashMap<String, CelestialSky.Variable> variables = new HashMap<>();
         try {
             object.getAsJsonArray("local_variables").toString();
@@ -33,7 +35,7 @@ public abstract class ICelestialObject {
         }
 
 
-        HashMap<String, Function0<Double>> variableList = new HashMap<>();
+        HashMap<String, Expression> variableList = new HashMap<>();
 
         int variableCount = 0;
         for (JsonElement o : object.getAsJsonArray("local_variables")) {
@@ -90,7 +92,8 @@ public abstract class ICelestialObject {
         COLOR,
         SKYBOX,
         COLOR_SKYBOX,
-        TRIANGLE_FAN
+        TRIANGLE_FAN,
+        TWILIGHT
     }
 
     public static ICelestialObject getObjectFromJson(JsonObject o, String name, String dimension) {
@@ -108,6 +111,8 @@ public abstract class ICelestialObject {
                 return new SkyBoxObject().createFromJson(o, name, dimension);
             case COLOR_SKYBOX:
                 return new ColorSkyBoxObject().createFromJson(o, name, dimension);
+            case TWILIGHT:
+                return new TwilightObject().createFromJson(o, name, dimension);
             default:
                 return new CelestialObject().createFromJson(o, name, dimension);
         }
@@ -115,7 +120,7 @@ public abstract class ICelestialObject {
 
     public static CelestialObjectType findObjectType(JsonObject o, String name, String dimension) {
         String objectType = Util.getOptionalString(o, "type", "default", Util.locationFormat(dimension, name));
-        if (!objectType.equals("skybox") && !objectType.equals("triangle_fan")) {
+        if (!objectType.equals("skybox") && !objectType.equals("triangle_fan") && !objectType.equals("twilight")) {
             if (o.has("texture"))
                 return CelestialObjectType.DEFAULT;
             else if (o.has("solid_color"))
@@ -137,6 +142,8 @@ public abstract class ICelestialObject {
                 return CelestialObjectType.TRIANGLE_FAN;
             case "skybox":
                 return CelestialObjectType.SKYBOX;
+            case "twilight":
+                return CelestialObjectType.TWILIGHT;
             default:
                 return CelestialObjectType.DEFAULT;
         }

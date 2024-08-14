@@ -30,7 +30,7 @@ public interface IMinecraftInstance {
     float getTimeOfDay();
     float getViewXRot();
     float getViewYRot();
-    float getCameraLookVectorTwilight(float h);
+    float getCameraLookVectorTwilight(float h, float rotate);
     float getRenderDistance();
     float getMoonPhase();
     float getSkyDarken();

@@ -1,5 +1,6 @@
 package fishcute.celestialmain.sky.objects;
 
+import celestialexpressions.Expression;
 import celestialexpressions.Module;
 import com.google.gson.JsonObject;
 import fishcute.celestialmain.api.minecraft.wrappers.*;
@@ -7,7 +8,6 @@ import fishcute.celestialmain.sky.CelestialObjectProperties;
 import fishcute.celestialmain.sky.CelestialSky;
 import fishcute.celestialmain.util.*;
 import fishcute.celestialmain.version.independent.Instances;
-import kotlin.jvm.functions.Function0;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -163,7 +163,7 @@ public class TriangleFanObject extends IBaseCelestialObject {
 
     public static class TriangleFanModule extends MultiCelestialExpression.MultiDataModule {
 
-        public TriangleFanModule(@NotNull String name, @NotNull HashMap<String, Function0<Double>> variables, IndexSupplier indexSupplier) {
+        public TriangleFanModule(@NotNull String name, @NotNull HashMap<String, Expression> variables, IndexSupplier indexSupplier) {
             super(name, variables, indexSupplier);
         }
 

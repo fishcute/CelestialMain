@@ -1,6 +1,8 @@
 package fishcute.celestialmain.sky;
 
 import com.google.gson.JsonObject;
+import fishcute.celestialmain.sky.objects.ICelestialObject;
+import fishcute.celestialmain.sky.objects.TwilightObject;
 import fishcute.celestialmain.util.CelestialExpression;
 import fishcute.celestialmain.util.ColorEntry;
 import fishcute.celestialmain.util.Util;

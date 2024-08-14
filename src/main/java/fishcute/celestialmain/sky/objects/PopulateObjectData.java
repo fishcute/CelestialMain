@@ -5,7 +5,6 @@ import fishcute.celestialmain.api.minecraft.wrappers.IBufferBuilderWrapper;
 import fishcute.celestialmain.api.minecraft.wrappers.IPoseStackWrapper;
 import fishcute.celestialmain.util.MultiCelestialExpression;
 import fishcute.celestialmain.util.Util;
-import kotlin.jvm.functions.Function0;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
@@ -170,15 +169,15 @@ public class PopulateObjectData implements MultiCelestialExpression.MultiDataMod
 
         @NotNull
         @Override
-        public Function0<Double> getVariable(@NotNull String name) {
+        public Expression getVariable(@NotNull String name) {
             return this.getVariables().getVariable(name);
         }
 
 
     }
 
-    public static HashMap<String, Function0<Double>> buildMap(Entry... entries) {
-        HashMap<String, Function0<Double>> out = new HashMap<>();
+    public static HashMap<String, Expression> buildMap(Entry... entries) {
+        HashMap<String, Expression> out = new HashMap<>();
         for (Entry entry: entries) {
             out.put(entry.key(), entry.value());
         }

@@ -1,5 +1,6 @@
 package fishcute.celestialmain.sky;
 
+import celestialexpressions.Expression;
 import celestialexpressions.FunctionList;
 import celestialexpressions.Module;
 import celestialexpressions.VariableList;
@@ -14,7 +15,6 @@ import fishcute.celestialmain.util.ClientTick;
 import fishcute.celestialmain.util.ColorEntry;
 import fishcute.celestialmain.util.Util;
 import fishcute.celestialmain.version.independent.Instances;
-import kotlin.jvm.functions.Function0;
 
 import java.awt.*;
 import java.io.BufferedReader;
@@ -239,7 +239,7 @@ public class CelestialSky {
         }
 
 
-        HashMap<String, Function0<Double>> variableList = new HashMap<>();
+        HashMap<String, Expression> variableList = new HashMap<>();
 
         int variableCount = 0;
         for (JsonElement o : getFile("celestial:sky/variables.json").getAsJsonArray("variables")) {
