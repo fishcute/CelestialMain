@@ -355,7 +355,8 @@ public class ColorEntry {
             }
             else if (color.type == BlendType.APPLY_FOG_ADDITIONS && CelestialSky.doesDimensionHaveCustomSky()) {
                 for (ICelestialObject o : CelestialSky.getDimensionRenderInfo().skyObjects) {
-                    if (o instanceof TwilightObject t) {
+                    if (o instanceof TwilightObject) {
+                        TwilightObject t = (TwilightObject) o;
                         resultRed = (int) (Util.lerp(t.fogTwilightColor.x,  resultRed / 255.0F, redRatio * t.fogTwilightColor.w) * 255);
                         resultGreen = (int) (Util.lerp(t.fogTwilightColor.y,  resultGreen / 255.0F, greenRatio * t.fogTwilightColor.w) * 255);
                         resultBlue = (int) (Util.lerp(t.fogTwilightColor.z, resultBlue / 255.0F, blueRatio * t.fogTwilightColor.w) * 255);

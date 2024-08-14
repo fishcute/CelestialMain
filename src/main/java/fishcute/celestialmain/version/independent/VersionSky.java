@@ -200,7 +200,8 @@ public class VersionSky {
     public static float[] applyPostFogChanges(float r, float g, float b) {
         if (CelestialSky.doesDimensionHaveCustomSky()) {
             for (ICelestialObject o : CelestialSky.getDimensionRenderInfo().skyObjects) {
-                if (o instanceof TwilightObject t) {
+                if (o instanceof TwilightObject) {
+                    TwilightObject t = (TwilightObject) o;
                     r = (float) Util.lerp(t.fogTwilightColor.x, r, t.fogTwilightColor.w);
                     g = (float) Util.lerp(t.fogTwilightColor.y, g, t.fogTwilightColor.w);
                     b = (float) Util.lerp(t.fogTwilightColor.z, b, t.fogTwilightColor.w);

@@ -191,7 +191,8 @@ public abstract class IBaseCelestialObject extends ICelestialObject {
             this.populateData.index = 0;
         }
 
-        if (this instanceof TwilightObject t) {
+        if (this instanceof TwilightObject) {
+            TwilightObject t = (TwilightObject) this;
             mulX = 0;
             mulZ = 0;
             addX = 180 - 90;
