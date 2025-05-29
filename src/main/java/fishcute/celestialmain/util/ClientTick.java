@@ -8,6 +8,7 @@ import java.util.ArrayList;
 public class ClientTick {
 
     public static boolean dimensionHasCustomSky = false;
+    public static String dimensionPath = "";
 
     public static void onReload() {
         // Prevent initial resource load since celestial resources load on world join
@@ -47,7 +48,8 @@ public class ClientTick {
             joined = true;
         }
 
-        dimensionHasCustomSky = CelestialSky.dimensionSkyMap.containsKey(Instances.minecraft.getLevelPath());
+        dimensionPath = Instances.minecraft.getLevelPath();
+        dimensionHasCustomSky = CelestialSky.dimensionSkyMap.containsKey(dimensionPath);
         CelestialSky.tickValues();
 
         if (CelestialSky.doesDimensionHaveCustomSky()) {
@@ -55,5 +57,4 @@ public class ClientTick {
             CelestialSky.getDimensionRenderInfo().environment.fogColor.setInheritColor(Util.getFogColor());
         }
     }
-    public static boolean devHasSkyOverride = true;
 }

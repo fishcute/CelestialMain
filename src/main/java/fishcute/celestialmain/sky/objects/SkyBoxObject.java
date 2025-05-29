@@ -42,10 +42,6 @@ public class SkyBoxObject extends IBaseCelestialObject {
 
     @Override
     public void renderObject(IBufferBuilderWrapper bufferBuilder, IPoseStackWrapper matrices, Object matrix4f2, float scale, float distance) {
-        // Set texture
-        if (this.texture != null)
-            Instances.renderSystem.setShaderTexture(0, this.texture);
-
         Instances.renderSystem.setShaderPositionTex();
 
         SkyBoxObjectProperties.SkyBoxSideTexture side;
@@ -71,8 +67,18 @@ public class SkyBoxObject extends IBaseCelestialObject {
         float textureSizeX = this.skyBoxObjectProperties.textureSizeX.invoke();
         float textureSizeY = this.skyBoxObjectProperties.textureSizeY.invoke();
 
-        for (int l = 0; l < 6; ++l) {
-            side = this.skyBoxObjectProperties.sides.get(l);
+        for (String sideId : SkyBoxObjectProperties.SIDES) {
+            if (!this.skyBoxObjectProperties.sides.containsKey(sideId))
+                continue;
+
+            side = this.skyBoxObjectProperties.sides.get(sideId);
+
+            if (side.texture != null) {
+                Instances.renderSystem.setShaderTexture(0, side.texture);
+            }
+            else {
+                Instances.renderSystem.setShaderTexture(0, this.texture);
+            }
 
             size = this.skyBoxObjectProperties.skyBoxSize.invoke();
 
@@ -89,76 +95,52 @@ public class SkyBoxObject extends IBaseCelestialObject {
             if (textureX >= 0 && textureY >= 0 && textureScaleX >= 0 && textureScaleY >= 0) {
                 bufferBuilder.celestial$beginObject();
 
-                this.rotate(matrices, l);
-                Object matrix4f3 = matrices.celestial$lastPose();
+                this.vertex(matrix4f2, bufferBuilder, sideId, size, textureX, textureY, textureScaleX, textureScaleY, red, green, blue, alpha);
 
-                bufferBuilder.celestial$vertexUv(matrix4f3, -size, -size, -size, textureX, textureY, red, green, blue, alpha);
-                bufferBuilder.celestial$vertexUv(matrix4f3, -size, -size, size, textureX, textureScaleY, red, green, blue, alpha);
-                bufferBuilder.celestial$vertexUv(matrix4f3, size, -size, size, textureScaleX, textureScaleY, red, green, blue, alpha);
-                bufferBuilder.celestial$vertexUv(matrix4f3, size, -size, -size, textureScaleX, textureY, red, green, blue, alpha);
                 bufferBuilder.celestial$upload();
-
-                // Should change this in the future
-                this.undoRotate(matrices, l);
             }
         }
     }
 
-    private void rotate(IPoseStackWrapper matrices, int l) {
-        if (l == 0) {
-            matrices.celestial$mulPose(IPoseStackWrapper.Axis.Y, 180);
-        }
-        if (l == 1) {
-            matrices.celestial$mulPose(IPoseStackWrapper.Axis.X, 90);
-        }
-
-        if (l == 2) {
-            matrices.celestial$mulPose(IPoseStackWrapper.Axis.X, -90);
-            matrices.celestial$mulPose(IPoseStackWrapper.Axis.Y, 180);
-        }
-
-        if (l == 3) {
-            matrices.celestial$mulPose(IPoseStackWrapper.Axis.X, 180);
-            matrices.celestial$mulPose(IPoseStackWrapper.Axis.Y, 180);
-        }
-
-        if (l == 4) {
-            matrices.celestial$mulPose(IPoseStackWrapper.Axis.Z, 90);
-            matrices.celestial$mulPose(IPoseStackWrapper.Axis.Y, -90);
-        }
-
-        if (l == 5) {
-            matrices.celestial$mulPose(IPoseStackWrapper.Axis.Z, -90);
-            matrices.celestial$mulPose(IPoseStackWrapper.Axis.Y, 90);
-        }
-    }
-
-    private void undoRotate(IPoseStackWrapper matrices, int l) {
-        if (l == 0) {
-            matrices.celestial$mulPose(IPoseStackWrapper.Axis.Y, -180);
-        }
-        if (l == 1) {
-            matrices.celestial$mulPose(IPoseStackWrapper.Axis.X, -90);
-        }
-
-        if (l == 2) {
-            matrices.celestial$mulPose(IPoseStackWrapper.Axis.Y, -180);
-            matrices.celestial$mulPose(IPoseStackWrapper.Axis.X, 90);
-        }
-
-        if (l == 3) {
-            matrices.celestial$mulPose(IPoseStackWrapper.Axis.Y, -180);
-            matrices.celestial$mulPose(IPoseStackWrapper.Axis.X, -180);
-        }
-
-        if (l == 4) {
-            matrices.celestial$mulPose(IPoseStackWrapper.Axis.Y, 90);
-            matrices.celestial$mulPose(IPoseStackWrapper.Axis.Z, -90);
-        }
-
-        if (l == 5) {
-            matrices.celestial$mulPose(IPoseStackWrapper.Axis.Y, -90);
-            matrices.celestial$mulPose(IPoseStackWrapper.Axis.Z, 90);
+    private void vertex(Object matrix4f3, IBufferBuilderWrapper bufferBuilder, String side, float size, float textureX, float textureY, float textureScaleX, float textureScaleY, float red, float green, float blue, float alpha) {
+        switch (side) {
+            case "west":
+                bufferBuilder.celestial$vertexUv(matrix4f3, -size,  size, -size, textureX, textureY, red, green, blue, alpha);
+                bufferBuilder.celestial$vertexUv(matrix4f3, -size,  size,  size, textureX, textureScaleY, red, green, blue, alpha);
+                bufferBuilder.celestial$vertexUv(matrix4f3, -size, -size,  size, textureScaleX, textureScaleY, red, green, blue, alpha);
+                bufferBuilder.celestial$vertexUv(matrix4f3, -size, -size, -size, textureScaleX, textureY, red, green, blue, alpha);
+                break;
+            case "south":
+                bufferBuilder.celestial$vertexUv(matrix4f3, -size,  size,  size, textureX, textureY, red, green, blue, alpha);
+                bufferBuilder.celestial$vertexUv(matrix4f3,  size,  size,  size, textureX, textureScaleY, red, green, blue, alpha);
+                bufferBuilder.celestial$vertexUv(matrix4f3,  size, -size,  size, textureScaleX, textureScaleY, red, green, blue, alpha);
+                bufferBuilder.celestial$vertexUv(matrix4f3, -size, -size,  size, textureScaleX, textureY, red, green, blue, alpha);
+                break;
+            case "east":
+                bufferBuilder.celestial$vertexUv(matrix4f3,  size,  size,  size, textureX, textureY, red, green, blue, alpha);
+                bufferBuilder.celestial$vertexUv(matrix4f3,  size,  size, -size, textureX, textureScaleY, red, green, blue, alpha);
+                bufferBuilder.celestial$vertexUv(matrix4f3,  size, -size, -size, textureScaleX, textureScaleY, red, green, blue, alpha);
+                bufferBuilder.celestial$vertexUv(matrix4f3,  size, -size,  size, textureScaleX, textureY, red, green, blue, alpha);
+                break;
+            case "north":
+                bufferBuilder.celestial$vertexUv(matrix4f3,  size,  size, -size, textureX, textureY, red, green, blue, alpha);
+                bufferBuilder.celestial$vertexUv(matrix4f3, -size,  size, -size, textureX, textureScaleY, red, green, blue, alpha);
+                bufferBuilder.celestial$vertexUv(matrix4f3, -size, -size, -size, textureScaleX, textureScaleY, red, green, blue, alpha);
+                bufferBuilder.celestial$vertexUv(matrix4f3,  size, -size, -size, textureScaleX, textureY, red, green, blue, alpha);
+                break;
+            case "up":
+                bufferBuilder.celestial$vertexUv(matrix4f3,  size,  size,  size, textureX, textureY, red, green, blue, alpha);
+                bufferBuilder.celestial$vertexUv(matrix4f3, -size,  size,  size, textureX, textureScaleY, red, green, blue, alpha);
+                bufferBuilder.celestial$vertexUv(matrix4f3, -size,  size, -size, textureScaleX, textureScaleY, red, green, blue, alpha);
+                bufferBuilder.celestial$vertexUv(matrix4f3,  size,  size, -size, textureScaleX, textureY, red, green, blue, alpha);
+                break;
+            // down
+            default:
+                bufferBuilder.celestial$vertexUv(matrix4f3,  size, -size, -size, textureX, textureY, red, green, blue, alpha);
+                bufferBuilder.celestial$vertexUv(matrix4f3, -size, -size, -size, textureX, textureScaleY, red, green, blue, alpha);
+                bufferBuilder.celestial$vertexUv(matrix4f3, -size, -size,  size, textureScaleX, textureScaleY, red, green, blue, alpha);
+                bufferBuilder.celestial$vertexUv(matrix4f3,  size, -size,  size, textureScaleX, textureY, red, green, blue, alpha);
+                break;
         }
     }
 
@@ -173,7 +155,7 @@ public class SkyBoxObject extends IBaseCelestialObject {
         return new SkyBoxObject(
                 localVariables,
                 SkyBoxObjectProperties.getSkyboxPropertiesFromJson(o, dimension, name),
-                Util.getOptionalTexture(o, "texture", null, Util.locationFormat(dimension, "objects/" + name, "texture")),
+                Util.getOptionalTexture(o, "texture", null, Util.locationFormat(dimension, "objects/" + name, "texture"), true),
                 Util.getOptionalString(display, "scale", DEFAULT_SCALE, Util.locationFormat(dimension, name, "display")),
                 Util.getOptionalString(display, "pos_x", DEFAULT_POS_X, Util.locationFormat(dimension, name, "display")),
                 Util.getOptionalString(display, "pos_y", DEFAULT_POS_Y, Util.locationFormat(dimension, name, "display")),

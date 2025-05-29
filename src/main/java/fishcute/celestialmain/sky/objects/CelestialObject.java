@@ -101,7 +101,7 @@ public class CelestialObject extends IBaseCelestialObject {
 
         return new CelestialObject(
                 localVariables,
-                Util.getOptionalTexture(o, "texture", null, Util.locationFormat(dimension, "objects/" + name, "")),
+                Util.getOptionalTexture(o, "texture", null, Util.locationFormat(dimension, "objects/" + name, ""), false),
                 Util.getOptionalString(display, "scale", DEFAULT_SCALE, Util.locationFormat(dimension, name, "display")),
                 Util.getOptionalString(display, "pos_x", DEFAULT_POS_X, Util.locationFormat(dimension, name, "display")),
                 Util.getOptionalString(display, "pos_y", DEFAULT_POS_Y, Util.locationFormat(dimension, name, "display")),

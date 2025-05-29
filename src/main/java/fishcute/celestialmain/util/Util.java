@@ -117,13 +117,18 @@ public class Util {
         }
     }
 
-    public static String getOptionalTexture(JsonObject o, String toGet, String ifNull, String location) {
+    public static String getOptionalTexture(JsonObject o, String toGet, String ifNull, String location, boolean optional) {
         String texture = getOptionalString(o, toGet, ifNull, location);
         try {
             ImageIO.read(Instances.minecraft.getResource(texture));
         }
         catch (Exception e) {
-            Util.sendCompilationError("Invalid texture path \"" + texture + "\".", location + "." + toGet, e);
+            if (!optional || (texture != null && !texture.isEmpty())) {
+                Util.sendCompilationError("Invalid texture path \"" + texture + "\".", location + "." + toGet, e);
+            }
+            else {
+                return null;
+            }
         }
         return texture;
     }

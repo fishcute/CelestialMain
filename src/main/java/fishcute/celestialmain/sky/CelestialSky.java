@@ -15,6 +15,7 @@ import fishcute.celestialmain.util.ClientTick;
 import fishcute.celestialmain.util.ColorEntry;
 import fishcute.celestialmain.util.Util;
 import fishcute.celestialmain.version.independent.Instances;
+import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
 import java.io.BufferedReader;
@@ -26,25 +27,36 @@ import java.util.HashMap;
 public class CelestialSky {
     static Gson reader = new Gson();
 
+    @Nullable
+    public static CelestialRenderInfo globalRenderInfo = null;
+
     public static HashMap<String, CelestialRenderInfo> dimensionSkyMap = new HashMap<>();
     public static boolean forceUpdateVariables = false;
     public static HashMap<String, ColorEntry> colorEntries = new HashMap<>();
     public static boolean forceUpdateColorEntry = false;
 
+    public static int dimensionCount = 0;
+    public static int objectCount = 0;
+
     public static boolean doesDimensionHaveCustomSky() {
-        return (ClientTick.dimensionHasCustomSky && getDimensionRenderInfo() != null) ? ClientTick.devHasSkyOverride : false;
+        return (ClientTick.dimensionHasCustomSky && dimensionSkyMap.containsKey(ClientTick.dimensionPath)) || globalRenderInfo != null;
     }
 
     public static CelestialRenderInfo getDimensionRenderInfo() {
-        try {
-            return dimensionSkyMap.get(Instances.minecraft.getLevelPath());
+        // Check if dimension has a custom sky
+        if (ClientTick.dimensionHasCustomSky && dimensionSkyMap.containsKey(ClientTick.dimensionPath)) {
+            return dimensionSkyMap.get(ClientTick.dimensionPath);
         }
-        catch (Exception e) {
-            return null;
+        // If not, check if a global configuration is available
+        else if (globalRenderInfo != null) {
+            return globalRenderInfo;
         }
+        return null;
     }
     public static void loadResources(boolean sendMessage) {
         dimensionSkyMap.clear();
+        dimensionCount = 0;
+        objectCount = 0;
 
         Util.log("Loading resources...");
 
@@ -61,15 +73,18 @@ public class CelestialSky {
 
         colorEntries = setupColorEntries();
 
-        int dimensionCount = 0;
-        int objectCount = 0;
+        // Initialize global celestial render info
+        String globalPath = Util.getOptionalString(getFile("celestial:sky/dimensions.json"), "global_dimension", "global", Util.locationFormat("sky/dimensions.json", "global_dimension"));
 
-        JsonArray dimensionList = getFile("celestial:sky/dimensions.json").getAsJsonArray("dimensions");
+        ArrayList<String> globalObjects = getAllCelestialObjects(globalPath);
 
-        if (dimensionList == null) {
-            Util.sendCompilationError("Could not find dimension list in \"dimensions.json\".", "sky", null);
-            return;
+        if (!globalObjects.isEmpty()) {
+            Util.log("Loading global sky from \"" + globalPath + "\"");
+            globalRenderInfo = loadDimension(globalPath, getAllCelestialObjects(globalPath));
+            dimensionCount++;
         }
+
+        // Check for legacy rotations
 
         boolean legacy = Util.getOptionalBoolean(getFile("celestial:sky/dimensions.json"), "legacy_rotations", false, Util.locationFormat("sky/dimensions.json", "legacy_rotations"));
         if (legacy) {
@@ -81,21 +96,21 @@ public class CelestialSky {
             IBaseCelestialObject.DEFAULT_BASE_DEGREES_Z = "0";
         }
 
+        // Load remaining sky objects
+
+        JsonArray dimensionList = getFile("celestial:sky/dimensions.json").getAsJsonArray("dimensions");
+
+        if (dimensionList == null) {
+            // Don't send the error if the global configuration was loaded
+            if (globalObjects.isEmpty()) {
+                Util.sendCompilationError("Could not find dimension list in \"dimensions.json\".", "sky", null);
+            }
+            return;
+        }
+
         for (String dimension : getAsStringList(dimensionList)) {
             Util.log("Loading sky for dimension \"" + dimension + "\"");
-            ArrayList<ICelestialObject> celestialObjects = new ArrayList<>();
-            for (String i : getAllCelestialObjects(dimension)) {
-                Util.log("[" + dimension + "] Loading celestial object \"" + i + "\"");
-                JsonObject object = getFile("celestial:sky/" + dimension + "/objects/" + i + ".json");
-                ICelestialObject o = ICelestialObject.getObjectFromJson(object, i, dimension);
-                if (o != null)
-                    celestialObjects.add(o);
-                objectCount++;
-            }
-            dimensionSkyMap.put(dimension, new CelestialRenderInfo(
-                    celestialObjects,
-                    CelestialEnvironmentRenderInfo.createEnvironmentRenderInfoFromJson(getFile("celestial:sky/" + dimension + "/sky.json"), dimension)
-            ));
+            dimensionSkyMap.put(dimension, loadDimension(dimension, getAllCelestialObjects(dimension)));
             dimensionCount++;
         }
 
@@ -103,6 +118,22 @@ public class CelestialSky {
         if (Instances.minecraft.doesPlayerExist() && sendMessage)
             Instances.minecraft.sendInfoMessage("Reloaded with " + Util.errorCount + " error(s).");
         Util.errorCount = 0;
+    }
+
+    public static CelestialRenderInfo loadDimension(String dimension, ArrayList<String> objectsToRegister) {
+        ArrayList<ICelestialObject> celestialObjects = new ArrayList<>();
+        for (String i : objectsToRegister) {
+            Util.log("[" + dimension + "] Loading celestial object \"" + i + "\"");
+            JsonObject object = getFile("celestial:sky/" + dimension + "/objects/" + i + ".json");
+            ICelestialObject o = ICelestialObject.getObjectFromJson(object, i, dimension);
+            if (o != null)
+                celestialObjects.add(o);
+            objectCount++;
+        }
+        return new CelestialRenderInfo(
+                celestialObjects,
+                CelestialEnvironmentRenderInfo.createEnvironmentRenderInfoFromJson(getFile("celestial:sky/" + dimension + "/sky.json"), dimension)
+        );
     }
 
     public static ArrayList<String> getAsStringList(JsonArray array) {
@@ -203,7 +234,7 @@ public class CelestialSky {
     public static ArrayList<String> getAllCelestialObjects(String dimension) {
         JsonObject o = getFile("celestial:sky/" + dimension + "/sky.json");
         if (o == null) {
-            Util.log("Found no sky.json for dimension\"" + dimension + "\", skipping dimension.");
+            Util.log("Found no sky.json for dimension \"" + dimension + "\", skipping dimension.");
             return new ArrayList<>();
         }
         JsonArray skyObjectList = o.getAsJsonArray("sky_objects");

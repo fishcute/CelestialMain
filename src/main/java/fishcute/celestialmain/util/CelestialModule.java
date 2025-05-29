@@ -84,12 +84,12 @@ public class CelestialModule {
                             Util.print(toDouble(arr.get(0)) * 0)
                             , 1))
                     .with("inBiome", new Function((List<Object> arr) ->
-                            Util.isInBiome(Arrays.stream(arr.toArray()).toArray(String[]::new)) ? 1.0 : 0.0
+                            Util.isInBiome(Arrays.stream(arr.toArray()).map(Object::toString).toArray(String[]::new)) ? 1.0 : 0.0
                             , -1))
                     .with("distanceToBiome", new Function((List<Object> arr) ->
-                            Util.getBiomeBlend(Arrays.stream(arr.toArray()).toArray(String[]::new)), -1))
+                            Util.getBiomeBlend(Arrays.stream(arr.toArray()).map(Object::toString).toArray(String[]::new)), -1))
                     .with("distanceToBiomeFlat", new Function((List<Object> arr) ->
-                            Util.getBiomeBlendFlat(Arrays.stream(arr.toArray()).toArray(String[]::new)), -1))
+                            Util.getBiomeBlendFlat(Arrays.stream(arr.toArray()).map(Object::toString).toArray(String[]::new)), -1))
                     .with("rightClickingWith", new Function((List<Object> arr) ->
                             Util.isUsing((String) arr.get(0)) ? 1.0 : 0.0
                             , 1))

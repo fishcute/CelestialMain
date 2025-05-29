@@ -9,15 +9,21 @@ import fishcute.celestialmain.version.independent.Instances;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 
 public class SkyBoxObjectProperties {
-    public ArrayList<SkyBoxSideTexture> sides;
+    public HashMap<String, SkyBoxSideTexture> sides;
     public CelestialExpression skyBoxSize;
 
     public CelestialExpression textureSizeX;
     public CelestialExpression textureSizeY;
 
-    public SkyBoxObjectProperties(ArrayList<SkyBoxSideTexture> sides, String dimension, String object, String skyBoxSize, String textureSizeX, String textureSizeY) {
+    public static final ArrayList<String> SIDES = new ArrayList<>(Arrays.asList(
+            "north", "east", "south", "west", "up", "down"
+    ));
+
+    public SkyBoxObjectProperties(HashMap<String, SkyBoxSideTexture> sides, String dimension, String object, String skyBoxSize, String textureSizeX, String textureSizeY) {
         this.sides = sides;
         this.skyBoxSize = Util.compileExpression(skyBoxSize, Util.locationFormat(dimension, "object/" + object, "skybox.size"));
         this.textureSizeX = Util.compileExpression(textureSizeX, Util.locationFormat(dimension, "object/" + object, "skybox.texture_width"));
@@ -53,8 +59,8 @@ public class SkyBoxObjectProperties {
         JsonObject skybox = o.get("skybox").getAsJsonObject();
 
         if (skybox.has("sides")) {
-            ArrayList<SkyBoxSideTexture> textures = new ArrayList<>();
-            for (int i = 0; i < 6; i++) {
+            HashMap<String, SkyBoxSideTexture> textures = new HashMap<>();
+            for (String side : SIDES) {
                 if (skybox.get("sides").getAsJsonObject().has("all")) {
                     String location = Util.locationFormat(dimension, "objects/" + object, "sides.all");
                     return new SkyBoxObjectProperties(
@@ -71,20 +77,20 @@ public class SkyBoxObjectProperties {
                             Util.getOptionalString(skybox, "texture_height", textureHeight + "", Util.locationFormat(dimension, object, "skybox"))
                     );
                 }
-                else if (!skybox.get("sides").getAsJsonObject().has(String.valueOf(i))) {
-                    textures.add(new SkyBoxSideTexture(
+                else if (!skybox.get("sides").getAsJsonObject().has(side)) {
+                    textures.put(side, new SkyBoxSideTexture(
                             Instances.resourceLocationFactory.build(texture), "-1", "-1", "-1", "-1",
                             Util.locationFormat(dimension, "objects/" + object, "")
                     ));
                 }
                 else {
-                    JsonObject entry = skybox.get("sides").getAsJsonObject().getAsJsonObject(String.valueOf(i));
-                    textures.add(new SkyBoxSideTexture(
-                            Instances.resourceLocationFactory.build(Util.getOptionalString(entry, "texture", texture, Util.locationFormat(dimension, object, "skybox.sides." + i))),
-                            Util.getOptionalString(entry, "uv_x", "0", Util.locationFormat(dimension, object, "skybox.sides." + i)),
-                            Util.getOptionalString(entry, "uv_y", "0", Util.locationFormat(dimension, object, "skybox.sides." + i)),
-                            Util.getOptionalString(entry, "uv_width", "0", Util.locationFormat(dimension, object, "skybox.sides." + i)),
-                            Util.getOptionalString(entry, "uv_height", "0", Util.locationFormat(dimension, object, "skybox.sides." + i)),
+                    JsonObject entry = skybox.get("sides").getAsJsonObject().getAsJsonObject(side);
+                    textures.put(side, new SkyBoxSideTexture(
+                            Instances.resourceLocationFactory.build(Util.getOptionalString(entry, "texture", texture, Util.locationFormat(dimension, object, "skybox.sides." + side))),
+                            Util.getOptionalString(entry, "uv_x", "0", Util.locationFormat(dimension, object, "skybox.sides." + side)),
+                            Util.getOptionalString(entry, "uv_y", "0", Util.locationFormat(dimension, object, "skybox.sides." + side)),
+                            Util.getOptionalString(entry, "uv_width", "0", Util.locationFormat(dimension, object, "skybox.sides." + side)),
+                            Util.getOptionalString(entry, "uv_height", "0", Util.locationFormat(dimension, object, "skybox.sides." + side)),
                             Util.locationFormat(dimension, "objects/" + object, "")
                     ));
                 }
@@ -113,41 +119,41 @@ public class SkyBoxObjectProperties {
         }
     }
 
-    public static ArrayList<SkyBoxSideTexture> createDefaultSkybox(IResourceLocationWrapper texture, String textureSize, String location) {
-        ArrayList<SkyBoxSideTexture> textures = new ArrayList<>();
+    public static HashMap<String, SkyBoxSideTexture> createDefaultSkybox(IResourceLocationWrapper texture, String textureSize, String location) {
+        HashMap<String, SkyBoxSideTexture> textures = new HashMap<>();
 
         // Bottom
         // #Green
-        textures.add(new SkyBoxSideTexture(texture, textureSize, "0", textureSize, textureSize, location));
+        textures.put("down", new SkyBoxSideTexture(texture, textureSize, "0", textureSize, textureSize, location));
 
         // North
         // #Yellow
-        textures.add(new SkyBoxSideTexture(texture, textureSize + " * 2", "0", textureSize, textureSize, location));
+        textures.put("north", new SkyBoxSideTexture(texture, textureSize + " * 2", "0", textureSize, textureSize, location));
 
         // South
         // #Light Blue
-        textures.add(new SkyBoxSideTexture(texture, textureSize, textureSize, textureSize, textureSize, location));
+        textures.put("south", new SkyBoxSideTexture(texture, textureSize, textureSize, textureSize, textureSize, location));
 
 
         // Up
         // #Red
-        textures.add(new SkyBoxSideTexture(texture, "0", "0", textureSize, textureSize, location));
+        textures.put("up", new SkyBoxSideTexture(texture, "0", "0", textureSize, textureSize, location));
 
         // East
         // #Blue
-        textures.add(new SkyBoxSideTexture(texture, "0", textureSize, textureSize, textureSize, location));
+        textures.put("east", new SkyBoxSideTexture(texture, "0", textureSize, textureSize, textureSize, location));
 
         // West
         // #Purple
-        textures.add(new SkyBoxSideTexture(texture, textureSize + " * 2", textureSize, textureSize, textureSize, location));
+        textures.put("west", new SkyBoxSideTexture(texture, textureSize + " * 2", textureSize, textureSize, textureSize, location));
 
         return textures;
     }
 
-    public static ArrayList<SkyBoxSideTexture> createSingleTextureSkybox(IResourceLocationWrapper texture, String uvX, String uvY, String uvSizeX, String uvSizeY, String location) {
-        ArrayList<SkyBoxSideTexture> textures = new ArrayList<>();
-        for (int i = 0; i < 6; i++) {
-            textures.add(new SkyBoxSideTexture(texture, uvX, uvY, uvSizeX, uvSizeY, location));
+    public static HashMap<String, SkyBoxSideTexture> createSingleTextureSkybox(IResourceLocationWrapper texture, String uvX, String uvY, String uvSizeX, String uvSizeY, String location) {
+        HashMap<String, SkyBoxSideTexture> textures = new HashMap<>();
+        for (String side : SIDES) {
+            textures.put(side, new SkyBoxSideTexture(texture, uvX, uvY, uvSizeX, uvSizeY, location));
         }
 
         return textures;
