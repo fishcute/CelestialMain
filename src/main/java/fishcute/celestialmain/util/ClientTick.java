@@ -55,6 +55,7 @@ public class ClientTick {
         if (CelestialSky.doesDimensionHaveCustomSky()) {
             CelestialSky.getDimensionRenderInfo().environment.skyColor.setInheritColor(Util.getSkyColor());
             CelestialSky.getDimensionRenderInfo().environment.fogColor.setInheritColor(Util.getFogColor());
+            CelestialSky.getDimensionRenderInfo().environment.waterFogColor.setInheritColor(Util.getWaterFogColor());
         }
     }
 }

@@ -543,6 +543,12 @@ public class Util {
         double[] i = Instances.minecraft.getBiomeFogColor();
         return new Color((int) (i[0] * 255), (int) (i[1] * 255), (int) (i[2] * 255));
     }
+
+    public static Color getWaterFogColor() {
+        double[] i = Instances.minecraft.getBiomeWaterFogColor();
+        return new Color((int) (i[0] * 255), (int) (i[1] * 255), (int) (i[2] * 255));
+    }
+
     public static double getTwilightAlpha(double timeOfDay) {
         float g = FMath.cos((float) ((timeOfDay / 360) * (Math.PI * 2)));
         if (g >= -0.4F && g <= 0.4F)

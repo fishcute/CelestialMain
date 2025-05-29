@@ -51,9 +51,13 @@ public interface IMinecraftInstance {
     boolean equalToBiome(IMcVector position, String... name);
     double[] getBiomeSkyColor();
     double[] getBiomeFogColor();
+    double[] getBiomeWaterFogColor();
 
-    boolean disableFogChanges();
     boolean isCameraInWater();
+    boolean isCameraInLava();
+    boolean isCameraInPowderedSnow();
+    boolean isCameraBlinded();
+
     double getNightVisionModifier();
     boolean isSneaking();
 

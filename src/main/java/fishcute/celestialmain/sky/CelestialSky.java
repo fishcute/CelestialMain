@@ -51,7 +51,8 @@ public class CelestialSky {
         else if (globalRenderInfo != null) {
             return globalRenderInfo;
         }
-        return null;
+        // Returns a default render info, but this hopefully should never be used
+        return CelestialRenderInfo.DEFAULT;
     }
     public static void loadResources(boolean sendMessage) {
         dimensionSkyMap.clear();

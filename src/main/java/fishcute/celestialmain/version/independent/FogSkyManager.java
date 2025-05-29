@@ -1,0 +1,203 @@
+package fishcute.celestialmain.version.independent;
+
+import fishcute.celestialmain.sky.CelestialSky;
+import fishcute.celestialmain.util.FMath;
+import fishcute.celestialmain.util.Util;
+
+public class FogSkyManager {
+    public static float fogRed;
+    public static float fogGreen;
+    public static float fogBlue;
+    private static int targetBiomeFog = -1;
+    private static int previousBiomeFog = -1;
+    private static long biomeChangedTime = -1L;
+
+    /**
+     * Returns the configured fog start
+     *
+     * @return Fog start
+     */
+    public static float getFogStart() {
+        return CelestialSky.getDimensionRenderInfo().environment.fogStart.invoke();
+    }
+
+    /**
+     * Returns the configured fog end
+     *
+     * @return Fog end
+     */
+    public static float getFogEnd() {
+        return CelestialSky.getDimensionRenderInfo().environment.fogEnd.invoke();
+    }
+
+    /**
+     * Returns whether the cloud color should be affected by sky effects
+     *
+     * @return Should clouds be affected by sky effects
+     */
+    public static boolean shouldFogColorIgnoreSkyEffects() {
+        return CelestialSky.getDimensionRenderInfo().environment.fogColor.ignoreSkyEffects;
+    }
+
+    /**
+     * Sets up the fog color. Applies modifications such as render distance fade, the rain and thunder tint, and darkness depending on the time
+     */
+    public static void setupFogColor() {
+        // Base fog color
+        fogRed = CelestialSky.getDimensionRenderInfo().environment.fogColor.getStoredRed();
+        fogGreen = CelestialSky.getDimensionRenderInfo().environment.fogColor.getStoredGreen();
+        fogBlue = CelestialSky.getDimensionRenderInfo().environment.fogColor.getStoredBlue();
+
+        if (!shouldFogColorIgnoreSkyEffects()) {
+            // Color modification based on render distance
+            float fogViewDistanceModifier = (float) (1.0F - Math.pow(0.25F + 0.75F * Instances.minecraft.getRenderDistance() / 32.0F, 0.25F));
+
+            float skyColorRed = CelestialSky.getDimensionRenderInfo().environment.skyColor.getStoredRed();
+            float skyColorGreen = CelestialSky.getDimensionRenderInfo().environment.skyColor.getStoredGreen();
+            float skyColorBlue = CelestialSky.getDimensionRenderInfo().environment.skyColor.getStoredBlue();
+
+            fogRed = (float) Util.lerp(fogRed, skyColorRed, 1 - fogViewDistanceModifier);
+            fogGreen = (float) Util.lerp(fogGreen, skyColorGreen, 1 - fogViewDistanceModifier);
+            fogBlue = (float) Util.lerp(fogBlue, skyColorBlue, 1 - fogViewDistanceModifier);
+
+            // Rain color modification
+
+            float rainAlpha = (float) Instances.minecraft.getRainLevel();
+
+            if (rainAlpha > 0) {
+                fogRed *= 1.0F - rainAlpha * 0.5F;
+                fogGreen *= 1.0F - rainAlpha * 0.5F;
+                fogBlue *= 1.0F - rainAlpha * 0.4F;
+            }
+
+            // Thunder color modification
+
+            float thunderAlpha = (float) Instances.minecraft.getThunderLevel();
+
+            if (thunderAlpha > 0) {
+                fogRed *= 1.0F - thunderAlpha * 0.5F;
+                fogGreen *= 1.0F - thunderAlpha * 0.5F;
+                fogBlue *= 1.0F - thunderAlpha * 0.5F;
+            }
+
+            // Time color modification
+
+            float dayAlpha = (float) Util.clamp(Math.cos(Instances.minecraft.getTimeOfDay() * 6.2831855F) * 2 + 0.5, 0, 1);
+
+            fogRed *= dayAlpha * 0.94F + 0.06F;
+            fogGreen *= dayAlpha * 0.94F + 0.06F;
+            fogBlue *= dayAlpha * 0.91F + 0.09F;
+
+            // Boss fog color modification
+            float bossSkyDarken = Math.max(Instances.minecraft.getBossSkyDarken(), 0);
+
+            if (bossSkyDarken > 0.0F) {
+                fogRed *= (1.0F - bossSkyDarken) + 0.7F * bossSkyDarken;
+                fogGreen *= (1.0F - bossSkyDarken) + 0.6F * bossSkyDarken;
+                fogBlue *= (1.0F - bossSkyDarken) + 0.6F * bossSkyDarken;
+            }
+        }
+
+        biomeChangedTime = -1L;
+    }
+
+    /**
+     * Returns the Celestial fog color
+     *
+     * @return Fog color
+     */
+    public static float[] getFogColor() {
+        return new float[]{fogRed, fogGreen, fogBlue};
+    }
+
+    /**
+     * Returns the fog color specified by the configuration. Includes fog effects such as night vision and darkness
+     *
+     * @return Modified fog color RGB as a float array
+     */
+    public static float[] getFogColorModified() {
+        float[] color = getFogColor();
+
+        // Applies the night vision fog effect
+        if (Instances.minecraft.getNightVisionModifier() > 0) {
+            float w = Math.min(1.0F / color[0], Math.min(1.0F / color[1], 1.0F / color[2]));
+            float v = (float) Instances.minecraft.getNightVisionModifier();
+            color[0] = color[0] * (1.0F - v) + color[0] * w * v;
+            color[1] = color[1] * (1.0F - v) + color[1] * w * v;
+            color[2] = color[2] * (1.0F - v) + color[2] * w * v;
+        }
+
+        // Applies the darkness fog effect
+        if (Instances.minecraft.hasDarkness()) {
+            // Probably not the exact calculations minecraft makes, but results in the same effect
+            float darkness = 1 - (Instances.minecraft.getDarknessFogEffect(0) / 15);
+            color[0] = color[0] * darkness;
+            color[1] = color[1] * darkness;
+            color[2] = color[2] * darkness;
+        }
+
+        return color;
+    }
+
+    /**
+     * Returns the configured cloud height
+     *
+     * @return Cloud height
+     */
+    public static float getCloudHeight() {
+        return CelestialSky.getDimensionRenderInfo().environment.cloudHeight.invoke();
+    }
+
+    /**
+     * Returns whether the cloud color should be affected by sky effects
+     *
+     * @return Should clouds be affected by sky effects
+     */
+    public static boolean shouldCloudColorIgnoreSkyEffects() {
+        return CelestialSky.getDimensionRenderInfo().environment.cloudColor.ignoreSkyEffects;
+    }
+
+    /**
+     * Returns the configured cloud color
+     *
+     * @return Cloud color RGB as a float array
+     */
+    public static float[] getCloudColor() {
+        float cloudRed = CelestialSky.getDimensionRenderInfo().environment.cloudColor.getStoredRed();
+        float cloudGreen = CelestialSky.getDimensionRenderInfo().environment.cloudColor.getStoredGreen();
+        float cloudBlue = CelestialSky.getDimensionRenderInfo().environment.cloudColor.getStoredBlue();
+
+        // Skips cloud color modification if sky effects should be ignored
+        if (!shouldCloudColorIgnoreSkyEffects()) {
+            // Modifies cloud color depending on time and weather
+            float timeOfDayModifier = FMath.clamp(FMath.cos(Instances.minecraft.getTimeOfDay() * 6.2831855F) * 2.0F + 0.5F, 0.0F, 1.0F);
+
+            // Rain color modification
+            float rainLevel = (float) Instances.minecraft.getRainLevel();
+            if (rainLevel > 0.0F) {
+                float cloudColorModifier = (cloudRed * 0.3F + cloudGreen * 0.59F + cloudBlue * 0.11F) * 0.6F;
+                float rainLevelModifier = 1.0F - rainLevel * 0.95F;
+                cloudRed = cloudRed * rainLevelModifier + cloudColorModifier * (1.0F - rainLevelModifier);
+                cloudGreen = cloudGreen * rainLevelModifier + cloudColorModifier * (1.0F - rainLevelModifier);
+                cloudBlue = cloudBlue * rainLevelModifier + cloudColorModifier * (1.0F - rainLevelModifier);
+            }
+
+            // Time color modification
+            cloudRed *= timeOfDayModifier * 0.9F + 0.1F;
+            cloudGreen *= timeOfDayModifier * 0.9F + 0.1F;
+            cloudBlue *= timeOfDayModifier * 0.85F + 0.15F;
+
+            // Thunder color modification
+            float thunderLevel = Instances.minecraft.getThunderLevel();
+            if (thunderLevel > 0.0F) {
+                float cloudColorModifier = (cloudRed * 0.3F + cloudGreen * 0.59F + cloudBlue * 0.11F) * 0.2F;
+                float thunderLevelModifier = 1.0F - thunderLevel * 0.95F;
+                cloudRed = cloudRed * thunderLevelModifier + cloudColorModifier * (1.0F - thunderLevelModifier);
+                cloudGreen = cloudGreen * thunderLevelModifier + cloudColorModifier * (1.0F - thunderLevelModifier);
+                cloudBlue = cloudBlue * thunderLevelModifier + cloudColorModifier * (1.0F - thunderLevelModifier);
+            }
+        }
+
+        return new float[]{cloudRed, cloudGreen, cloudBlue};
+    }
+}
