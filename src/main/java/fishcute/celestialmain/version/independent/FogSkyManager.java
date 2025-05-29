@@ -3,6 +3,11 @@ package fishcute.celestialmain.version.independent;
 import fishcute.celestialmain.sky.CelestialSky;
 import fishcute.celestialmain.util.FMath;
 import fishcute.celestialmain.util.Util;
+import net.minecraft.util.CubicSampler;
+import net.minecraft.util.Mth;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.BiomeManager;
+import net.minecraft.world.phys.Vec3;
 
 public class FogSkyManager {
     public static float fogRed;
@@ -11,6 +16,10 @@ public class FogSkyManager {
     private static int targetBiomeFog = -1;
     private static int previousBiomeFog = -1;
     private static long biomeChangedTime = -1L;
+
+    public static float skyRed;
+    public static float skyGreen;
+    public static float skyBlue;
 
     /**
      * Returns the configured fog start
@@ -52,13 +61,9 @@ public class FogSkyManager {
             // Color modification based on render distance
             float fogViewDistanceModifier = (float) (1.0F - Math.pow(0.25F + 0.75F * Instances.minecraft.getRenderDistance() / 32.0F, 0.25F));
 
-            float skyColorRed = CelestialSky.getDimensionRenderInfo().environment.skyColor.getStoredRed();
-            float skyColorGreen = CelestialSky.getDimensionRenderInfo().environment.skyColor.getStoredGreen();
-            float skyColorBlue = CelestialSky.getDimensionRenderInfo().environment.skyColor.getStoredBlue();
-
-            fogRed = (float) Util.lerp(fogRed, skyColorRed, 1 - fogViewDistanceModifier);
-            fogGreen = (float) Util.lerp(fogGreen, skyColorGreen, 1 - fogViewDistanceModifier);
-            fogBlue = (float) Util.lerp(fogBlue, skyColorBlue, 1 - fogViewDistanceModifier);
+            fogRed = (float) Util.lerp(fogRed, skyRed, 1 - fogViewDistanceModifier);
+            fogGreen = (float) Util.lerp(fogGreen, skyGreen, 1 - fogViewDistanceModifier);
+            fogBlue = (float) Util.lerp(fogBlue, skyBlue, 1 - fogViewDistanceModifier);
 
             // Rain color modification
 
@@ -137,6 +142,72 @@ public class FogSkyManager {
         }
 
         return color;
+    }
+
+    /**
+     * Returns whether the cloud color should be affected by sky effects
+     *
+     * @return Should clouds be affected by sky effects
+     */
+    public static boolean shouldSkyColorIgnoreSkyEffects() {
+        return CelestialSky.getDimensionRenderInfo().environment.skyColor.ignoreSkyEffects;
+    }
+
+    /**
+     * Sets up the sky color. Applies modifications such as lightning flashes, the rain and thunder tint, and darkness depending on the time
+     */
+    public static void setupSkyColor() {
+        skyRed = CelestialSky.getDimensionRenderInfo().environment.skyColor.getStoredRed();
+        skyGreen = CelestialSky.getDimensionRenderInfo().environment.skyColor.getStoredGreen();
+        skyBlue = CelestialSky.getDimensionRenderInfo().environment.skyColor.getStoredBlue();
+
+        if (!shouldSkyColorIgnoreSkyEffects()) {
+            float timeOfDayModifier = (float) Math.clamp((Math.cos(Instances.minecraft.getTimeOfDay() * 6.2831855F) * 2.0F + 0.5F), 0.0F, 1.0F);
+            skyRed *= timeOfDayModifier;
+            skyGreen *= timeOfDayModifier;
+            skyBlue *= timeOfDayModifier;
+
+            // Rain color modification
+            float rainLevel = (float) Instances.minecraft.getRainLevel();
+            if (rainLevel > 0.0F) {
+                float skyColorModifier = ((skyRed * timeOfDayModifier * 0.3F) + (skyGreen * timeOfDayModifier * 0.59F) + (skyBlue * timeOfDayModifier * 0.11F));
+                float rainLevelModifier = 1.0F - rainLevel * 0.75F;
+
+                skyRed = skyRed * rainLevelModifier + (skyColorModifier * 0.6F) * (1F - rainLevelModifier);
+                skyGreen = skyGreen * rainLevelModifier + (skyColorModifier * 0.6F) * (1F - rainLevelModifier);
+                skyBlue = skyBlue * rainLevelModifier + (skyColorModifier * 0.6F) * (1F - rainLevelModifier);
+            }
+
+            // Thunder color modification
+            float thunderLevel = Instances.minecraft.getThunderLevel();
+            if (thunderLevel > 0.0F) {
+                float skyColorModifier = (skyRed * 0.3F + skyGreen * 0.59F + skyBlue * 0.11F) * 0.2F;
+                float thunderLevelModifier = 1.0F - thunderLevel * 0.75F;
+
+                skyRed = skyRed * thunderLevelModifier + (skyColorModifier) * (1F - thunderLevelModifier);
+                skyGreen = skyGreen * thunderLevelModifier + (skyColorModifier) * (1F - thunderLevelModifier);
+                skyBlue = skyBlue * thunderLevelModifier + (skyColorModifier) * (1F - thunderLevelModifier);
+            }
+
+            // Lightning flash
+            int skyFlashTime = (int) Instances.minecraft.getSkyFlashTime();
+            if (skyFlashTime > 0) {
+                float flashModifier = (Math.min(skyFlashTime - Instances.minecraft.getTickDelta(), 1)) * 0.45F;
+
+                skyRed = skyRed * (1.0F - flashModifier) + 0.8F * flashModifier;
+                skyGreen = skyGreen * (1.0F - flashModifier) + 0.8F * flashModifier;
+                skyBlue = skyBlue * (1.0F - flashModifier) + 1.0F * flashModifier;
+            }
+        }
+    }
+
+    /**
+     * Returns the Celestial sky color
+     *
+     * @return Sky color
+     */
+    public static float[] getSkyColor() {
+        return new float[]{skyRed, skyGreen, skyBlue};
     }
 
     /**

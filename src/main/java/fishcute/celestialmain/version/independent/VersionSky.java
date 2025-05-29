@@ -30,45 +30,6 @@ public class VersionSky {
     }
 
     /**
-     * Used for Biome#getFogColor
-     *
-     * @param defaultBiomeColor Default biome color
-     * @return Fog color as an RGB int
-     */
-    public static int getFogColor(int defaultBiomeColor) {
-        if (CelestialSky.doesDimensionHaveCustomSky() && canDisplayCustomFog()) {
-            if (Util.getRealFogColor) {
-                return defaultBiomeColor;
-            } else {
-                float[] color = FogSkyManager.getFogColorModified();
-                return Util.getDecimal(new Color(
-                        (int) Util.clamp(color[0], 0, 255),
-                        (int) Util.clamp(color[1], 0, 255),
-                        (int) Util.clamp(color[2], 0, 255)
-                ));
-            }
-        }
-        return defaultBiomeColor;
-    }
-
-    /**
-     * Used for Biome#getSkyColor
-     *
-     * @param defaultSkyColor Default sky color
-     * @return Sky color as an RGB int
-     */
-    public static int getSkyColor(int defaultSkyColor) {
-        if (CelestialSky.doesDimensionHaveCustomSky() && canDisplayCustomFog()) {
-            if (Util.getRealSkyColor) {
-                return defaultSkyColor;
-            } else {
-                return Util.getDecimal(CelestialSky.getDimensionRenderInfo().environment.skyColor.getStoredColor());
-            }
-        }
-        return defaultSkyColor;
-    }
-
-    /**
      * Used for ClientLevel#getCloudColor
      *
      * @param defaultCloudColor Default cloud color
@@ -87,11 +48,12 @@ public class VersionSky {
      * @param defaultSkyColor Default sky color
      * @return Sky color RGB as a double array
      */
-    public static double[] getClientLevelSkyColor(double[] defaultSkyColor) {
-        if (CelestialSky.doesDimensionHaveCustomSky() && CelestialSky.getDimensionRenderInfo().environment.skyColor.ignoreSkyEffects) {
-            return new double[]{((double) CelestialSky.getDimensionRenderInfo().environment.skyColor.getStoredRed()),
-                    ((double) CelestialSky.getDimensionRenderInfo().environment.skyColor.getStoredGreen()),
-                    ((double) CelestialSky.getDimensionRenderInfo().environment.skyColor.getStoredBlue())};
+    public static float[] getClientLevelSkyColor(float[] defaultSkyColor) {
+        if (CelestialSky.doesDimensionHaveCustomSky()) {
+            // Set up sky color
+            FogSkyManager.setupSkyColor();
+
+            return FogSkyManager.getSkyColor();
         }
         return defaultSkyColor;
     }
