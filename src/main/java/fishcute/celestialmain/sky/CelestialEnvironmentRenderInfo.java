@@ -33,8 +33,8 @@ public class CelestialEnvironmentRenderInfo {
         this.cloudColor = cloudColor;
         this.fogStart = Util.compileExpression(fogStart, location + "environment.fog.fog_start");
         this.fogEnd = Util.compileExpression(fogEnd, location + "environment.fog.fog_end");
-        this.waterFogStart = Util.compileExpression(fogStart, location + "environment.fog.water_fog_start");
-        this.waterFogEnd = Util.compileExpression(fogEnd, location + "environment.fog.water_fog_end");
+        this.waterFogStart = Util.compileExpression(waterFogStart, location + "environment.fog.water_fog_start");
+        this.waterFogEnd = Util.compileExpression(waterFogEnd, location + "environment.fog.water_fog_end");
         this.twilightColor = twilightColor;
         this.twilightAlpha = Util.compileExpression(twilightAlpha, location + "environment.twilight_alpha");
         this.voidCullingLevel = Util.compileExpression(voidCullingLevel, location + "environment.void_culling_level");
@@ -57,10 +57,10 @@ public class CelestialEnvironmentRenderInfo {
             DEFAULT_COLOR_SKY,
             "128",
             DEFAULT_COLOR_CLOUD,
-            "-1",
-            "-1",
-            "-1",
-            "-1",
+            "fogStart",
+            "fogEnd",
+            "waterFogStart",
+            "waterFogEnd",
             DEFAULT_COLOR_TWILIGHT,
             "1",
             "0",
@@ -85,10 +85,10 @@ public class CelestialEnvironmentRenderInfo {
                 ColorEntry.createColorEntry(environment, Util.locationFormat(dimension, "sky", "environment"),"sky_color", DEFAULT_COLOR_SKY, true),
                 Util.getOptionalString(clouds, "height", "128", Util.locationFormat(dimension, "sky", "clouds")),
                 ColorEntry.createColorEntry(clouds, Util.locationFormat(dimension, "sky", "environment.clouds"),"color", DEFAULT_COLOR_CLOUD, true),
-                Util.getOptionalString(fog, "fog_start", "-1", Util.locationFormat(dimension, "sky", "fog")),
-                Util.getOptionalString(fog, "fog_end", "-1", Util.locationFormat(dimension, "sky", "fog")),
-                Util.getOptionalString(fog, "water_fog_start", "-1", Util.locationFormat(dimension, "sky", "fog")),
-                Util.getOptionalString(fog, "water_fog_end", "-1", Util.locationFormat(dimension, "sky", "fog")),
+                Util.getOptionalString(fog, "fog_start", "fogStart", Util.locationFormat(dimension, "sky", "fog")),
+                Util.getOptionalString(fog, "fog_end", "fogEnd", Util.locationFormat(dimension, "sky", "fog")),
+                Util.getOptionalString(fog, "water_fog_start", "waterFogStart", Util.locationFormat(dimension, "sky", "fog")),
+                Util.getOptionalString(fog, "water_fog_end", "waterFogEnd", Util.locationFormat(dimension, "sky", "fog")),
                 ColorEntry.createColorEntry(environment, Util.locationFormat(dimension, "sky", "environment"),"twilight_color", DEFAULT_COLOR_TWILIGHT, false),
                 Util.getOptionalString(environment, "twilight_alpha", "1", Util.locationFormat(dimension, "sky", "environment")),
                 Util.getOptionalString(environment, "void_culling_level", "0", Util.locationFormat(dimension, "sky", "environment")),
@@ -96,13 +96,10 @@ public class CelestialEnvironmentRenderInfo {
         );
     }
 
-    public boolean useSimpleFog() {
-        return this.fogStart.equals("-1") || this.fogEnd.equals("-1");
-    }
-
     public void updateColorEntries() {
         skyColor.tick();
         fogColor.tick();
+        waterFogColor.tick();
         cloudColor.tick();
         twilightColor.tick();
     }

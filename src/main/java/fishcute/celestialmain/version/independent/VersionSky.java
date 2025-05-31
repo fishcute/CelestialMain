@@ -77,7 +77,7 @@ public class VersionSky {
      * Sets up the fog start and end
      */
     public static void setupFog() {
-        if (CelestialSky.doesDimensionHaveCustomSky() && !CelestialSky.getDimensionRenderInfo().environment.useSimpleFog() && canDisplayCustomFog()) {
+        if (CelestialSky.doesDimensionHaveCustomSky() && canDisplayCustomFog()) {
             if (Instances.minecraft.hasDarkness()) {
                 // Handle darkness effect
                 float darkness = Instances.minecraft.getDarknessFogEffect(CelestialSky.getDimensionRenderInfo().environment.fogStart.invoke());
@@ -123,7 +123,7 @@ public class VersionSky {
      * @return Modified color RGB as a float array
      */
     public static float[] applyPostFogChanges(float r, float g, float b) {
-        if (CelestialSky.doesDimensionHaveCustomSky()) {
+        if (CelestialSky.doesDimensionHaveCustomSky() && canDisplayCustomFog() && !Instances.minecraft.isCameraInWater()) {
             for (ICelestialObject o : CelestialSky.getDimensionRenderInfo().skyObjects) {
                 if (o instanceof TwilightObject) {
                     TwilightObject t = (TwilightObject) o;

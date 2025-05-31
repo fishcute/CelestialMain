@@ -67,6 +67,10 @@ public class CelestialModule {
                             toDouble(Util.fogStart))
                     .with("fogEnd", () ->
                             toDouble(Util.fogEnd))
+                    .with("waterFogStart", () ->
+                            -8.0)
+                    .with("waterFogEnd", () ->
+                            toDouble(96.0 * Math.max(0.25F, Instances.minecraft.getWaterVision()) * (Instances.minecraft.doesBiomeHaveCloserFog() ? 0.85 : 1)))
                     .with("sneaking", () ->
                             Instances.minecraft.isSneaking() ? 1.0 : 0.0)
                     .with("dayLight", () ->

@@ -271,11 +271,6 @@ public class ColorEntry {
             this.updateTick--;
     }
 
-    public void setInheritColor(Color c) {
-        //if (this.inheritColor)
-            //this.baseColor.color.color = c;
-    }
-
     public void updateColor() {
         this.storedColor.color = getResultColor();
     }

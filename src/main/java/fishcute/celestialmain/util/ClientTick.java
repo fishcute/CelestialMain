@@ -51,11 +51,5 @@ public class ClientTick {
         dimensionPath = Instances.minecraft.getLevelPath();
         dimensionHasCustomSky = CelestialSky.dimensionSkyMap.containsKey(dimensionPath);
         CelestialSky.tickValues();
-
-        if (CelestialSky.doesDimensionHaveCustomSky()) {
-            CelestialSky.getDimensionRenderInfo().environment.skyColor.setInheritColor(Util.getSkyColor());
-            CelestialSky.getDimensionRenderInfo().environment.fogColor.setInheritColor(Util.getFogColor());
-            CelestialSky.getDimensionRenderInfo().environment.waterFogColor.setInheritColor(Util.getWaterFogColor());
-        }
     }
 }

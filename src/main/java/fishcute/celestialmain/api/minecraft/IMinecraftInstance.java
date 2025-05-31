@@ -10,6 +10,7 @@ public interface IMinecraftInstance {
     boolean doesPlayerExist();
     String getLevelPath();
     float getTickDelta();
+    long getMillis();
     IMcVector getPlayerEyePosition();
 
     void sendFormattedErrorMessage(String error, String type, String location);
@@ -52,6 +53,9 @@ public interface IMinecraftInstance {
     double[] getBiomeSkyColor();
     double[] getBiomeFogColor();
     double[] getBiomeWaterFogColor();
+
+    float getWaterVision();
+    boolean doesBiomeHaveCloserFog();
 
     boolean isCameraInWater();
     boolean isCameraInLava();

@@ -201,6 +201,8 @@ public class Util {
                 return Util.getSkyColor();
             case "#fogColor":
                 return Util.getFogColor();
+            case "#waterFogColor":
+                return Util.getWaterFogColor();
         }
         if (CelestialSky.isColorEntry(hex)) {
             return CelestialSky.getColorEntry(hex);
@@ -549,6 +551,7 @@ public class Util {
         return new Color((int) (i[0] * 255), (int) (i[1] * 255), (int) (i[2] * 255));
     }
 
+
     public static double getTwilightAlpha(double timeOfDay) {
         float g = FMath.cos((float) ((timeOfDay / 360) * (Math.PI * 2)));
         if (g >= -0.4F && g <= 0.4F)
@@ -581,8 +584,11 @@ public class Util {
     public static double clamp(double x, double min, double max) {
         return Math.max(Math.min(x, max), min);
     }
-    public static double lerp(double a, double b, double ratio) {
-        return (a * ratio) + b * (1 - ratio);
+    public static double lerp(double targetValue, double originalValue, double ratio) {
+        return (targetValue * ratio) + originalValue * (1 - ratio);
+    }
+    public static double lerpMoj(float f, float g, float h) {
+        return g + f * (h - g);
     }
     public static double repeat(double a, double min, double max) {
         return (a % (max - min)) + min;

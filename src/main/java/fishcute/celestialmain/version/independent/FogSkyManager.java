@@ -3,11 +3,11 @@ package fishcute.celestialmain.version.independent;
 import fishcute.celestialmain.sky.CelestialSky;
 import fishcute.celestialmain.util.FMath;
 import fishcute.celestialmain.util.Util;
-import net.minecraft.util.CubicSampler;
+import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.biome.BiomeManager;
-import net.minecraft.world.phys.Vec3;
+
+import java.awt.*;
 
 public class FogSkyManager {
     public static float fogRed;
@@ -27,7 +27,12 @@ public class FogSkyManager {
      * @return Fog start
      */
     public static float getFogStart() {
-        return CelestialSky.getDimensionRenderInfo().environment.fogStart.invoke();
+        if (Instances.minecraft.isCameraInWater()) {
+            return CelestialSky.getDimensionRenderInfo().environment.waterFogStart.invoke();
+        }
+        else {
+            return CelestialSky.getDimensionRenderInfo().environment.fogStart.invoke();
+        }
     }
 
     /**
@@ -36,22 +41,39 @@ public class FogSkyManager {
      * @return Fog end
      */
     public static float getFogEnd() {
-        return CelestialSky.getDimensionRenderInfo().environment.fogEnd.invoke();
+        if (Instances.minecraft.isCameraInWater()) {
+            return CelestialSky.getDimensionRenderInfo().environment.waterFogEnd.invoke();
+        }
+        else {
+            return CelestialSky.getDimensionRenderInfo().environment.fogEnd.invoke();
+        }
     }
 
     /**
-     * Returns whether the cloud color should be affected by sky effects
+     * Returns whether the fog color should be affected by sky effects
      *
-     * @return Should clouds be affected by sky effects
+     * @return Should fog be affected by sky effects
      */
     public static boolean shouldFogColorIgnoreSkyEffects() {
         return CelestialSky.getDimensionRenderInfo().environment.fogColor.ignoreSkyEffects;
     }
 
     /**
-     * Sets up the fog color. Applies modifications such as render distance fade, the rain and thunder tint, and darkness depending on the time
+     * Sets up the land fog color if the camera is in air, or the water fog color if the camera is in water
      */
     public static void setupFogColor() {
+        if (Instances.minecraft.isCameraInWater()) {
+            setupWaterFogColor();
+        }
+        else {
+            setupLandFogColor();
+        }
+    }
+
+    /**
+     * Sets up the land fog color. Applies modifications such as render distance fade, the rain and thunder tint, and darkness depending on the time
+     */
+    public static void setupLandFogColor() {
         // Base fog color
         fogRed = CelestialSky.getDimensionRenderInfo().environment.fogColor.getStoredRed();
         fogGreen = CelestialSky.getDimensionRenderInfo().environment.fogColor.getStoredGreen();
@@ -104,6 +126,81 @@ public class FogSkyManager {
         }
 
         biomeChangedTime = -1L;
+    }
+
+    /**
+     * Returns whether the water fog color should be affected by water vision and fog color transitions
+     *
+     * @return Should water fog color be affected by sky effects
+     */
+    public static boolean shouldWaterFogColorIgnoreSkyEffects() {
+        return CelestialSky.getDimensionRenderInfo().environment.waterFogColor.ignoreSkyEffects;
+    }
+
+    /**
+     * Sets up the water fog color. Includes water vision and water fog color transitions
+     */
+    public static void setupWaterFogColor() {
+        if (!shouldWaterFogColorIgnoreSkyEffects()) {
+            long currentTime = System.currentTimeMillis();
+
+            // Water fog color defined in configuration
+            int waterFogColor = new Color(
+                    CelestialSky.getDimensionRenderInfo().environment.waterFogColor.getStoredRed(),
+                    CelestialSky.getDimensionRenderInfo().environment.waterFogColor.getStoredGreen(),
+                    CelestialSky.getDimensionRenderInfo().environment.waterFogColor.getStoredBlue()
+            ).getRGB();
+
+            // Sets water fog color when player enters water
+            if (biomeChangedTime < 0L) {
+                targetBiomeFog = waterFogColor;
+                previousBiomeFog = waterFogColor;
+                biomeChangedTime = currentTime;
+            }
+
+            // Extracts water fog colors
+            int targetBiomeFogRed = targetBiomeFog >> 16 & 255;
+            int targetBiomeFogGreen = targetBiomeFog >> 8 & 255;
+            int targetBiomeFogBlue = targetBiomeFog & 255;
+
+            int previousBiomeFogRed = previousBiomeFog >> 16 & 255;
+            int previousBiomeFogGreen = previousBiomeFog >> 8 & 255;
+            int previousBiomeFogBlue = previousBiomeFog & 255;
+
+            // Lerps the previous biome fog color into the targeted biome fog color. Does this over 5 seconds
+            float lerpFactor = (float) Util.clamp((currentTime - biomeChangedTime) / 5000.0F, 0.0F, 1.0F);
+
+            float waterFogRed = (float) Util.lerp(targetBiomeFogRed, previousBiomeFogRed, lerpFactor);
+            float waterFogGreen = (float) Util.lerp(targetBiomeFogGreen, previousBiomeFogGreen, lerpFactor);
+            float waterFogBlue = (float) Util.lerp(targetBiomeFogBlue, previousBiomeFogBlue, lerpFactor);
+
+            fogRed = waterFogRed / 255.0F;
+            fogGreen = waterFogGreen / 255.0F;
+            fogBlue = waterFogBlue / 255.0F;
+
+            // Sets a new target biome fog if the configured water fog color changes
+            if (targetBiomeFog != waterFogColor) {
+                targetBiomeFog = waterFogColor;
+                previousBiomeFog = (int) Math.floor(waterFogRed) << 16 | (int) Math.floor(waterFogGreen) << 8 | (int) Math.floor(waterFogBlue);
+                biomeChangedTime = currentTime;
+            }
+
+            // Handles some weird water vision stuff that minecraft does
+            float waterVision = Instances.minecraft.getWaterVision();
+
+            if (fogRed != 0.0F && fogGreen != 0.0F && fogBlue != 0.0F) {
+                float w = Math.min(1.0F / fogRed, Math.min(1.0F / fogGreen, 1.0F / fogBlue));
+                fogRed = fogRed * (1.0F - waterVision) + fogRed * w * waterVision;
+                fogGreen = fogGreen * (1.0F - waterVision) + fogGreen * w * waterVision;
+                fogBlue = fogBlue * (1.0F - waterVision) + fogBlue * w * waterVision;
+            }
+        }
+        else {
+            // Has to ignore water vision effects otherwise it'll look off
+            fogRed = CelestialSky.getDimensionRenderInfo().environment.waterFogColor.getStoredRed();
+            fogGreen = CelestialSky.getDimensionRenderInfo().environment.waterFogColor.getStoredGreen();
+            fogBlue = CelestialSky.getDimensionRenderInfo().environment.waterFogColor.getStoredBlue();
+        }
     }
 
     /**
