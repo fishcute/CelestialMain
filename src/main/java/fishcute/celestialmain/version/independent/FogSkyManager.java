@@ -256,7 +256,7 @@ public class FogSkyManager {
         skyBlue = CelestialSky.getDimensionRenderInfo().environment.skyColor.getStoredBlue();
 
         if (!shouldSkyColorIgnoreSkyEffects()) {
-            float timeOfDayModifier = (float) Math.clamp((Math.cos(Instances.minecraft.getTimeOfDay() * 6.2831855F) * 2.0F + 0.5F), 0.0F, 1.0F);
+            float timeOfDayModifier = (float) Util.clamp((Math.cos(Instances.minecraft.getTimeOfDay() * 6.2831855F) * 2.0F + 0.5F), 0.0F, 1.0F);
             skyRed *= timeOfDayModifier;
             skyGreen *= timeOfDayModifier;
             skyBlue *= timeOfDayModifier;

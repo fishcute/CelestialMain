@@ -124,7 +124,6 @@ public class CelestialSky {
     public static CelestialRenderInfo loadDimension(String dimension, ArrayList<String> objectsToRegister) {
         ArrayList<ICelestialObject> celestialObjects = new ArrayList<>();
         for (String i : objectsToRegister) {
-            Util.log("[" + dimension + "] Loading celestial object \"" + i + "\"");
             JsonObject object = getFile("celestial:sky/" + dimension + "/objects/" + i + ".json");
             ICelestialObject o = ICelestialObject.getObjectFromJson(object, i, dimension);
             if (o != null)
