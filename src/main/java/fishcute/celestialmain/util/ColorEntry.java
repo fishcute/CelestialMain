@@ -13,7 +13,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 
 public class ColorEntry {
@@ -326,9 +325,9 @@ public class ColorEntry {
             float blueRatio = (color.blueRatio.invoke() * ratio);
 
             if (color.type == BlendType.LINEAR_INTERPOLATION) {
-                resultRed = (int) (Util.lerp(red, resultRed, redRatio));
-                resultGreen = (int) (Util.lerp(green, resultGreen, greenRatio));
-                resultBlue = (int) (Util.lerp(blue, resultBlue, blueRatio));
+                resultRed = (int) (Util.lerp2(red, resultRed, redRatio));
+                resultGreen = (int) (Util.lerp2(green, resultGreen, greenRatio));
+                resultBlue = (int) (Util.lerp2(blue, resultBlue, blueRatio));
             }
             else if (color.type == BlendType.OVERRIDE) {
                 resultRed = red;
@@ -339,9 +338,9 @@ public class ColorEntry {
                 float[] lab = getLabFromRGB(red, green, blue);
                 float[] labResult = getLabFromRGB(resultRed, resultGreen, resultBlue);
 
-                resultRed = (int) (Util.lerp(lab[0], labResult[0], redRatio) * 255);
-                resultGreen = (int) (Util.lerp(lab[1], labResult[1], greenRatio) * 255);
-                resultBlue = (int) (Util.lerp(lab[2], labResult[2], blueRatio) * 255);
+                resultRed = (int) (Util.lerp2(lab[0], labResult[0], redRatio) * 255);
+                resultGreen = (int) (Util.lerp2(lab[1], labResult[1], greenRatio) * 255);
+                resultBlue = (int) (Util.lerp2(lab[2], labResult[2], blueRatio) * 255);
 
                 float[] rgb = getRGBFromLab(resultRed / 255.0F, resultGreen / 255.0F, resultBlue / 255.0F);
                 resultRed = (int) (rgb[0]);
@@ -352,9 +351,9 @@ public class ColorEntry {
                 for (ICelestialObject o : CelestialSky.getDimensionRenderInfo().skyObjects) {
                     if (o instanceof TwilightObject) {
                         TwilightObject t = (TwilightObject) o;
-                        resultRed = (int) (Util.lerp(t.fogTwilightColor.x,  resultRed / 255.0F, redRatio * t.fogTwilightColor.w) * 255);
-                        resultGreen = (int) (Util.lerp(t.fogTwilightColor.y,  resultGreen / 255.0F, greenRatio * t.fogTwilightColor.w) * 255);
-                        resultBlue = (int) (Util.lerp(t.fogTwilightColor.z, resultBlue / 255.0F, blueRatio * t.fogTwilightColor.w) * 255);
+                        resultRed = (int) (Util.lerp2(t.fogTwilightColor.x,  resultRed / 255.0F, redRatio * t.fogTwilightColor.w) * 255);
+                        resultGreen = (int) (Util.lerp2(t.fogTwilightColor.y,  resultGreen / 255.0F, greenRatio * t.fogTwilightColor.w) * 255);
+                        resultBlue = (int) (Util.lerp2(t.fogTwilightColor.z, resultBlue / 255.0F, blueRatio * t.fogTwilightColor.w) * 255);
                     }
                 }
             }

@@ -3,9 +3,6 @@ package fishcute.celestialmain.version.independent;
 import fishcute.celestialmain.sky.CelestialSky;
 import fishcute.celestialmain.util.FMath;
 import fishcute.celestialmain.util.Util;
-import net.minecraft.core.BlockPos;
-import net.minecraft.util.Mth;
-import net.minecraft.world.level.biome.Biome;
 
 import java.awt.*;
 
@@ -83,9 +80,9 @@ public class FogSkyManager {
             // Color modification based on render distance
             float fogViewDistanceModifier = (float) (1.0F - Math.pow(0.25F + 0.75F * Instances.minecraft.getRenderDistance() / 32.0F, 0.25F));
 
-            fogRed = (float) Util.lerp(fogRed, skyRed, 1 - fogViewDistanceModifier);
-            fogGreen = (float) Util.lerp(fogGreen, skyGreen, 1 - fogViewDistanceModifier);
-            fogBlue = (float) Util.lerp(fogBlue, skyBlue, 1 - fogViewDistanceModifier);
+            fogRed = (float) Util.lerp2(fogRed, skyRed, 1 - fogViewDistanceModifier);
+            fogGreen = (float) Util.lerp2(fogGreen, skyGreen, 1 - fogViewDistanceModifier);
+            fogBlue = (float) Util.lerp2(fogBlue, skyBlue, 1 - fogViewDistanceModifier);
 
             // Rain color modification
 
@@ -170,9 +167,9 @@ public class FogSkyManager {
             // Lerps the previous biome fog color into the targeted biome fog color. Does this over 5 seconds
             float lerpFactor = (float) Util.clamp((currentTime - biomeChangedTime) / 5000.0F, 0.0F, 1.0F);
 
-            float waterFogRed = (float) Util.lerp(targetBiomeFogRed, previousBiomeFogRed, lerpFactor);
-            float waterFogGreen = (float) Util.lerp(targetBiomeFogGreen, previousBiomeFogGreen, lerpFactor);
-            float waterFogBlue = (float) Util.lerp(targetBiomeFogBlue, previousBiomeFogBlue, lerpFactor);
+            float waterFogRed = (float) Util.lerp2(targetBiomeFogRed, previousBiomeFogRed, lerpFactor);
+            float waterFogGreen = (float) Util.lerp2(targetBiomeFogGreen, previousBiomeFogGreen, lerpFactor);
+            float waterFogBlue = (float) Util.lerp2(targetBiomeFogBlue, previousBiomeFogBlue, lerpFactor);
 
             fogRed = waterFogRed / 255.0F;
             fogGreen = waterFogGreen / 255.0F;

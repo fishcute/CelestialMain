@@ -11,55 +11,124 @@ import org.apache.commons.lang3.math.NumberUtils;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
-import java.rmi.ServerRuntimeException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Random;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class Util {
     public static float fogStart = 0;
     public static float fogEnd = 0;
-    static Random random = new Random();
-    public static String locationFormat(String file, String object) {
-        return file + ".json, " + object;
-    }
-    public static String locationFormat(String dimension, String file, String object) {
-        return dimension + "/" + file + ".json, " + object;
-    }
-    public static String locationFormat(String dimension, String file, String object, String object2) {
-        return dimension + "/" + file + ".json, " + object + "." + object2;
+    private static final Random RANDOM = new Random();
+
+    /**
+     * Returns the location format for an error message
+     *
+     * @param file      File that the value is located in
+     * @param valueName The name of the value
+     * @return Location format
+     */
+    public static String locationFormat(String file, String valueName) {
+        return file + ".json, " + valueName;
     }
 
-    public static CelestialExpression compileExpression(String input, String location) {
-        return new CelestialExpression(input, location);
+    /**
+     * Returns the location format for an error message
+     *
+     * @param dimension Dimension folder that the file is located in
+     * @param file      File that the value is located in
+     * @param valueName The name of the value
+     * @return Location format
+     */
+    public static String locationFormat(String dimension, String file, String valueName) {
+        return dimension + "/" + file + ".json, " + valueName;
     }
 
-    public static MultiCelestialExpression compileMultiExpression(String input, String location, Module... multiDataModule) {
-        return new MultiCelestialExpression(input, location, multiDataModule);
+    /**
+     * Returns the location format for an error message
+     *
+     * @param dimension Dimension folder that the file is located in
+     * @param file      File that the value is located in
+     * @param path      Path that leads to the value
+     * @param valueName The name of the value
+     * @return Location format
+     */
+    public static String locationFormat(String dimension, String file, String path, String valueName) {
+        return dimension + "/" + file + ".json, " + path + "." + valueName;
     }
 
-    public static CelestialExpression compileExpressionObject(String equation, String dimension, String objectName, String location, Module... multiDataModule) {
+    /**
+     * Compiles a Celestial expression
+     *
+     * @param rawEquation Raw string for expression
+     * @param location    Location format for expression. Obtained from Util#locationFormat
+     * @return Compiled Celestial expression
+     */
+    public static CelestialExpression compileExpression(String rawEquation, String location) {
+        return new CelestialExpression(rawEquation, location);
+    }
+
+    /**
+     * Compiles a Celestial expression with additional Celestial modules
+     *
+     * @param rawEquation     Raw string for expression
+     * @param location        Location format for expression. Obtained from Util#locationFormat
+     * @param multiDataModule Additional Celestial modules
+     * @return Compiled Celestial expression
+     */
+    public static MultiCelestialExpression compileMultiExpression(String rawEquation, String location, Module... multiDataModule) {
+        return new MultiCelestialExpression(rawEquation, location, multiDataModule);
+    }
+
+    /**
+     * Helper function for easily compiling expressions for Celestial objects. Handles location formatting
+     *
+     * @param rawEquation     Raw string for expression
+     * @param objectDimension Dimension for the Celestial object
+     * @param objectFileName  File name of the Celestial object
+     * @param location        Location of the value
+     * @param multiDataModule Additional Celestial modules
+     * @return Compiled Celestial expression
+     */
+    public static CelestialExpression compileExpressionObject(String rawEquation, String objectDimension, String objectFileName, String location, Module... multiDataModule) {
         if (multiDataModule == null) {
-            return compileExpression(equation, Util.locationFormat(dimension, "objects/" + objectName, location));
+            return compileExpression(rawEquation, Util.locationFormat(objectDimension, "objects/" + objectFileName, location));
         }
-        return compileMultiExpression(equation, Util.locationFormat(dimension, "objects/" + objectName, location), multiDataModule);
+        return compileMultiExpression(rawEquation, Util.locationFormat(objectDimension, "objects/" + objectFileName, location), multiDataModule);
     }
 
+    /**
+     * Displays a double to the action bar
+     *
+     * @param i Value to display
+     * @return Inputted value
+     */
     static double print(double i) {
         Instances.minecraft.sendMessage("Value: " + i, true);
         return i;
     }
 
+    /**
+     * Sends a message to console from Celestial
+     *
+     * @param i Message to send
+     */
+
     public static void log(Object i) {
         System.out.println("[Celestial] " + i.toString());
     }
+
     public static int errorCount;
     static ArrayList<String> errors = new ArrayList<>();
 
+    /**
+     * Sends a compilation error
+     *
+     * @param i        Error message to send
+     * @param location Location format for the error
+     * @param e        Exception that caused the error
+     */
     public static void sendCompilationError(String i, String location, Exception e) {
         errorCount++;
         if (!Instances.minecraft.doesPlayerExist())
@@ -71,9 +140,18 @@ public class Util {
         }
     }
 
+    /**
+     * Sends an error. Will stop sending messages after 25 errors have been sent
+     *
+     * @param i        Error message to send
+     * @param location Location format for the error
+     * @param e        Exception that caused the error
+     */
     public static void sendError(String i, String location, Exception e) {
-        if (!Instances.minecraft.doesPlayerExist() || errorCount > 25 || errors.contains(i))
+        // Stops sending error messages after 25 errors have been sent
+        if (!Instances.minecraft.doesPlayerExist() || errorCount > 25 || errors.contains(i)) {
             return;
+        }
         errorCount++;
         errors.add(i);
         Instances.minecraft.sendFormattedErrorMessage(i, "Error", location);
@@ -83,90 +161,141 @@ public class Util {
             e.printStackTrace();
         }
 
-        if (errorCount >= 25)
+        if (errorCount >= 25) {
             Instances.minecraft.sendErrorMessage("Passing 25 error messages. Muting error messages.");
+        }
     }
 
-    public static boolean getOptionalBoolean(JsonObject o, String toGet, boolean ifNull, String location) {
+    /**
+     * Retrieves a boolean from a JSON object, or returns a separate provided value if the value is null
+     *
+     * @param jsonObject JSON object to retrieve value from
+     * @param toGet      Value to retrieve
+     * @param ifNull     Value to return if retrieved value is nonexistent
+     * @param location   Location format
+     * @return Boolean
+     */
+    public static boolean getOptionalBoolean(JsonObject jsonObject, String toGet, boolean ifNull, String location) {
         try {
-            return o != null && o.has(toGet) ? o.get(toGet).getAsBoolean() : ifNull;
-        }
-        catch (Exception e) {
-            if (o.has(toGet)) {
-                Util.sendCompilationError("Failed to parse boolean \"" + o.get(toGet) + "\".", location + "." + toGet, e);
-            }
-            else {
+            return jsonObject != null && jsonObject.has(toGet) ? jsonObject.get(toGet).getAsBoolean() : ifNull;
+        } catch (Exception e) {
+            if (jsonObject.has(toGet)) {
+                Util.sendCompilationError("Failed to parse boolean \"" + jsonObject.get(toGet) + "\".", location + "." + toGet, e);
+            } else {
                 Util.sendCompilationError("Failed to parse boolean.", location + "." + toGet, e);
             }
             return false;
         }
     }
 
-    public static String getOptionalString(JsonObject o, String toGet, String ifNull, String location) {
+    /**
+     * Retrieves a string from a JSON object, or returns a separate provided value if the value is null
+     *
+     * @param jsonObject JSON object to retrieve value from
+     * @param toGet      Value to retrieve
+     * @param ifNull     Value to return if retrieved value is nonexistent
+     * @param location   Location format
+     * @return String
+     */
+    public static String getOptionalString(JsonObject jsonObject, String toGet, String ifNull, String location) {
         try {
-            return o != null && o.has(toGet) ? o.get(toGet).getAsString() : ifNull;
-        }
-        catch (Exception e) {
-            if (o.has(toGet)) {
-                Util.sendCompilationError("Failed to parse string \"" + o.get(toGet) + "\".", location + "." + toGet, e);
-            }
-            else {
+            return jsonObject != null && jsonObject.has(toGet) ? jsonObject.get(toGet).getAsString() : ifNull;
+        } catch (Exception e) {
+            if (jsonObject.has(toGet)) {
+                Util.sendCompilationError("Failed to parse string \"" + jsonObject.get(toGet) + "\".", location + "." + toGet, e);
+            } else {
                 Util.sendCompilationError("Failed to parse string.", location + "." + toGet, e);
             }
             return "";
         }
     }
 
-    public static String getOptionalTexture(JsonObject o, String toGet, String ifNull, String location, boolean optional) {
-        String texture = getOptionalString(o, toGet, ifNull, location);
+    /**
+     * Retrieves a texture path from a JSON object, or returns a separate provided value if the value is null. Checks if the texture exists, and sends an error if it does not
+     *
+     * @param jsonObject JSON object to retrieve value from
+     * @param toGet      Value to retrieve
+     * @param ifNull     Value to return if retrieved value is nonexistent
+     * @param location   Location format
+     * @param optional   Whether to accept blank inputs
+     * @return String
+     */
+    public static String getOptionalTexture(JsonObject jsonObject, String toGet, String ifNull, String location, boolean optional) {
+        String texture = getOptionalString(jsonObject, toGet, ifNull, location);
         try {
             ImageIO.read(Instances.minecraft.getResource(texture));
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             if (!optional || (texture != null && !texture.isEmpty())) {
                 Util.sendCompilationError("Invalid texture path \"" + texture + "\".", location + "." + toGet, e);
-            }
-            else {
+            } else {
                 return null;
             }
         }
         return texture;
     }
 
-    public static double getOptionalDouble(JsonObject o, String toGet, double ifNull, String location) {
+    /**
+     * Retrieves a double from a JSON object, or returns a separate provided value if the value is null
+     *
+     * @param jsonObject JSON object to retrieve value from
+     * @param toGet      Value to retrieve
+     * @param ifNull     Value to return if retrieved value is nonexistent
+     * @param location   Location format
+     * @return Double
+     */
+    public static double getOptionalDouble(JsonObject jsonObject, String toGet, double ifNull, String location) {
         try {
-            return o != null && o.has(toGet) ? o.get(toGet).getAsDouble() : ifNull;
-        }
-        catch (Exception e) {
-            if (o.has(toGet)) {
-                Util.sendCompilationError("Failed to parse double \"" + o.get(toGet) + "\".", location + "." + toGet, e);
-            }
-            else {
+            return jsonObject != null && jsonObject.has(toGet) ? jsonObject.get(toGet).getAsDouble() : ifNull;
+        } catch (Exception e) {
+            if (jsonObject.has(toGet)) {
+                Util.sendCompilationError("Failed to parse double \"" + jsonObject.get(toGet) + "\".", location + "." + toGet, e);
+            } else {
                 Util.sendCompilationError("Failed to parse double.", location + "." + toGet, e);
             }
             return 0;
         }
     }
 
-    public static int getOptionalInteger(JsonObject o, String toGet, int ifNull, String location) {
+    /**
+     * Retrieves an integer from a JSON object, or returns a separate provided value if the value is null
+     *
+     * @param jsonObject JSON object to retrieve value from
+     * @param toGet      Value to retrieve
+     * @param ifNull     Value to return if retrieved value is nonexistent
+     * @param location   Location format
+     * @return String
+     */
+    public static int getOptionalInteger(JsonObject jsonObject, String toGet, int ifNull, String location) {
         try {
-            return o != null && o.has(toGet) ? o.get(toGet).getAsInt() : ifNull;
-        }
-        catch (Exception e) {
-            if (o.has(toGet)) {
-                Util.sendCompilationError("Failed to parse integer \"" + o.get(toGet) + "\".", location + "." + toGet, e);
-            }
-            else {
+            return jsonObject != null && jsonObject.has(toGet) ? jsonObject.get(toGet).getAsInt() : ifNull;
+        } catch (Exception e) {
+            if (jsonObject.has(toGet)) {
+                Util.sendCompilationError("Failed to parse integer \"" + jsonObject.get(toGet) + "\".", location + "." + toGet, e);
+            } else {
                 Util.sendCompilationError("Failed to parse integer.", location + "." + toGet, e);
             }
             return 0;
         }
     }
 
-    public static ArrayList<String> getOptionalStringArray(JsonObject o, String toGet, ArrayList<String> ifNull) {
-        return o != null && o.has(toGet) ? convertToStringArrayList(o.get(toGet).getAsJsonArray()) : ifNull;
+    /**
+     * Returns an arraylist of integers from a JSON object. Not finished
+     *
+     * @param jsonObject ?
+     * @param toGet      ?
+     * @param ifNull     ?
+     * @return ?
+     */
+    public static ArrayList<String> getOptionalStringArray(JsonObject jsonObject, String toGet, ArrayList<String> ifNull) {
+        return jsonObject != null && jsonObject.has(toGet) ? convertToStringArrayList(jsonObject.get(toGet).getAsJsonArray()) : ifNull;
     }
 
+    /**
+     * Converts a JSON Array into a string array list
+     *
+     * @param array JSON Array
+     * @return Array list of strings
+     */
     public static ArrayList<String> convertToStringArrayList(JsonArray array) {
         ArrayList<String> toReturn = new ArrayList<>();
         for (JsonElement o : array) {
@@ -175,16 +304,26 @@ public class Util {
         return toReturn;
     }
 
-    public static int getDecimal(Color color) {
-        return color.getRGB();
-    }
-
+    /**
+     * Generates a random double between a minimum and a maximum value
+     *
+     * @param min Minimum value
+     * @param max Maximum value
+     * @return Random double
+     */
     public static double generateRandomDouble(double min, double max) {
-        return min + ((max - min) * random.nextDouble());
+        return min + ((max - min) * RANDOM.nextDouble());
     }
 
+    /**
+     * Generates a random integer between a minimum and a maximum value
+     *
+     * @param min Minimum value
+     * @param max Maximum value
+     * @return Random integer
+     */
     public static int generateRandomInt(int min, int max) {
-        return min + ((max - min) * random.nextInt());
+        return min + ((max - min) * RANDOM.nextInt());
     }
 
     public static Color decodeColor(String hex, String location) {
@@ -195,6 +334,7 @@ public class Util {
             return new Color(255, 255, 255);
         }
     }
+
     public static Color decodeColor(String hex) throws NumberFormatException {
         switch (hex) {
             case "#skyColor":
@@ -209,33 +349,33 @@ public class Util {
         }
         return Color.decode(hex.startsWith("#") ? hex : "#" + hex);
     }
+
     public static double getRedFromColor(String color) {
         try {
             return decodeColor(color).getRed() / 255.0;
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             if (!CelestialSky.initializingColorEntries && !CelestialSky.isColorEntry(color)) {
                 throw new RuntimeException("Failed to parse HEX color \"" + color + "\" in colorEntryRed function.");
             }
             return 0.0;
         }
     }
+
     public static double getGreenFromColor(String color) {
         try {
             return decodeColor(color).getGreen() / 255.0;
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             if (!CelestialSky.initializingColorEntries && !CelestialSky.isColorEntry(color)) {
                 throw new RuntimeException("Failed to parse HEX color \"" + color + "\" in colorEntryGreen function.");
             }
             return 0.0;
         }
     }
+
     public static double getBlueFromColor(String color) {
         try {
             return decodeColor(color).getBlue() / 255.0;
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             if (!CelestialSky.initializingColorEntries && !CelestialSky.isColorEntry(color)) {
                 throw new RuntimeException("Failed to parse HEX color \"" + color + "\" in colorEntryBlue function.");
             }
@@ -388,8 +528,8 @@ public class Util {
 
     public static boolean isInArea(double x1, double y1, double z1, double x2, double y2, double z2) {
         return (Math.min(x1, x2) <= Instances.minecraft.getPlayerX() && Instances.minecraft.getPlayerX() <= Math.max(x1, x2)) &&
-                    (Math.min(y1, y2) <= Instances.minecraft.getPlayerY() && Instances.minecraft.getPlayerY() <= Math.max(y1, y2)) &&
-                    (Math.min(z1, z2) <= Instances.minecraft.getPlayerZ() && Instances.minecraft.getPlayerZ() <= Math.max(z1, z2));
+                (Math.min(y1, y2) <= Instances.minecraft.getPlayerY() && Instances.minecraft.getPlayerY() <= Math.max(y1, y2)) &&
+                (Math.min(z1, z2) <= Instances.minecraft.getPlayerZ() && Instances.minecraft.getPlayerZ() <= Math.max(z1, z2));
 
     }
 
@@ -440,17 +580,18 @@ public class Util {
                 axisDistances[2]
         );
     }
+
     public static double getBiomeBlend(String... args) {
         if (NumberUtils.isCreatable(args[0])) {
             return getBiomeBlend((int) Double.parseDouble(args[0]), -9999, args);
         }
         return getBiomeBlend(6, -9999, args);
     }
+
     public static double getBiomeBlendFlat(String... args) {
         if (NumberUtils.isCreatable(args[0]) && NumberUtils.isCreatable(args[1])) {
             return getBiomeBlend((float) Double.parseDouble(args[0]), (float) Double.parseDouble(args[1]), args);
-        }
-        else if (NumberUtils.isCreatable(args[0])) {
+        } else if (NumberUtils.isCreatable(args[0])) {
             return getBiomeBlend((float) Double.parseDouble(args[0]), (float) Instances.minecraft.getPlayerY(), args);
         }
         return getBiomeBlend(6.0F, (float) Instances.minecraft.getPlayerY(), args);
@@ -506,7 +647,7 @@ public class Util {
         IMcVector pos = Instances.vectorFactory.zero();
         for (int i = -searchDistance; i <= searchDistance; i++) {
             for (int k = -searchDistance; k <= searchDistance; k++) {
-                pos.set((float) (i + Instances.minecraft.getPlayerX()), (float)  yLevel, (float) (k + Instances.minecraft.getPlayerZ()));
+                pos.set((float) (i + Instances.minecraft.getPlayerX()), (float) yLevel, (float) (k + Instances.minecraft.getPlayerZ()));
                 dist = distanceTo(pos.x(), yLevel, pos.z(),
                         Instances.minecraft.getPlayerX(),
                         yLevel,
@@ -558,6 +699,7 @@ public class Util {
             return Math.pow(1.0F - (1.0F - FMath.sin((float) (((g) / 0.4F * 0.5F + 0.5F) * Math.PI))) * 0.99F, 2);
         return 0;
     }
+
     public static double getTwilightProgress(double timeOfDay) {
         float i = FMath.cos((float) ((timeOfDay / 360) * (Math.PI * 2)));
         if (i >= -0.4F && i <= 0.4F) {
@@ -565,6 +707,7 @@ public class Util {
         }
         return 0;
     }
+
     public static double getTwilightFogEffect(double timeOfDay, float rotate) {
         float h = FMath.sin((float) timeOfDay / 360.0F) > 0.0F ? -1.0F : 1.0F;
         float s = Instances.minecraft.getCameraLookVectorTwilight(h, rotate);
@@ -573,6 +716,7 @@ public class Util {
         }
         return s > 0 ? s : 0;
     }
+
     public static double getStarAlpha(double timeOfDay) {
         double d = getDayLight(timeOfDay);
         return 0.5 - (d * d * 0.5);
@@ -581,16 +725,30 @@ public class Util {
     public static double getDayLight(double timeOfDay) {
         return clamp((float) (FMath.cos((((float) timeOfDay) / 360F) * 6.2831855F) * 2 + 0.5), 0, 1);
     }
+
     public static double clamp(double x, double min, double max) {
         return Math.max(Math.min(x, max), min);
     }
-    public static double lerp(double targetValue, double originalValue, double ratio) {
+
+    @Deprecated
+    public static double lerp2(double targetValue, double originalValue, double ratio) {
         return (targetValue * ratio) + originalValue * (1 - ratio);
     }
-    public static double lerpMoj(float f, float g, float h) {
-        return g + f * (h - g);
+
+    public static double lerp(double originalValue, double targetValue, double ratio) {
+        return originalValue + (targetValue - originalValue) * ratio;
     }
+
     public static double repeat(double a, double min, double max) {
         return (a % (max - min)) + min;
+    }
+
+    public static double approachValue(double currentValue, double target, double stepRateUp, double stepRateDown) {
+        if (currentValue < target) {
+            return Math.min(currentValue + stepRateUp, target);
+        } else if (currentValue > target) {
+            return Math.max(currentValue - stepRateDown, target);
+        }
+        return target;
     }
 }

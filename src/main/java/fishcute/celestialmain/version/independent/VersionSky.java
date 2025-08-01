@@ -6,8 +6,6 @@ import fishcute.celestialmain.sky.objects.TwilightObject;
 import fishcute.celestialmain.util.FMath;
 import fishcute.celestialmain.util.Util;
 
-import java.awt.*;
-
 public class VersionSky {
     /**
      * Used for FogRenderer#setupFog
@@ -127,9 +125,9 @@ public class VersionSky {
             for (ICelestialObject o : CelestialSky.getDimensionRenderInfo().skyObjects) {
                 if (o instanceof TwilightObject) {
                     TwilightObject t = (TwilightObject) o;
-                    r = (float) Util.lerp(t.fogTwilightColor.x, r, t.fogTwilightColor.w);
-                    g = (float) Util.lerp(t.fogTwilightColor.y, g, t.fogTwilightColor.w);
-                    b = (float) Util.lerp(t.fogTwilightColor.z, b, t.fogTwilightColor.w);
+                    r = (float) Util.lerp2(t.fogTwilightColor.x, r, t.fogTwilightColor.w);
+                    g = (float) Util.lerp2(t.fogTwilightColor.y, g, t.fogTwilightColor.w);
+                    b = (float) Util.lerp2(t.fogTwilightColor.z, b, t.fogTwilightColor.w);
                 }
             }
         }

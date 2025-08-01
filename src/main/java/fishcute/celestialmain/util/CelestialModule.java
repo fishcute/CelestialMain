@@ -175,6 +175,13 @@ public class CelestialModule {
                     .with("lerp", new Function((List<Object> arr) ->
                             Util.lerp(toDouble(arr.get(0)), toDouble(arr.get(1)), toDouble(arr.get(2)))
                             , 3))
+                    .with("approachValue", new Function((List<Object> arr) ->
+                            Util.approachValue(toDouble(arr.get(0)), toDouble(arr.get(1)), toDouble(arr.get(2)), toDouble(arr.get(3)))
+                            , 4))
+                    .with("approachValue", new Function((List<Object> arr) -> {
+                        double stepRate = toDouble(arr.get(2));
+                        return Util.approachValue(toDouble(arr.get(0)), toDouble(arr.get(1)), stepRate, stepRate);
+                    }, 3))
 
     );
 }

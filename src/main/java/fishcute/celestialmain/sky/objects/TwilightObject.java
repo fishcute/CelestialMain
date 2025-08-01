@@ -8,9 +8,7 @@ import fishcute.celestialmain.sky.CelestialObjectProperties;
 import fishcute.celestialmain.util.*;
 import fishcute.celestialmain.version.independent.Instances;
 
-import java.awt.*;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class TwilightObject extends IBaseCelestialObject {
     public static class Vector4d {
@@ -115,11 +113,11 @@ public class TwilightObject extends IBaseCelestialObject {
         float k = (float) Util.getTwilightProgress(this.angle);
         float twilightAlpha = (float) Util.getTwilightAlpha(this.angle);
 
-        float red = (float) (Util.lerp(this.solidColor.getStoredRed(), this.solidColor2.getStoredRed(), k)
+        float red = (float) (Util.lerp2(this.solidColor.getStoredRed(), this.solidColor2.getStoredRed(), k)
                 * this.properties.getRed());
-        float green = (float) (Util.lerp(this.solidColor.getStoredGreen(), this.solidColor2.getStoredGreen(), k * k)
+        float green = (float) (Util.lerp2(this.solidColor.getStoredGreen(), this.solidColor2.getStoredGreen(), k * k)
                 * this.properties.getGreen());
-        float blue = (float) (Util.lerp(this.solidColor.getStoredBlue(), this.solidColor2.getStoredBlue(), k * k)
+        float blue = (float) (Util.lerp2(this.solidColor.getStoredBlue(), this.solidColor2.getStoredBlue(), k * k)
                 * this.properties.getBlue());
         float alpha = this.properties.alpha.invoke() * twilightAlpha;
 
